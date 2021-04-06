@@ -16,8 +16,8 @@ export function LandingPage(): JSX.Element {
       <div className="sub-container">
         <h1>Schnopsn</h1>
         <div className="startButtons">
-          <Link to="/startGame"><button id="2er">2er Schnopsn</button></Link>
-          <Link to="/startGame"><button id="4er">4er Schnopsn</button></Link>
+          <Link to="/2erSchnopsn"><button id="2er">2er Schnopsn</button></Link>
+          <Link to="/4erSchnopsn"><button id="4er">4er Schnopsn</button></Link>
         </div>
       </div>
     </div>

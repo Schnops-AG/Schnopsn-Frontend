@@ -14,10 +14,13 @@ function App() {
             <Route exact path="/">
               <LandingPage />
             </Route>
-            <Route path="/startGame">
-              {/* <StartGame title='2er Schnopsn'/> */}
-              <StartGame />
+            <Route path="/2erSchnopsn">
+              <StartGame title='2erSchnopsn'/>
             </Route>
+            <Route path="/4erSchnopsn">
+              <StartGame title='4erSchnopsn'/>
+            </Route>
+            
           </Switch>
       </div>
     </BrowserRouter>
