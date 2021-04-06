@@ -1,21 +1,26 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.scss';
-import { StartPage } from './pages/StartPage/startPage';
-import { Route, MemoryRouter as Router, Switch } from 'react-router';
+import { LandingPage } from './pages/LandingPage/landingPage';
+import { StartGame } from './pages/StartGame/startGame';
+import { Route, Switch, BrowserRouter } from 'react-router-dom';
 
 function App() {
   return (
-    <div className="App">
-      <Router>
-        <Switch>
-          <Route path="/">
-            <StartPage />
-          </Route>
-        </Switch>
-
-      </Router>
-    </div>
+    <BrowserRouter>
+      <div className="App">
+          <Switch>
+            {/* <Route exact path="/" component={StartPage}/> */}
+            <Route exact path="/">
+              <LandingPage />
+            </Route>
+            <Route path="/startGame">
+              {/* <StartGame title='2er Schnopsn'/> */}
+              <StartGame />
+            </Route>
+          </Switch>
+      </div>
+    </BrowserRouter>
   );
 }
 

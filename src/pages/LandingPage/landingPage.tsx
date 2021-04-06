@@ -1,12 +1,10 @@
 import React from 'react'
-import './startPage.scss'
-import {
-  Link
-} from "react-router-dom";
+import './landingPage.scss'
+import { Link } from "react-router-dom";
 
 
 // Load Title
-export function StartPage(): JSX.Element {
+export function LandingPage(): JSX.Element {
   return(
   <div className="startPage">
     <nav className="nav">
@@ -18,9 +16,8 @@ export function StartPage(): JSX.Element {
       <div className="sub-container">
         <h1>Schnopsn</h1>
         <div className="startButtons">
-          <Link to="/">Home</Link>
-          <button id="2er">2er Schnopsn</button>
-          <button id="4er">4er Schnopsn</button>
+          <Link to="/startGame"><button id="2er">2er Schnopsn</button></Link>
+          <Link to="/startGame"><button id="4er">4er Schnopsn</button></Link>
         </div>
       </div>
     </div>
