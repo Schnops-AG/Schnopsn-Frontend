@@ -15,12 +15,11 @@ function App() {
               <LandingPage />
             </Route>
             <Route path="/2erSchnopsn">
-              <StartGame title='2erSchnopsn'/>
+              <StartGame title='2er Schnopsn'/>
             </Route>
             <Route path="/4erSchnopsn">
-              <StartGame title='4erSchnopsn'/>
+              <StartGame title='4er Schnopsn'/>
             </Route>
-            
           </Switch>
       </div>
     </BrowserRouter>
