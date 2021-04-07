@@ -13,7 +13,7 @@ type BtnValue = {
 // Create button
 export function CustomButton({title, className, path}: BtnValue): JSX.Element {
   return(
-    <Link to={path}><button className={className}>{title}</button></Link>
+        <Link to={path}><button className={className}>{title}</button></Link>
     )
 }
 
