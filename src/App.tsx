@@ -16,13 +16,10 @@ function App() {
               <LandingPage />
             </Route>
             <Route path="/2erSchnopsn">
-              <StartGame title='2er Schnopsn' path="/2erSchnopsn"/>
+              <StartGame title='2er Schnopsn' />
             </Route>
             <Route path="/4erSchnopsn">
-              <StartGame title='4er Schnopsn' path="/4erSchnopsn"/>
-            </Route>
-            <Route path="/123">
-              <h1>123</h1>
+              <StartGame title='4er Schnopsn' />
             </Route>
           </Switch>
       </div>

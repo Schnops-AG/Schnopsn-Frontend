@@ -7,11 +7,10 @@ import { CustomButton } from '../../components/Button/button';
 
 type JoinGameProps = {
   title: string,
-  path: string
 }
 
 // Create button
-export function JoinGame({title, path}: JoinGameProps): JSX.Element {
+export function JoinGame({title}: JoinGameProps): JSX.Element {
     return(
         <div className="background-image">
           <div className="background-gradient">
