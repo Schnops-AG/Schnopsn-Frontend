@@ -4,6 +4,7 @@ import { CustomButton } from '../../components/Button/button';
 import { Route, Switch, BrowserRouter, Link, useRouteMatch, useParams } from 'react-router-dom';
 import { JoinGame } from '../JoinGame/joinGame';
 import { CreateGame } from '../CreateGame/createGame';
+import { WaitingRoom } from '../WaitingRoom/waitingRoom';
 
 type StartGameProps = {
   title: string,
@@ -27,6 +28,11 @@ export function StartGame({title}: StartGameProps): JSX.Element {
             {/* Route to CreateGame */}
             <Route path={`${match.path}/createGame`}>
                 <CreateGame title={title}/>
+            </Route>
+
+            {/* Route to CreateGame */}
+            <Route path={`${match.path}/waitingRoom`}>
+                <WaitingRoom title={title} isAdmin={false}/>
             </Route>
 
             {/* Default Route  */}
