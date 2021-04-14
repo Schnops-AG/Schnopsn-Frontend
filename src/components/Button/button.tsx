@@ -11,6 +11,8 @@ type BtnValue = {
   title: string,
   className: string,
   path: string,
+
+  // onCreate? ... the custom onCreate-Function is optional
   onCreate?: (event: React.MouseEvent<HTMLButtonElement>) => void
 }
 

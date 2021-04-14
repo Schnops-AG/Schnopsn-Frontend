@@ -18,7 +18,6 @@ export function CreateGame({title, player}: CreateGameProps): JSX.Element {
 
   const setAdmin = (player: Player) =>{
     player.isAdmin = true;
-    console.log("setAdmin: " + player.isAdmin);
   };
 
   return(
