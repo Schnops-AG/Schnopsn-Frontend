@@ -4,13 +4,15 @@ import {
 } from "react-router-dom";
 import { CustomButton } from '../../components/Button/button';
 import { InputRoom } from '../../components/InputRoom/inputRoom';
+import { Player } from '../../models/player';
 
 type JoinGameProps = {
   title: string,
+  player: Player
 }
 
 // Create button
-export function JoinGame({title}: JoinGameProps): JSX.Element {
+export function JoinGame({title, player}: JoinGameProps): JSX.Element {
   const match = useRouteMatch();
   const lastPathElement: string = match.path.split("/")[match.path.split("/").length - 2];
 

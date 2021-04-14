@@ -4,13 +4,15 @@ import {
 } from "react-router-dom";
 import { CustomButton } from '../../components/Button/button';
 import { InputRoom } from '../../components/InputRoom/inputRoom';
+import { Player } from '../../models/player';
 
 type CreateGameProps = {
   title: string,
+  player: Player
 }
 
 // Create button
-export function CreateGame({title}: CreateGameProps): JSX.Element {
+export function CreateGame({title, player}: CreateGameProps): JSX.Element {
   const match = useRouteMatch();
   const lastPathElement: string = match.path.split("/")[match.path.split("/").length - 2];
 

@@ -5,9 +5,11 @@ import { Route, Switch, BrowserRouter, Link, useRouteMatch, useParams } from 're
 import { JoinGame } from '../JoinGame/joinGame';
 import { CreateGame } from '../CreateGame/createGame';
 import { WaitingRoom } from '../WaitingRoom/waitingRoom';
+import { Player } from '../../models/player';
 
 type StartGameProps = {
   title: string,
+  
 }
 
 
@@ -17,22 +19,32 @@ export function StartGame({title}: StartGameProps): JSX.Element {
     /*Gibt mir den aktuellen Path zurück */
     const match = useRouteMatch();
 
+    const player1: Player = {
+        playername : "alex",
+        playerID : "player00000",
+        caller : false,
+        active : true,
+        isAdmin : false
+    };
+
     return(
         <Switch>
 
             {/* Route to JoinGame */}
             <Route path={`${match.path}/joinGame`}>
-                <JoinGame title={title}/>
+                <JoinGame title={title} player={player1} />
             </Route>
 
             {/* Route to CreateGame */}
             <Route path={`${match.path}/createGame`}>
-                <CreateGame title={title}/>
+                {JSON.stringify(player1)}
+                <CreateGame title={title} player={player1}/>
             </Route>
 
-            {/* Route to CreateGame */}
+            {/* Route to WaitingRoom */}
             <Route path={`${match.path}/waitingRoom`}>
-                <WaitingRoom title={title} isAdmin={false}/>
+                {JSON.stringify(player1)}
+                <WaitingRoom title={title} player={player1}/>
             </Route>
 
             {/* Default Route  */}

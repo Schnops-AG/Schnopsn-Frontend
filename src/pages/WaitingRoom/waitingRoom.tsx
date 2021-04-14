@@ -4,14 +4,17 @@ import {
 } from "react-router-dom";
 import { CustomButton } from '../../components/Button/button';
 import { InputRoom } from '../../components/InputRoom/inputRoom';
+import { Player } from '../../models/player';
 
 type WaitingRoomProps = {
   title: string,
-  isAdmin: boolean
+  player: Player
 }
 
 // Create button
-export function WaitingRoom({title, isAdmin}: WaitingRoomProps): JSX.Element {
+export function WaitingRoom({title, player}: WaitingRoomProps): JSX.Element {
+
+
     return(
         <div className="background-image">
           <div className="background-gradient">
@@ -20,10 +23,19 @@ export function WaitingRoom({title, isAdmin}: WaitingRoomProps): JSX.Element {
             <div className="buttons">
                 <InputRoom placeholder="Enter Name"/>
                 <CustomButton className="green" title="Create Game" path="/" />
-            </div>  
+            </div>
+            <p>admin? {player.isAdmin? 'true' : 'false'}</p>  
 
-            if(isAdmin){
-                <h3>you are admin</h3>
+            {
+              player.isAdmin 
+                ? 
+                  <div>
+                    <h3>you are admin</h3>
+                    <p>is really Admin? {JSON.stringify(player)}</p>
+                  </div>
+                :
+                  <div>Test</div>
+
             }
 
           </div>
