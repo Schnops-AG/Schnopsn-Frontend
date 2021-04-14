@@ -15,6 +15,7 @@ type StartGameProps = {
 
 
 // Load Title
+// export function StartGame({title}: StartGameProps): JSX.Element {
 export function StartGame({title}: StartGameProps): JSX.Element {
     /*Gibt mir den aktuellen Path zurück */
     const match = useRouteMatch();

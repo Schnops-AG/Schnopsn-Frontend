@@ -11,15 +11,16 @@ type BtnValue = {
   title: string,
   className: string,
   path: string,
-  createGame: Function
+  onCreate?: (event: React.MouseEvent<HTMLButtonElement>) => void
 }
 
 // Create button
-export function CustomButton({title, className, path, createGame}: BtnValue): JSX.Element {
+export function CustomButton({title, className, path, onCreate}: BtnValue): JSX.Element {
 
-
-  return(
-        <Link to={path}><button onClick={createGame} className={className}>{title}</button></Link>
+    return(
+        <Link to={path}>
+            <button onClick={onCreate} className={className}>{title}</button>
+        </Link>
     )
 }
 

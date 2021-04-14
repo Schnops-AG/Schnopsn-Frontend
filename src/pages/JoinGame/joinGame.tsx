@@ -15,6 +15,7 @@ type JoinGameProps = {
 export function JoinGame({title, player}: JoinGameProps): JSX.Element {
   const match = useRouteMatch();
   const lastPathElement: string = match.path.split("/")[match.path.split("/").length - 2];
+  player.isAdmin = false;
 
   return(
       <div className="background-image">
