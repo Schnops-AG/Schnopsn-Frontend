@@ -7,6 +7,7 @@ import { CreateGame } from '../CreateGame/createGame';
 import { WaitingRoom } from '../WaitingRoom/waitingRoom';
 import { Player } from '../../models/player';
 import { render } from '@testing-library/react';
+import { InputRoom } from '../../components/InputRoom/inputRoom';
 
 type StartGameProps = {
     title: string,
@@ -72,10 +73,14 @@ export class StartGameUI extends React.Component<StartGameProps> {
                     <div className="background-image">
                         <div className="background-gradient">
                             <h1>{this.props.title}</h1>
-                            <div className="buttons">
-                                <CustomButton className="green" title="Join Game" path={`${this.props.match?.url}/joinGame`} />
-                                <CustomButton className="green" title="Create Game" path={`${this.props.match?.url}/createGame`} />
-                            </div>  
+                            <div className="container">
+                                <InputRoom placeholder="Player-Name" />
+                                <div className="buttons">
+                                    <CustomButton className="green" title="Join Game" path={`${this.props.match?.url}/joinGame`} />
+                                    <CustomButton className="green" title="Create Game" path={`${this.props.match?.url}/createGame`} />
+                                </div>  
+                            </div>
+                            
                         </div>
                     </div>
                 </Route>
