@@ -16,6 +16,10 @@ type StartGameProps = {
     match?: match<{}>
 }
 
+type StartGameState = {
+    playerName: string
+}
+
 
 // a wrapper
 export function StartGame(props: StartGameProps): JSX.Element{
@@ -33,7 +37,7 @@ export function StartGame(props: StartGameProps): JSX.Element{
 /**
  * the actual StartGame page
  */
-export class StartGameUI extends React.Component<StartGameProps> {
+export class StartGameUI extends React.Component<StartGameProps, StartGameState> {
     
     player1: Player = {
         playername : "alex",
@@ -46,7 +50,43 @@ export class StartGameUI extends React.Component<StartGameProps> {
 
     constructor(props: StartGameProps){
         super(props);
+        this.state = {playerName : ''};
     }
+
+    /**
+     * listens for changes on the input field (-> InputRoom) and updates the state
+     * @param value 
+     */
+    changeInputHandler = (value: string) =>{
+        this.setState({playerName : value});
+    }
+
+    /**
+     * handler for the buttons
+     * when clicked: the current playerName (-> state) will be used for the post request
+     *  that requests the player object
+     */
+    onClickBtn = () =>{
+
+        let enteredPlayerName :String = this.state.playerName;
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ playerName: enteredPlayerName })
+        };
+
+        fetch("http://localhost:8080/api/v1/createPlayer", requestOptions)
+        .then(res => res.json())
+        .then(
+            (result) => {
+                console.log(result);
+            },
+            (error) => {
+                console.log('error: ' + error);
+            }
+        )
+    };
 
 
     render(){
@@ -74,10 +114,10 @@ export class StartGameUI extends React.Component<StartGameProps> {
                         <div className="background-gradient">
                             <h1>{this.props.title}</h1>
                             <div className="container">
-                                <InputRoom placeholder="Player-Name" />
+                                <InputRoom placeholder="Player-Name" handleChange={this.changeInputHandler} />
                                 <div className="buttons">
-                                    <CustomButton className="green" title="Join Game" path={`${this.props.match?.url}/joinGame`} />
-                                    <CustomButton className="green" title="Create Game" path={`${this.props.match?.url}/createGame`} />
+                                    <CustomButton id="join" className="green" title="Join Game" onHandle={this.onClickBtn} path={`${this.props.match?.url}/joinGame`} />
+                                    <CustomButton id="create" className="green" title="Create Game" onHandle={this.onClickBtn} path={`${this.props.match?.url}/createGame`} />
                                 </div>  
                             </div>
                             

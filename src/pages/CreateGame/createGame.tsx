@@ -26,7 +26,7 @@ export function CreateGame({title, player}: CreateGameProps): JSX.Element {
           <h1>{title}</h1>
           <div className="buttons">
               <InputRoom placeholder="Enter Name"/>
-              <CustomButton className="green" title="Create Game" onCreate={() => setAdmin(player)} path={`/${lastPathElement}/waitingRoom`}/>
+              <CustomButton className="green" title="Create Game" onHandle={() => setAdmin(player)} path={`/${lastPathElement}/waitingRoom`}/>
           </div>  
         </div>
       </div>
