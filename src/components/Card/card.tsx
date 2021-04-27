@@ -5,10 +5,6 @@ export default function Card(props : any) {
     const dragStart = (e : any) => {
         const target = e.target;
         e.dataTransfer.setData('card_id', target.id);
-
-        setTimeout(() => {
-            target.style.display = "none";
-        }, 0);
     }
 
     const dragOver = (e : any) => {
@@ -24,7 +20,7 @@ export default function Card(props : any) {
             onDragStart={dragStart}
             onDragOver={dragOver}
         >
-            {props.children }
+            {props.children}
         </div>
     )
 }
