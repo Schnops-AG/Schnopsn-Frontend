@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Gorditas:wght@700&display=swap');
+@import "./../../style/properties/base";
+
+*{
+    font-family: 'Gorditas', cursive;
+}
+
+.input-field{
+    padding: 0;
+    width: 550px;
+    height: 100px;
+    border: none;
+    border-bottom: 7px solid $darkBrown;
+    outline: none;
+    border-collapse: collapse;
+    margin-right: 40px;
+    border-radius: 8px;
+    background-color: $beige;
+    box-sizing: border-box;
+    font-size: 30px;
+    padding: 0px 20px 0px 20px;
+
+    &::placeholder{
+        font-size: 20pt;
+    }
+
+    &:focus{
+        box-shadow: 2px 2px 10px $darkBrown;
+    }
+}

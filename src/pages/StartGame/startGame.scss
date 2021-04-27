@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Gorditas:wght@700&display=swap');
+@import "./../../style/properties/base";
+
+*{
+    font-family: 'Gorditas', cursive;
+}
+
+.background-image{
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    background-image: url('/assets/img/background_startPage.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    
+    .background-gradient{
+        background: radial-gradient(50% 50% at 50% 50%, rgba(143, 206, 120, 0.459375) 28.65%, rgba(88, 130, 73, 0.6) 89.06%), rgba(75, 164, 74, 0.6);
+        opacity: 1;
+        width: 100%;
+        height: 100%;
+
+        h1{
+            font-size: 100px;
+            color: $beige;
+            font-weight: lighter;
+        }
+
+        .container{
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            width: 50%;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10%;
+
+            .input-field{
+                width: 100%;
+                height: 80px;
+                margin: 0px 50px 0px 50px;
+            }
+
+            .buttons{
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-evenly;
+                margin: 0px 20px 0px 20px;
+                margin-top: 5%;
+
+
+            }
+        }
+
+        
+    }
+    
+}
