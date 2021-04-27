@@ -25,7 +25,7 @@ export function CreateGame({title, player}: CreateGameProps): JSX.Element {
         <div className="background-gradient">
           <h1>{title}</h1>
           <div className="buttons">
-              <InputRoom placeholder="Enter Name"/>
+              <InputRoom placeholder="Enter Room Name"/>
               <CustomButton className="green" title="Create Game" onHandle={() => setAdmin(player)} path={`/${lastPathElement}/waitingRoom`}/>
           </div>  
         </div>
