@@ -8,6 +8,7 @@ import { WaitingRoom } from '../WaitingRoom/waitingRoom';
 import { Player } from '../../models/player';
 import { render } from '@testing-library/react';
 import { InputRoom } from '../../components/InputRoom/inputRoom';
+import { CardTest } from '../CardTest/cardTest';
 
 type StartGameProps = {
     title: string,
@@ -17,7 +18,8 @@ type StartGameProps = {
 }
 
 type StartGameState = {
-    playerName: string
+    playerName: string,
+    isLoading: boolean
 }
 
 
@@ -50,7 +52,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
     constructor(props: StartGameProps){
         super(props);
-        this.state = {playerName : ''};
+        this.state = {playerName : '', isLoading : false};
     }
 
     /**
@@ -68,6 +70,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
      */
     onClickBtn = () =>{
 
+        this.setState({isLoading : true});
         let enteredPlayerName :String = this.state.playerName;
 
         const requestOptions = {
@@ -80,7 +83,11 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
         .then(res => res.json())
         .then(
             (result) => {
-                console.log(result);
+                this.player1.playername = result['playername'];
+                this.player1.active = result['active'];
+                this.player1.caller = result['caller'];
+                this.player1.playerID = result['playerid'];
+                console.log(this.player1);
             },
             (error) => {
                 console.log('error: ' + error);
@@ -90,9 +97,11 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
 
     render(){
+
         return(
             <Switch>
-    
+
+                
                 {/* Route to JoinGame */}
                 <Route path={`${this.props.match?.path}/joinGame`}>
                     <JoinGame title={this.props.title} player={this.player1} />
@@ -107,6 +116,11 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                 <Route path={`${this.props.match?.path}/waitingRoom`}>
                     <WaitingRoom title={this.props.title} player={this.player1}/>
                 </Route>
+
+                {/* Route to test */}
+                <Route path={`${this.props.match?.path}/test`}>
+                    <CardTest />
+                </Route>
     
                 {/* Default Route  */}
                 <Route path={this.props.match?.path}>
@@ -118,6 +132,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                                 <div className="buttons">
                                     <CustomButton id="join" className="green" title="Join Game" onHandle={this.onClickBtn} path={`${this.props.match?.url}/joinGame`} />
                                     <CustomButton id="create" className="green" title="Create Game" onHandle={this.onClickBtn} path={`${this.props.match?.url}/createGame`} />
+                                    <CustomButton id="test" className="green" title="Test" path={`${this.props.match?.url}/test`} />
                                 </div>  
                             </div>
                             
