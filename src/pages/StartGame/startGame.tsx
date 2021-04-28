@@ -14,12 +14,13 @@ type StartGameProps = {
     title: string,
 
     // match? ... optional
-    match?: match<{}>
+    match?: match<{}>,
+    gameType: string
 }
 
 type StartGameState = {
     playerName: string,
-    isLoading: boolean
+    room: string // name or link
 }
 
 
@@ -52,7 +53,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
     constructor(props: StartGameProps){
         super(props);
-        this.state = {playerName : '', isLoading : false};
+        this.state = {playerName : '', room : ''};
     }
 
     /**
@@ -63,6 +64,10 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
         this.setState({playerName : value});
     }
 
+    changeRoomState = (roomName: string) =>{
+        this.setState({room : roomName});
+    }
+
     /**
      * handler for the buttons
      * when clicked: the current playerName (-> state) will be used for the post request
@@ -70,7 +75,6 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
      */
     onClickBtn = () =>{
 
-        this.setState({isLoading : true});
         let enteredPlayerName :String = this.state.playerName;
 
         // check if playername was actually entered
@@ -101,7 +105,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
             },
             (error) => {
                 console.log('error: ' + error);
-                this.player1 = undefined;
+                this.player1 = {} as Player;
             }
         )
     };
@@ -120,14 +124,18 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                             </Route>
 
             routeCreateGame =   <Route path={`${this.props.match?.path}/createGame`}>
-                                    <CreateGame title={this.props.title} player={this.player1}/>
+                                    <CreateGame title={this.props.title} player={this.player1} gameType={this.props.gameType} changeRoomState={this.changeRoomState} />
                                 </Route>
 
 
             // TODO: check for {url -> normal user | room-name -> admin}
-            routeWaitingRoom =  <Route path={`${this.props.match?.path}/waitingRoom`}>
-                                    <WaitingRoom title={this.props.title} player={this.player1}/>
-                                </Route>
+            console.log(this.state.room ? 'true' : 'false');
+            if(this.state.room){
+                routeWaitingRoom =  <Route path={`${this.props.match?.path}/waitingRoom`}>
+                                        <WaitingRoom title={this.props.title} player={this.player1}/>
+                                    </Route>
+            }
+
         }
 
         return(
@@ -176,5 +184,4 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
         )
     }
 }
-
 
