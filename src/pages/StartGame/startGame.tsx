@@ -41,7 +41,7 @@ export function StartGame(props: StartGameProps): JSX.Element{
  */
 export class StartGameUI extends React.Component<StartGameProps, StartGameState> {
     
-    player1: Player = {
+    player1?: Player = {
         playername : "alex",
         playerID : "player00000",
         caller : false,
@@ -73,6 +73,14 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
         this.setState({isLoading : true});
         let enteredPlayerName :String = this.state.playerName;
 
+        // check if playername was actually entered
+        if(enteredPlayerName == null || enteredPlayerName.length === 0){
+            console.log("playername is null");
+            this.player1 = undefined;
+        }else{
+            this.player1 = {} as Player;
+        }
+
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -83,14 +91,17 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
         .then(res => res.json())
         .then(
             (result) => {
-                this.player1.playername = result['playername'];
-                this.player1.active = result['active'];
-                this.player1.caller = result['caller'];
-                this.player1.playerID = result['playerid'];
+                if(this.player1 != undefined){
+                    this.player1.playername = result['playername'];
+                    this.player1.active = result['active'];
+                    this.player1.caller = result['caller'];
+                    this.player1.playerID = result['playerid'];
+                }
                 console.log(this.player1);
             },
             (error) => {
                 console.log('error: ' + error);
+                this.player1 = undefined;
             }
         )
     };
@@ -98,24 +109,46 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
     render(){
 
+        let routeJoinGame = null;
+        let routeCreateGame = null;
+        let routeWaitingRoom = null;
+
+        // only enable routes, if player has already been already created
+        if(this.player1){
+            routeJoinGame = <Route path={`${this.props.match?.path}/joinGame`}>
+                                <JoinGame title={this.props.title} player={this.player1} />
+                            </Route>
+
+            routeCreateGame =   <Route path={`${this.props.match?.path}/createGame`}>
+                                    <CreateGame title={this.props.title} player={this.player1}/>
+                                </Route>
+
+
+            // TODO: check for {url -> normal user | room-name -> admin}
+            routeWaitingRoom =  <Route path={`${this.props.match?.path}/waitingRoom`}>
+                                    <WaitingRoom title={this.props.title} player={this.player1}/>
+                                </Route>
+        }
+
         return(
             <Switch>
 
+                {
+                    // Route to JoinGame
+                    routeJoinGame != null && routeJoinGame
+                }
+
+                {
+                    // Route to CreateGame
+                    routeCreateGame != null && routeCreateGame
+                }
                 
-                {/* Route to JoinGame */}
-                <Route path={`${this.props.match?.path}/joinGame`}>
-                    <JoinGame title={this.props.title} player={this.player1} />
-                </Route>
-    
-                {/* Route to CreateGame */}
-                <Route path={`${this.props.match?.path}/createGame`}>
-                    <CreateGame title={this.props.title} player={this.player1}/>
-                </Route>
-    
-                {/* Route to WaitingRoom */}
-                <Route path={`${this.props.match?.path}/waitingRoom`}>
-                    <WaitingRoom title={this.props.title} player={this.player1}/>
-                </Route>
+
+                {
+                    // Route to WaitingRoom
+                    routeWaitingRoom != null && routeWaitingRoom
+                }
+ 
 
                 {/* Route to test */}
                 <Route path={`${this.props.match?.path}/test`}>
