@@ -10,69 +10,40 @@ body{
 
 .flexbox{
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     width: 100%;
-    max-width: 768px;
-    height: 100vh;
+    height: 100%;
     overflow: hidden;
     margin: 0 auto;
-    padding: 15px;
 
     .board{
         display: flex;
-        flex-direction: column;
-        width: 70%;
-        max-width: 300px;
+        flex-direction: row;
+        width: 100%;
+        height: auto;
         background-color: #313131;
+        margin: 15px;
         padding: 15px;
 
         .card{
-            background-color: #f3f3f3;
-            cursor: pointer;
-            margin-bottom: 15px;
-
-            .card-container{
-                width: 100%;
-                height: 200px;
-            }
-
-            .card-style {
-                position: relative;
-                height: 100%;
-                width: 100%;
-                border: 1px solid black;
-                border-radius: .5rem;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-size: 4rem;
-            }
-            
-            .card-style.red {
-                color: red;
-            }
-            
-            .card-style.black {
-                color: black;
-            }
-
-            .card-style::before,
-            .card-style::after{
-                position: absolute;
-                content: attr(data-value);
-                font-size: 32px;
-            }
-
-            .card-style::before{
-                top: .5rem;
-                left: .5rem;
-            }
-
-            .card-style::after{
-                bottom: .5rem;
-                right: .5rem;
-                transform: rotate(180deg);
-            }
+            height: 240px;
+            width: 150px;
+            font-size: 24px;
+            background-color: white;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid black;
+            padding: 2px;
+            margin: 10px;
         }
+
+        .red{
+            color: red;
+        }
+
+        .black{
+            color: black
+        }
+        
     }
 }

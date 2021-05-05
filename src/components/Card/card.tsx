@@ -1,6 +1,9 @@
+import { render } from '@testing-library/react';
+import { defaultCipherList } from 'node:constants';
 import React from 'react'
+import Deck from '../../pages/CardTest/CardLogic/deck';
 
-export default function Card(props : any) {
+export default function Card(props: any) {
 
     const dragStart = (e : any) => {
         const target = e.target;
@@ -10,8 +13,7 @@ export default function Card(props : any) {
     const dragOver = (e : any) => {
         e.stopPropagation();
     }
-
-
+    
     return (
         <div
             id={props.id}
@@ -22,5 +24,5 @@ export default function Card(props : any) {
         >
             {props.children}
         </div>
-    )
+    );
 }

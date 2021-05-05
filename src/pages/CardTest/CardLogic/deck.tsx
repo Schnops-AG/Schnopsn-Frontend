@@ -51,18 +51,9 @@ class Card{
     get color(){
         return this.suit === "♣" || this.suit === "♠" ? 'black' : 'red';
     }
-    
-    getHTML(){
-        const cardDiv = document.createElement('div');
-        cardDiv.innerText = this.suit;
-        cardDiv.classList.add("card-style", this.color);
-        cardDiv.dataset.value = this.value + ' ' + this.suit;
-        console.log(this.value + this.suit);
-        return cardDiv;
-    }
 }
 
-function createDeck() :Card[]{
+function createDeck() : Card[]{
     return SUITS.flatMap(suit =>{
         // ["♠", "♣", "♥", "♦"]; -> Array[4]
         return VALUES.map(value =>{
