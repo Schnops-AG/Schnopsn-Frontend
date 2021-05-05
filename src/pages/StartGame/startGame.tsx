@@ -9,6 +9,7 @@ import { Player } from '../../models/player';
 import { render } from '@testing-library/react';
 import { InputRoom } from '../../components/InputRoom/inputRoom';
 import { CardTest } from '../CardTest/cardTest';
+import { join } from 'node:path';
 
 type StartGameProps = {
     title: string,
@@ -42,13 +43,9 @@ export function StartGame(props: StartGameProps): JSX.Element{
  */
 export class StartGameUI extends React.Component<StartGameProps, StartGameState> {
     
-    player1?: Player = {
-        playername : "alex",
-        playerID : "player00000",
-        caller : false,
-        active : true,
-        isAdmin : false
-    };
+    player1?: Player = undefined;
+    joinGameRoute = '';
+    createGameRoute = '';
 
 
     constructor(props: StartGameProps){
@@ -61,8 +58,26 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
      * @param value 
      */
     changeInputHandler = (value: string) =>{
-        this.setState({playerName : value});
+
+        const allowRouting = () =>{
+            if(this.state.playerName){
+                this.joinGameRoute = '/joinGame';
+                this.createGameRoute = '/createGame';
+            }else{
+                this.joinGameRoute = '';
+                this.createGameRoute = '';
+            }
+            console.log('playername: ' + this.state.playerName);
+            console.log('value: ' + value);
+            console.log('changing: join, create-gameRoute: ' + this.joinGameRoute + ", " + this.createGameRoute);
+            console.log(this.state);
+        }
+
+
+        this.setState({playerName : value}, allowRouting);
     }
+
+    
 
     changeRoomState = (roomName: string) =>{
         this.setState({room : roomName});
@@ -74,6 +89,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
      *  that requests the player object
      */
     onClickBtn = () =>{
+        console.log('click');
 
         let enteredPlayerName :String = this.state.playerName;
 
@@ -81,6 +97,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
         if(enteredPlayerName == null || enteredPlayerName.length === 0){
             console.log("playername is null");
             this.player1 = undefined;
+            return;
         }else{
             this.player1 = {} as Player;
         }
@@ -101,6 +118,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                     this.player1.caller = result['caller'];
                     this.player1.playerID = result['playerid'];
                 }
+                console.log('player after request: ');
                 console.log(this.player1);
             },
             (error) => {
@@ -116,9 +134,11 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
         let routeJoinGame = null;
         let routeCreateGame = null;
         let routeWaitingRoom = null;
+        
 
         // only enable routes, if player has already been already created
         if(this.player1){
+
             routeJoinGame = <Route path={`${this.props.match?.path}/joinGame`}>
                                 <JoinGame title={this.props.title} player={this.player1} />
                             </Route>
@@ -129,14 +149,15 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
 
             // TODO: check for {url -> normal user | room-name -> admin}
-            console.log(this.state.room ? 'true' : 'false');
+            console.log('room-state: ' + (this.state.room ? 'tttrueee' : 'ffaaallsseee'));
             if(this.state.room){
                 routeWaitingRoom =  <Route path={`${this.props.match?.path}/waitingRoom`}>
                                         <WaitingRoom title={this.props.title} player={this.player1}/>
                                     </Route>
             }
-
         }
+
+        console.log('join, create-gameRoute: ' + this.joinGameRoute + ", " + this.createGameRoute);
 
         return(
             <Switch>
@@ -171,8 +192,8 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                             <div className="container">
                                 <InputRoom placeholder="Player-Name" handleChange={this.changeInputHandler} />
                                 <div className="buttons">
-                                    <CustomButton id="join" className="green" title="Join Game" onHandle={this.onClickBtn} path={`${this.props.match?.url}/joinGame`} />
-                                    <CustomButton id="create" className="green" title="Create Game" onHandle={this.onClickBtn} path={`${this.props.match?.url}/createGame`} />
+                                    <CustomButton id="join" className="green" title="Join Game" onHandle={this.onClickBtn} path={`${this.props.match?.url}${this.joinGameRoute}`} />
+                                    <CustomButton id="create" className="green" title="Create Game" onHandle={this.onClickBtn} path={`${this.props.match?.url}${this.createGameRoute}`} />
                                     <CustomButton id="test" className="green" title="Test" path={`${this.props.match?.url}/test`} />
                                 </div>  
                             </div>

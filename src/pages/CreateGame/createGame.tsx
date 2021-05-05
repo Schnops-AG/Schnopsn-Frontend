@@ -56,7 +56,7 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
         .then(res => res.json())
         .then(
             (result) => {
-                console.log(result);
+                console.log('result: ' + result);
             },
             (error) => {
                 console.log('error: ' + error);

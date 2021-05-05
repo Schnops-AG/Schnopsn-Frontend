@@ -27,6 +27,7 @@ export class InputRoom extends React.Component<InputRoomType, InputRoomState>{
 
     onChange = (event : React.FormEvent<HTMLInputElement>) =>{
         this.setState({value : event.currentTarget.value});
+        console.log('input: ' + event.currentTarget.value + ", " + this.state.value);
         this.props.handleChange && this.props.handleChange(event.currentTarget.value);
     }
 
