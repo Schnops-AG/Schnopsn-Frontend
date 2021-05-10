@@ -77,8 +77,6 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
     render(){
         const lastPathElement = this.props.match?.path.split("/")[this.props.match?.path.split("/").length - 2];
         const url = this.props.match?.url.split("/")[1]
-        console.log(url + ", " + lastPathElement);
-
 
         return(
             <div className="background-image">

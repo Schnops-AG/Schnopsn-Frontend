@@ -60,6 +60,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
     changeInputHandler = (value: string) =>{
 
         const allowRouting = () =>{
+            console.log('allow-routing?');
             if(this.state.playerName){
                 this.joinGameRoute = '/joinGame';
                 this.createGameRoute = '/createGame';
@@ -67,10 +68,6 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                 this.joinGameRoute = '';
                 this.createGameRoute = '';
             }
-            console.log('playername: ' + this.state.playerName);
-            console.log('value: ' + value);
-            console.log('changing: join, create-gameRoute: ' + this.joinGameRoute + ", " + this.createGameRoute);
-            console.log(this.state);
         }
 
 
@@ -83,31 +80,42 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
         this.setState({room : roomName});
     }
 
+
+
     /**
-     * handler for the buttons
+     * handler for the buttons (join, create)
      * when clicked: the current playerName (-> state) will be used for the post request
      *  that requests the player object
      */
-    onClickBtn = () =>{
+    async onClickBtn(event : React.MouseEvent<HTMLButtonElement>){
+        
         console.log('click');
-
+        console.log('allowed: ' + this.createGameRoute);
+        console.log(event.currentTarget);
+        
         let enteredPlayerName :String = this.state.playerName;
-
+        
         // check if playername was actually entered
         if(enteredPlayerName == null || enteredPlayerName.length === 0){
             console.log("playername is null");
+            event.preventDefault();
+            event.stopPropagation();
+            
             this.player1 = undefined;
             return;
+
         }else{
             this.player1 = {} as Player;
         }
-
+        
+        // prepare request
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ playerName: enteredPlayerName })
         };
-
+        
+        // request
         fetch("http://localhost:8080/api/v1/createPlayer", requestOptions)
         .then(res => res.json())
         .then(
@@ -120,63 +128,46 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                 }
                 console.log('player after request: ');
                 console.log(this.player1);
+
             },
             (error) => {
                 console.log('error: ' + error);
-                this.player1 = {} as Player;
+                this.player1 = undefined;
             }
         )
-    };
+
+        if(!this.player1){
+            console.log('preventing..');
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        
+    }
 
 
     render(){
 
-        let routeJoinGame = null;
-        let routeCreateGame = null;
-        let routeWaitingRoom = null;
+
+        // TODO: (waiting room) check for {url -> normal user | room-name -> admin}
         
-
-        // only enable routes, if player has already been already created
-        if(this.player1){
-
-            routeJoinGame = <Route path={`${this.props.match?.path}/joinGame`}>
-                                <JoinGame title={this.props.title} player={this.player1} />
-                            </Route>
-
-            routeCreateGame =   <Route path={`${this.props.match?.path}/createGame`}>
-                                    <CreateGame title={this.props.title} player={this.player1} gameType={this.props.gameType} changeRoomState={this.changeRoomState} />
-                                </Route>
-
-
-            // TODO: check for {url -> normal user | room-name -> admin}
-            console.log('room-state: ' + (this.state.room ? 'tttrueee' : 'ffaaallsseee'));
-            if(this.state.room){
-                routeWaitingRoom =  <Route path={`${this.props.match?.path}/waitingRoom`}>
-                                        <WaitingRoom title={this.props.title} player={this.player1}/>
-                                    </Route>
-            }
-        }
 
         console.log('join, create-gameRoute: ' + this.joinGameRoute + ", " + this.createGameRoute);
 
         return(
             <Switch>
 
-                {
-                    // Route to JoinGame
-                    routeJoinGame != null && routeJoinGame
-                }
+                <Route path={`${this.props.match?.path}/joinGame`}>
+                    <JoinGame title={this.props.title} player={this.player1 ? this.player1 : {} as Player} />
+                </Route>
 
-                {
-                    // Route to CreateGame
-                    routeCreateGame != null && routeCreateGame
-                }
-                
+                <Route path={`${this.props.match?.path}/createGame`}>
+                    <CreateGame title={this.props.title} player={this.player1 ? this.player1 : {} as Player} gameType={this.props.gameType} changeRoomState={this.changeRoomState} />
+                </Route>
 
-                {
-                    // Route to WaitingRoom
-                    routeWaitingRoom != null && routeWaitingRoom
-                }
+                <Route path={`${this.props.match?.path}/waitingRoom`}>
+                    <WaitingRoom title={this.props.title} player={this.player1 ? this.player1 : {} as Player}/>
+                </Route>
+
  
 
                 {/* Route to test */}
@@ -192,8 +183,8 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                             <div className="container">
                                 <InputRoom placeholder="Player-Name" handleChange={this.changeInputHandler} />
                                 <div className="buttons">
-                                    <CustomButton id="join" className="green" title="Join Game" onHandle={this.onClickBtn} path={`${this.props.match?.url}${this.joinGameRoute}`} />
-                                    <CustomButton id="create" className="green" title="Create Game" onHandle={this.onClickBtn} path={`${this.props.match?.url}${this.createGameRoute}`} />
+                                    <CustomButton id="join" className="green" title="Join Game" onHandle={(e) => this.onClickBtn(e)} path={`${this.props.match?.url}${this.joinGameRoute}`} />
+                                    <CustomButton id="create" className="green" title="Create Game" onHandle={(e) => this.onClickBtn(e)} path={`${this.props.match?.url}${this.createGameRoute}`} />
                                     <CustomButton id="test" className="green" title="Test" path={`${this.props.match?.url}/test`} />
                                 </div>  
                             </div>
