@@ -10,6 +10,7 @@ import { render } from '@testing-library/react';
 import { InputRoom } from '../../components/InputRoom/inputRoom';
 import { CardTest } from '../CardTest/cardTest';
 import { join } from 'node:path';
+import { Game } from '../../models/game';
 
 type StartGameProps = {
     title: string,
@@ -46,6 +47,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
     player1?: Player = undefined;
     joinGameRoute = '';
     createGameRoute = '';
+    game?: Game = undefined;
 
 
     constructor(props: StartGameProps){
@@ -76,8 +78,8 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
     
 
-    changeRoomState = (roomName: string) =>{
-        this.setState({room : roomName});
+    changeRoomState = (room: string) =>{
+        this.setState({room : room});
     }
 
 
@@ -157,7 +159,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
             <Switch>
 
                 <Route path={`${this.props.match?.path}/joinGame`}>
-                    <JoinGame title={this.props.title} player={this.player1 ? this.player1 : {} as Player} />
+                    <JoinGame title={this.props.title} player={this.player1 ? this.player1 : {} as Player} gameID={this.game ? this.game.gameID : ''} changeRoomState={this.changeRoomState} />
                 </Route>
 
                 <Route path={`${this.props.match?.path}/createGame`}>
