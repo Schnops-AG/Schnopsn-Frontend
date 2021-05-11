@@ -27,6 +27,8 @@ export function CreateGame(props: CreateGameProps) :JSX.Element {
 
 export class CreateGameUI extends React.Component<CreateGameProps, CreateGameState> {
 
+    waitingRoomRoute?: string = '';
+
     constructor(props: CreateGameProps){
         super(props);
         this.state = {player: props.player, roomName: ''};
@@ -44,6 +46,11 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
     }
 
     makeRequest = () =>{
+
+        // TODO check
+
+
+
         const requestOptions = {
             method: 'POST'
         };
@@ -64,7 +71,12 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
         )
     }
 
-    onClickButton = () =>{
+    async onClickButton(event : React.MouseEvent<HTMLButtonElement>){
+        console.log('TODO: onClickButton (createGame.tsx)');
+
+        // TODO
+        event.preventDefault();
+        event.stopPropagation();
         
         let enteredRoomName = this.state.roomName;
         if(enteredRoomName){
@@ -76,7 +88,8 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
 
     render(){
         const lastPathElement = this.props.match?.path.split("/")[this.props.match?.path.split("/").length - 2];
-        const url = this.props.match?.url.split("/")[1]
+        const url = this.props.match?.url.split("/")[1] + "/";
+        console.log("url: " + url);
 
         return(
             <div className="background-image">
@@ -84,7 +97,7 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
                 <h1>{this.props.title}</h1>
                 <div className="buttons">
                     <InputRoom placeholder="Enter Room Name" handleChange={this.changeInputHandler}/>
-                    <CustomButton className="green" title="Create Game" onHandle={this.onClickButton} path={url + ""}/>
+                    <CustomButton className="green" title="Create Game" onHandle={(e) => this.onClickButton(e)} path={url + this.waitingRoomRoute}/>
                 </div>  
                 </div>
             </div>
