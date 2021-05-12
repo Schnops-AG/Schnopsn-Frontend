@@ -91,7 +91,6 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
      */
     async onClickBtn(event : React.MouseEvent<HTMLButtonElement>){
         
-        console.log('click');
         console.log('allowed: ' + this.createGameRoute);
         console.log(event.currentTarget);
         
@@ -152,9 +151,6 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
         // TODO: (waiting room) check for {url -> normal user | room-name -> admin}
         
-
-        console.log('join, create-gameRoute: ' + this.joinGameRoute + ", " + this.createGameRoute);
-
         return(
             <Switch>
 

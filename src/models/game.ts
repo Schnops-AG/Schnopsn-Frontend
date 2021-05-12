@@ -4,10 +4,10 @@ export interface Game{
     gameID: string,
     gameType: string,
     players: Player[],
-    inviteUrl: string,
+    inviteLink: string,
     currentTrump: string,
     maxNumberOfPlayers: number,
-    teams: any,
+    teams: any, // TODO
     currentHighestCall: any
 }
 
