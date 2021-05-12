@@ -1,18 +1,20 @@
 import { resolve } from 'node:path';
 import React from 'react'
 import {
-  Link, match, useRouteMatch
+  Link, match, useHistory, useRouteMatch
 } from "react-router-dom";
 import { CustomButton } from '../../components/Button/button';
 import { InputRoom } from '../../components/InputRoom/inputRoom';
 import { Game } from '../../models/game';
 import { Player } from '../../models/player';
+import { History } from 'history';
 
 type CreateGameProps = {
   title: string,
   player: Player,
   gameType: string,
   match?: match<{}>,
+  history?: History,
 
   changeRoomState: (roomName: string) => void
 }
@@ -24,7 +26,8 @@ type CreateGameState = {
 
 export function CreateGame(props: CreateGameProps) :JSX.Element {
     const match = useRouteMatch();
-    return (<CreateGameUI match={match} {...props}></CreateGameUI>)
+    const history = useHistory();
+    return (<CreateGameUI match={match} history={history} {...props}></CreateGameUI>)
 }
 
 export class CreateGameUI extends React.Component<CreateGameProps, CreateGameState> {
@@ -81,6 +84,7 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
             },
             (error) => {
                 console.log('error: ' + error);
+                this.game = {} as Game;
             }
         )
         return response;
@@ -92,6 +96,9 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
      * @returns an empty promise
      */
     async onClickButton(event : React.MouseEvent<HTMLButtonElement>) :Promise<void>{
+        event.preventDefault();
+        event.stopPropagation();
+
         // check if game has already been created
         if(this.game){
             return;
@@ -102,13 +109,14 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
         if(this.state.roomName){
             await this.makeRequest(); // waits for the request to finish
         }
-        
+
 
         // check if game creation was successful (if not: prevent propagation)
-        if(!this.game){
-            console.log('createGame: preventing ...');
-            event.preventDefault();
-            event.stopPropagation();
+        if(this.game){
+            console.log('redirect to waiting room');
+
+            // redirects to the waiting room
+            this.props.history?.push('waitingRoom');
         }
     }
 

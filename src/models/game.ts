@@ -11,6 +11,10 @@ export interface Game{
     currentHighestCall: any
 }
 
+export class Game implements Game{
+    
+}
+
 
 //     private UUID gameid;
 //     private GameType gameType;
