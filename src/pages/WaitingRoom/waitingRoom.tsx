@@ -1,9 +1,10 @@
+import './waitingRoom.scss';
 import React from 'react'
 import {
   Link, match, useParams, useRouteMatch
 } from "react-router-dom";
 import { CustomButton } from '../../components/Button/button';
-import { InputRoom } from '../../components/InputRoom/inputRoom';
+import { CustomInput } from '../../components/CustomInput/customInput';
 import { Game } from '../../models/game';
 import { Player } from '../../models/player';
 
@@ -28,32 +29,50 @@ export function WaitingRoom({title, player, match, game}: WaitingRoomProps): JSX
     const parts = link.split('/');
     const path = parts[parts.length - 1];
 
+
+
+    const startButton :JSX.Element = 
+        <CustomButton 
+            title="Start Game"
+            className="green"
+            path="/"
+        ></CustomButton>
+
     
 
     return(
         <div className="background-image">
-          <div className="background-gradient">
-            <h1>{title}</h1>
-            <h2>waiting for others to join</h2>
-            <div className="buttons">
-                <InputRoom placeholder="Enter Name"/>
-                <CustomButton className="green" title="Start Game" path={path} />
+            <div className="background-gradient">
+                <h1>{title}</h1>
+                <div className="waitingRoom">
+                    <h2>waiting for others to join ...</h2>
+                    <div className="invite">
+                        <span className="inviteOthers">Invite Others:</span>
+                        <CustomInput 
+                            className="invitationLink" 
+                            placeholder="" 
+                            value={game.inviteLink}
+                            disabled={true}/>
+                    </div>
+                    <p>admin? {player.isAdmin? 'true' : 'false'}</p>  
+
+                    {
+                        player.isAdmin 
+                        ? 
+                            <div>
+                                <h3>you are admin</h3>
+                                <p>is really Admin? {JSON.stringify(player)}</p>
+                            </div>
+                        :
+                            <div>Test</div>
+
+                    }
+
+
+                </div>
+            
+
             </div>
-            <p>admin? {player.isAdmin? 'true' : 'false'}</p>  
-
-            {
-              player.isAdmin 
-                ? 
-                  <div>
-                    <h3>you are admin</h3>
-                    <p>is really Admin? {JSON.stringify(player)}</p>
-                  </div>
-                :
-                  <div>Test</div>
-
-            }
-
-          </div>
         </div>
     )
 }

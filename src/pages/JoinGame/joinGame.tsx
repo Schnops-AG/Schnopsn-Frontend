@@ -3,7 +3,7 @@ import {
   Link, useRouteMatch, match, useHistory
 } from "react-router-dom";
 import { CustomButton } from '../../components/Button/button';
-import { InputRoom } from '../../components/InputRoom/inputRoom';
+import { CustomInput } from '../../components/CustomInput/customInput';
 import { Game } from '../../models/game';
 import { Player } from '../../models/player';
 import { History } from 'history';
@@ -47,11 +47,6 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
         this.props.changeRoomState(this.state.roomUrl);
         this.waitingRoomRoute = value ? 'waitingRoom' : '';
     }
-
-    setAdmin = (player: Player) =>{
-        player.isAdmin = false;
-    }
-
 
     makeRequest() :Promise<void>{
         // "http://localhost:8080/e4e1dbcb-8293-4471-af51-8aa28e15b4f6"
@@ -148,9 +143,18 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
             <div className="background-image">
                 <div className="background-gradient">
                 <h1>{this.props.title}</h1>
-                <div className="buttons">
-                    <InputRoom placeholder="Enter Room URL" handleChange={this.changeInputHandler}/>
-                    <CustomButton className="green" title="Join Game" onHandle={(e) => this.onClickButton(e)} path={`${this.waitingRoomRoute}`}/>
+                <div className="create-join">
+                    <CustomInput 
+                        className="input-room" 
+                        placeholder="Enter Room URL" 
+                        handleChange={this.changeInputHandler}
+                    />
+                    <CustomButton 
+                        className="green" 
+                        title="Join Game" 
+                        onHandle={(e) => this.onClickButton(e)} 
+                        path={`${this.waitingRoomRoute}`}
+                    />
                 </div>  
                 </div>
             </div>

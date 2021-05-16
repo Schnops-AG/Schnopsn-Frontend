@@ -1,12 +1,15 @@
 import React from 'react'
-import './inputRoom.scss'
+import './customInput.scss'
 import {
   Link
 } from "react-router-dom";
 
 type InputRoomType = {
-  placeholder: string,
-  handleChange?: (value: string) => void
+    placeholder: string,
+    value?: string,
+    disabled?: boolean,
+    className: string,
+    handleChange?: (value: string) => void
 }
 
 type InputRoomState = {
@@ -14,7 +17,7 @@ type InputRoomState = {
 }
 
 // Create button
-export class InputRoom extends React.Component<InputRoomType, InputRoomState>{
+export class CustomInput extends React.Component<InputRoomType, InputRoomState>{
 
     constructor(props: InputRoomType){
         super(props);
@@ -32,7 +35,14 @@ export class InputRoom extends React.Component<InputRoomType, InputRoomState>{
 
     render(){
         return(
-            <input className="input-field" type="text"  onChange={this.onChange} placeholder={this.props.placeholder}></input>
+            <input 
+                className={`input-field ${this.props.className}`} 
+                type="text"  onChange={this.onChange} 
+                placeholder={this.props.placeholder}
+                value={this.props.value ? this.props.value : this.state.value}
+                disabled={this.props.disabled}
+            >
+            </input>
         )
 
     }

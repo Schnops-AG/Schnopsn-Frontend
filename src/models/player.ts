@@ -1,5 +1,5 @@
 export interface Player{
-    playername: string,
+    playerName: string,
     playerID: string,
     caller: boolean,
     active: boolean,

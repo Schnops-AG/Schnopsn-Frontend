@@ -5,3 +5,46 @@
     font-family: 'Gorditas', cursive;
 }
 
+.waitingRoom{
+    width: 100%;
+    margin-top: 50px;
+
+    h2{
+        margin-top: 100px;
+        margin-bottom: 150px;
+    }
+
+    .invite{
+        width: 80%;
+        margin: 0 auto;
+        margin-bottom: 50px;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    
+        .inviteOthers{
+            font-size: 24pt;
+            flex: 1;
+        }
+
+        .invitationLink{
+            height: 80px;
+            flex: 3;
+            overflow: auto;
+            color: $davysGrey;
+
+            &:hover{
+                cursor: text;
+            }
+
+            &::selection{
+                background-color: $davysGrey;
+                color: $beige;
+            }
+        }
+    }
+}
+
+

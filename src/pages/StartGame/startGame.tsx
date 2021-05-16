@@ -7,7 +7,7 @@ import { CreateGame } from '../CreateGame/createGame';
 import { WaitingRoom } from '../WaitingRoom/waitingRoom';
 import { Player } from '../../models/player';
 import { render } from '@testing-library/react';
-import { InputRoom } from '../../components/InputRoom/inputRoom';
+import { CustomInput } from '../../components/CustomInput/customInput';
 import { CardTest } from '../CardTest/cardTest';
 import { join } from 'node:path';
 import { Game } from '../../models/game';
@@ -112,6 +112,8 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
         }else{
             this.player1 = {} as Player;
         }
+
+        console.log(enteredPlayerName);
         
         // prepare request
         const requestOptions = {
@@ -126,7 +128,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
         .then(
             (result) => {
                 if(this.player1 != undefined){
-                    this.player1.playername = result['playername'];
+                    this.player1.playerName = result['playerName'];
                     this.player1.active = result['active'];
                     this.player1.caller = result['caller'];
                     this.player1.playerID = result['playerID'];
@@ -193,7 +195,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                         <div className="background-gradient">
                             <h1>{this.props.title}</h1>
                             <div className="container">
-                                <InputRoom placeholder="Player-Name" handleChange={this.changeInputHandler} />
+                                <CustomInput className="" placeholder="Player-Name" handleChange={this.changeInputHandler} />
                                 <div className="buttons">
                                     <CustomButton id="join" className="green" title="Join Game" onHandle={(e) => this.onClickBtn(e)} path={`${this.props.match?.url}${this.joinGameRoute}`} />
                                     <CustomButton id="create" className="green" title="Create Game" onHandle={(e) => this.onClickBtn(e)} path={`${this.props.match?.url}${this.createGameRoute}`} />

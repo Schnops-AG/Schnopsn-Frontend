@@ -4,7 +4,7 @@ import {
   Link, match, useHistory, useRouteMatch
 } from "react-router-dom";
 import { CustomButton } from '../../components/Button/button';
-import { InputRoom } from '../../components/InputRoom/inputRoom';
+import { CustomInput } from '../../components/CustomInput/customInput';
 import { Game } from '../../models/game';
 import { Player } from '../../models/player';
 import { History } from 'history';
@@ -52,9 +52,6 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
 
     }
 
-    setAdmin = (player: Player) =>{
-        player.isAdmin = true;
-    }
 
     /**
      * this method makes the actual request
@@ -131,11 +128,11 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
         return(
             <div className="background-image">
                 <div className="background-gradient">
-                <h1>{this.props.title}</h1>
-                <div className="buttons">
-                    <InputRoom placeholder="Enter Room Name" handleChange={this.changeInputHandler}/>
-                    <CustomButton className="green" title="Create Room" onHandle={(e) => this.onClickButton(e)} path={`${this.waitingRoomRoute}`}/>
-                </div>  
+                    <h1>{this.props.title}</h1>
+                    <div className="create-join">
+                        <CustomInput className="input-room" placeholder="Enter Room Name" handleChange={this.changeInputHandler}/>
+                        <CustomButton className="green" title="Create Room" onHandle={(e) => this.onClickButton(e)} path={`${this.waitingRoomRoute}`}/>
+                    </div>  
                 </div>
             </div>
         )

@@ -6,19 +6,21 @@
 }
 
 .input-field{
-    padding: 0;
     width: 550px;
     height: 100px;
+
     border: none;
     border-bottom: 7px solid $darkBrown;
     outline: none;
     border-collapse: collapse;
-    margin-right: 40px;
     border-radius: 8px;
-    background-color: $beige;
     box-sizing: border-box;
-    font-size: 30px;
+
+    background-color: $beige;
+
     padding: 0px 20px 0px 20px;
+
+    font-size: 30px;
 
     &::placeholder{
         font-size: 20pt;
@@ -27,4 +29,11 @@
     &:focus{
         box-shadow: 2px 2px 10px $darkBrown;
     }
+}
+
+.input-room{
+    width: 550px;
+    height: 100px;
+    
+    margin-right: 50px;
 }
