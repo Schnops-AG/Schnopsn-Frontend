@@ -82,6 +82,10 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
         this.setState({room : room});
     }
 
+    setGame = (game: Game) =>{
+        this.game = game;
+    }
+
 
 
     /**
@@ -125,7 +129,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                     this.player1.playername = result['playername'];
                     this.player1.active = result['active'];
                     this.player1.caller = result['caller'];
-                    this.player1.playerID = result['playerid'];
+                    this.player1.playerID = result['playerID'];
                 }
                 console.log('player after request: ');
                 console.log(this.player1);
@@ -149,22 +153,32 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
     render(){
 
 
-        // TODO: (waiting room) check for {url -> normal user | room-name -> admin}
-        
         return(
             <Switch>
 
+                
                 <Route path={`${this.props.match?.path}/joinGame`}>
-                    <JoinGame title={this.props.title} player={this.player1 ? this.player1 : {} as Player} gameID={this.game ? this.game.gameID : ''} changeRoomState={this.changeRoomState} />
+                    <JoinGame 
+                        title={this.props.title} 
+                        player={this.player1 ? this.player1 : {} as Player} 
+                        gameID={this.game ? this.game.gameID : ''}
+                        setGame={this.setGame} 
+                        changeRoomState={this.changeRoomState} />
                 </Route>
 
                 <Route path={`${this.props.match?.path}/createGame`}>
-                    <CreateGame title={this.props.title} player={this.player1 ? this.player1 : {} as Player} gameType={this.props.gameType} changeRoomState={this.changeRoomState} />
+                    <CreateGame 
+                        title={this.props.title} 
+                        player={this.player1 ? this.player1 : {} as Player} 
+                        gameType={this.props.gameType} 
+                        setGame={this.setGame}
+                        changeRoomState={this.changeRoomState} />
                 </Route>
 
                 <Route path={`${this.props.match?.path}/waitingRoom`}>
-                    <WaitingRoom title={this.props.title} player={this.player1 ? this.player1 : {} as Player}/>
+                    <WaitingRoom title={this.props.title} player={this.player1 ? this.player1 : {} as Player} game={this.game ? this.game : {} as Game}/>
                 </Route>
+
 
  
 

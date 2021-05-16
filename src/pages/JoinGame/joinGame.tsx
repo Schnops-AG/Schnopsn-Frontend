@@ -16,7 +16,8 @@ type JoinGameProps = {
   match?: match<{}>,
   history?: History,
 
-  changeRoomState: (roomUrl: string) => void
+  changeRoomState: (roomUrl: string) => void,
+  setGame: (game: Game) => void
 }
 
 type JoinGameState = {
@@ -53,7 +54,22 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
 
 
     makeRequest() :Promise<void>{
-        let gameID :string = this.state.roomUrl; // TODO Bug
+        // "http://localhost:8080/e4e1dbcb-8293-4471-af51-8aa28e15b4f6"
+        
+        let enteredUrl = this.state.roomUrl;
+        let urlParts = enteredUrl.split('/');
+        let gameID = urlParts[urlParts.length - 1];
+        
+        
+        let regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i // regex to match type uuid
+
+        if(gameID.match(regex) == null){
+            console.log('this is not a valid uuid');
+            return Promise.resolve();
+        }
+
+
+
         console.log('request?: ' + gameID);
         if(!gameID || !this.state.player.playerID){
             console.log('request not possible');
@@ -118,14 +134,15 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
         if(this.game){
             console.log('redirect to waiting room');
 
+            // set game --> startGame (for routing)
+            this.props.setGame(this.game);  
+
             // redirects to the waiting room
             this.props.history?.push('waitingRoom');
         }
     }
 
     render(){
-        const lastPathElement = this.props.match?.path.split("/")[this.props.match?.path.split("/").length - 2];
-        const url = this.props.match?.url.split("/")[1]
 
         return(
             <div className="background-image">

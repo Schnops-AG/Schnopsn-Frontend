@@ -16,7 +16,8 @@ type CreateGameProps = {
   match?: match<{}>,
   history?: History,
 
-  changeRoomState: (roomName: string) => void
+  changeRoomState: (roomName: string) => void,
+  setGame: (game: Game) => void
 }
 
 type CreateGameState = {
@@ -114,6 +115,10 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
         // check if game creation was successful (if not: prevent propagation)
         if(this.game){
             console.log('redirect to waiting room');
+            console.log(this.game);
+
+            // set game --> startGame (for routing)
+            this.props.setGame(this.game);  
 
             // redirects to the waiting room
             this.props.history?.push('waitingRoom');
