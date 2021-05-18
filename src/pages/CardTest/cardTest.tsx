@@ -18,8 +18,9 @@ export function CardTest () : JSX.Element{
    deck.shuffle();
     for(let i = 0; i < 5; i++){
         p1.push(<Card className={`card ${deck.cards[i].color}`}  id={i} draggable="true">{deck.cards[i].suit}, {deck.cards[i].value}</Card>);
-        p2.push(<Card className={`card ${deck.cards[i+5].color}`} draggable="true">{deck.cards[i+5].suit}, {deck.cards[i+5].value}</Card>)
+        p2.push(<Card className={`card ${deck.cards[i+5].color}`}  id={i+5} draggable="true">{deck.cards[i+5].suit}, {deck.cards[i+5].value}</Card>);
     }
+
     for(let i = 10; i < deck.cards.length; i++){
         stappel.push(<Card className={`card ${deck.cards[i].color}`} id={i} draggable="true">{deck.cards[i].suit}, {deck.cards[i].value}</Card>);
     }
@@ -30,12 +31,16 @@ export function CardTest () : JSX.Element{
                 <Board id="board-1" className="board">
                     {p1}
                 </Board>
-
                 
+                <div className="middle-line">
+                    <Board id="board-2" className="board left">
+                        <div className="stappel">{stappel}</div>   
+                    </Board>
 
-                <Board id="board-3" className="board">
-                    <div className="stappel">{stappel}</div>   
-                </Board>
+                    <Board id="board-3" className="board right">
+                        
+                    </Board>
+                </div>
 
                 <Board id="board-4" className="board">
                     {p2}

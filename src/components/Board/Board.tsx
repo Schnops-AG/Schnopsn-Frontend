@@ -11,7 +11,11 @@ export default function Board(props : any) {
             card.style.display = 'block';
         }
 
+        console.log('Target Element');
+        console.log(e.target);
+        console.log(card)
         e.target.appendChild(card);
+
 
     }
 

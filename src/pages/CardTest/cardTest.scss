@@ -47,18 +47,37 @@ body{
         
     }
 
-    .stappel{
-        height: 260px;
-        width: 170px;
-        
-        float: left;
+    .middle-line{
+        display: flex;
+        flex-direction: row;
+        height: auto;
+        width: 100%;
         overflow: hidden;
 
-        .card{
-            background-image: url(card_back.png);
-            background-size: cover;
-            background-repeat: no-repeat;
-            color: transparent;
+        .left{
+            width: auto;
+            float: left;
+        }
+
+        .right{
+            width: 100%;
+            float: right;
+        }
+    
+        .stappel{
+            height: 260px;
+            width: auto;
+            float: left;
+            overflow: hidden;
+    
+            .card{
+                background-image: url(card_back.png);
+                background-size: cover;
+                background-repeat: no-repeat;
+                color: transparent;
+            }
         }
     }
+
+    
 }
