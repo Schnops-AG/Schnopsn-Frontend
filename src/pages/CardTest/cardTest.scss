@@ -10,27 +10,74 @@ body{
 
 .flexbox{
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     width: 100%;
-    max-width: 768px;
-    height: 100vh;
+    height: 100%;
     overflow: hidden;
     margin: 0 auto;
-    padding: 15px;
 
     .board{
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         width: 100%;
-        max-width: 300px;
+        height: auto;
         background-color: #313131;
+        margin: 15px;
         padding: 15px;
 
         .card{
-            padding: 15px 25px;
-            background-color: #f3f3f3;
-            cursor: pointer;
-            margin-bottom: 15px;
+            height: 240px;
+            width: 150px;
+            font-size: 24px;
+            background-color: white;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid black;
+            padding: 2px;
+            margin: 10px;
+        }
+
+        .red{
+            color: red;
+        }
+
+        .black{
+            color: black
+        }
+        
+    }
+
+    .middle-line{
+        display: flex;
+        flex-direction: row;
+        height: auto;
+        width: 100%;
+        overflow: hidden;
+
+        .left{
+            width: auto;
+            float: left;
+        }
+
+        .right{
+            width: 100%;
+            float: right;
+        }
+    
+        .stappel{
+            height: 260px;
+            width: auto;
+            float: left;
+            overflow: hidden;
+    
+            .card{
+                background-image: url(card_back.png);
+                background-size: cover;
+                background-repeat: no-repeat;
+                color: transparent;
+            }
         }
     }
+
+    
 }
