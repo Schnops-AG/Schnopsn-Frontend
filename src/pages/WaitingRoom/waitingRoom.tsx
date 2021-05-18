@@ -32,11 +32,14 @@ export function WaitingRoom({title, player, match, game}: WaitingRoomProps): JSX
 
 
     const startButton :JSX.Element = 
-        <CustomButton 
-            title="Start Game"
-            className="green"
-            path="/"
-        ></CustomButton>
+        <div className="startGameButton">
+            <CustomButton 
+                title="Start Game"
+                className="green start disabled"
+                path="/"
+                disabled={true}
+            ></CustomButton>
+        </div>
 
     
 
@@ -54,20 +57,9 @@ export function WaitingRoom({title, player, match, game}: WaitingRoomProps): JSX
                             value={game.inviteLink}
                             disabled={true}/>
                     </div>
-                    <p>admin? {player.isAdmin? 'true' : 'false'}</p>  
+                    <p>admin? {player.admin? 'true' : 'false'}</p>  
 
-                    {
-                        player.isAdmin 
-                        ? 
-                            <div>
-                                <h3>you are admin</h3>
-                                <p>is really Admin? {JSON.stringify(player)}</p>
-                            </div>
-                        :
-                            <div>Test</div>
-
-                    }
-
+                    {player.admin ? startButton : <div></div>}
 
                 </div>
             

@@ -3,5 +3,5 @@ export interface Player{
     playerID: string,
     caller: boolean,
     active: boolean,
-    isAdmin: boolean
+    admin: boolean
 }

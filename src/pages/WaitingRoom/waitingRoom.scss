@@ -45,6 +45,38 @@
             }
         }
     }
+
+    .startGameButton{
+        a{
+            width: 200px;
+            height: 60px;
+        }
+        .start{
+    
+            height: 60px;
+            width: 200px;
+            font-size: 15pt;
+            padding: 0;
+            background-color: $forestGreen;
+
+        }
+
+        .enabled{
+            background-color: $forestGreen;
+        }
+
+        .disabled{
+            background-color: $forestGreenLight;
+            &:hover{
+                background-color: $forestGreenLight;
+                color: $beige;
+                cursor: not-allowed;
+            }
+        }
+
+
+    }
+
 }
 
 

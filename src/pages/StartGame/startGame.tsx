@@ -84,6 +84,15 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
     setGame = (game: Game) =>{
         this.game = game;
+        let index = 0;
+        for(let i = 0; i < this.game.players.length; i++){
+            if(this.player1?.playerID === game.players[i].playerID){
+                index = i;
+            }
+        }
+        if(this.player1){
+            this.player1.admin = this.game.players[index].admin;
+        }
     }
 
 
@@ -119,11 +128,11 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ playerName: enteredPlayerName })
+            // body: JSON.stringify({ playerName: enteredPlayerName })
         };
         
         // request
-        fetch("http://localhost:8080/api/v1/createPlayer", requestOptions)
+        fetch(`http://localhost:8080/api/v1/createPlayer?playerName=${enteredPlayerName}`, requestOptions)
         .then(res => res.json())
         .then(
             (result) => {
@@ -132,6 +141,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                     this.player1.active = result['active'];
                     this.player1.caller = result['caller'];
                     this.player1.playerID = result['playerID'];
+                    this.player1.admin = result['admin'];
                 }
                 console.log('player after request: ');
                 console.log(this.player1);
