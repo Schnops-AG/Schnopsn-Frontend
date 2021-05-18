@@ -31,11 +31,13 @@ export function CardTest () : JSX.Element{
                     {p1}
                 </Board>
 
-                <Board id="board-2" className="board">
-                    {stappel}
-                </Board>
+                
 
                 <Board id="board-3" className="board">
+                    <div className="stappel">{stappel}</div>   
+                </Board>
+
+                <Board id="board-4" className="board">
                     {p2}
                 </Board>
             </main>

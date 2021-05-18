@@ -46,4 +46,19 @@ body{
         }
         
     }
+
+    .stappel{
+        height: 260px;
+        width: 170px;
+        
+        float: left;
+        overflow: hidden;
+
+        .card{
+            background-image: url(card_back.png);
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: transparent;
+        }
+    }
 }
