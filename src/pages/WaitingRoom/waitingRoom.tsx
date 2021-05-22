@@ -7,6 +7,7 @@ import { CustomButton } from '../../components/Button/button';
 import { CustomInput } from '../../components/CustomInput/customInput';
 import { Game } from '../../models/game';
 import { Player } from '../../models/player';
+import { CustomWebSocket } from '../../utils/websocket';
 
 type WaitingRoomProps = {
     title?: string,
@@ -30,6 +31,11 @@ export function WaitingRoom({title, player, match, game}: WaitingRoomProps): JSX
     const path = parts[parts.length - 1];
 
 
+    
+    const webSocket: CustomWebSocket = new CustomWebSocket();
+    // webSocket.connect();
+    // webSocket.disconnect();
+
 
     const startButton :JSX.Element = 
         <div className="startGameButton">
@@ -40,6 +46,8 @@ export function WaitingRoom({title, player, match, game}: WaitingRoomProps): JSX
                 disabled={true}
             ></CustomButton>
         </div>
+
+        
 
     
 
@@ -62,6 +70,9 @@ export function WaitingRoom({title, player, match, game}: WaitingRoomProps): JSX
                     {player.admin ? startButton : <div></div>}
 
                 </div>
+                <button onClick={(e) => webSocket.disconnect()}>disconnect</button>
+                <button onClick={(e) => webSocket.connect()}>connect</button>
+                <button onClick={(e) => webSocket.sendMessage('clicked button')}>send</button>
             
 
             </div>
