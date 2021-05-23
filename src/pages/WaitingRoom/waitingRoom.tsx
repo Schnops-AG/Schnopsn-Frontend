@@ -71,7 +71,7 @@ export function WaitingRoom({title, player, match, game}: WaitingRoomProps): JSX
 
                 </div>
                 <button onClick={(e) => webSocket.disconnect()}>disconnect</button>
-                <button onClick={(e) => webSocket.connect()}>connect</button>
+                {/* <button onClick={(e) => webSocket.connect()}>connect</button> */}
                 <button onClick={(e) => webSocket.sendMessage('clicked button')}>send</button>
             
 
