@@ -1,26 +1,30 @@
 import { Player } from "./player";
+import { Team } from "./team";
 
 export interface Game{
     gameID: string,
     gameType: string,
-    players: Player[],
     inviteLink: string,
+    
+    // players: Player[],
+
     currentTrump: string,
     maxNumberOfPlayers: number,
-    teams: any, // TODO
-    currentHighestCall: any
+    
+    teams: Team[],
+    currentHighestCall: any // TODO
+    
 }
 
 export class Game implements Game{
     
 }
 
-
-//     private UUID gameid;
-//     private GameType gameType;
-//     private List<Player> players;
-//     private URL inviteLink;
-//     private Color currentTrump;
-//     private int maxNumberOfPlayers;
-//     private Team[] teams;
-//     private Call currentHighestCall;
+// private UUID gameID;
+// private GameType gameType;
+// private URL inviteLink;
+// private Color currentTrump;
+// private int maxNumberOfPlayers;
+// private List<Team> teams;
+// private Call currentHighestCall;
+// private Map<Player,Card> playedCards;

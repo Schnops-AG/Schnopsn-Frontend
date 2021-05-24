@@ -16,6 +16,10 @@ type WaitingRoomProps = {
     game: Game
 }
 
+type WaitingRoomState = {
+    
+}
+
 type WaitingRoomRouteParams = {
     roomID: string
 }
@@ -78,4 +82,11 @@ export function WaitingRoom({title, player, match, game}: WaitingRoomProps): JSX
             </div>
         </div>
     )
+}
+
+export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoomState>{
+    constructor(props: WaitingRoomProps){
+        super(props);
+        this.state = {}
+    }
 }

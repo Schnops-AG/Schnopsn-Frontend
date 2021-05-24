@@ -11,6 +11,7 @@ import { CustomInput } from '../../components/CustomInput/customInput';
 import { CardTest } from '../CardTest/cardTest';
 import { join } from 'node:path';
 import { Game } from '../../models/game';
+import { Team } from '../../models/team';
 
 type StartGameProps = {
     title: string,
@@ -84,15 +85,13 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
     setGame = (game: Game) =>{
         this.game = game;
-        let index = 0;
-        for(let i = 0; i < this.game.players.length; i++){
-            if(this.player1?.playerID === game.players[i].playerID){
-                index = i;
+
+        // set admin status of player
+        this.game?.teams.forEach((team :Team) => team.players.forEach((player :Player) =>{
+            if(this.player1?.playerID == player.playerID){
+                this.player1.admin = player.admin;
             }
-        }
-        if(this.player1){
-            this.player1.admin = this.game.players[index].admin;
-        }
+        }))
     }
 
 
