@@ -63,6 +63,11 @@
 
         .enabled{
             background-color: $forestGreen;
+            &:hover{
+                background-color: $forestGreenLight;
+                color: $beige;
+                cursor: pointer;
+            }
         }
 
         .disabled{

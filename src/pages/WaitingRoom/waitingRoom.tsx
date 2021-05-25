@@ -18,7 +18,8 @@ type WaitingRoomProps = {
 }
 
 type WaitingRoomState = {
-    
+    activeMembers: string[],
+    readyToStart: boolean
 }
 
 type WaitingRoomRouteParams = {
@@ -35,10 +36,6 @@ export function WaitingRoom(props: WaitingRoomProps): JSX.Element {
     const parts = link.split('/');
     const path = parts[parts.length - 1];
 
-
-    
-    
-
     return(
         <WaitingRoomUI match={match} {...props}></WaitingRoomUI>
     )
@@ -47,18 +44,49 @@ export function WaitingRoom(props: WaitingRoomProps): JSX.Element {
 export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoomState>{
     constructor(props: WaitingRoomProps){
         super(props);
-        this.state = {}
+        this.state = {activeMembers : this.extractMembersFromGame(), readyToStart : false};
+
+
+
+        if(this.props.webSocket){
+            this.props.webSocket.onReceiveMessage = this.onUpdateMembers;
+            this.props.webSocket.waitingRoomContext = this;
+        }
     }
 
+    extractMembersFromGame(): string[]{
+        const players: string[][] = this.props.game.teams.map((team) => team.players.map((player) => player.playerName));
+        console.log('players: ', players);
+        return ([] as string[]).concat(...players);
+    }
+
+    onUpdateMembers(event: MessageEvent, waitingRoomContext: WaitingRoomUI): void{
+        console.log('update?');
+        console.log(event.data);
+
+        let names: string[] = event.data.split(';');
+        names = names.filter((name) => name); // eliminate empty elements
+
+
+        // set to state --> rerender
+        const readyToStart: boolean = (names.length === waitingRoomContext.props.game.maxNumberOfPlayers);
+        waitingRoomContext.setState({activeMembers : names, readyToStart: readyToStart}); // update members, readyToStart state
+
+        console.log('ready after update?', readyToStart);
+    }
+
+
     render(){
+
+        console.log('ready?', this.state.readyToStart);
 
         const startButton :JSX.Element = 
         <div className="startGameButton">
             <CustomButton 
                 title="Start Game"
-                className="green start disabled"
+                className={`green start ${this.state.readyToStart ? 'enabled' : 'disabled'}`}
                 path="/"
-                disabled={true}
+                disabled={!this.state.readyToStart}
             ></CustomButton>
         </div>
 
@@ -79,6 +107,14 @@ export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoom
                         <p>admin? {this.props.player.admin? 'true' : 'false'}</p>  
     
                         {this.props.player.admin ? startButton : <div></div>}
+
+                        <div className="members">
+                            {
+                                this.state.activeMembers.map((member) =>(
+                                    <p className="member" key={member}>{member}</p>
+                                ))
+                            }
+                        </div>
     
                     </div>
                 </div>

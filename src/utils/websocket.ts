@@ -1,3 +1,4 @@
+import { WaitingRoomUI } from "../pages/WaitingRoom/waitingRoom";
 
 const DEFAULT_URL = 'ws://localhost:8080/schnopsn'
 
@@ -6,8 +7,10 @@ export class CustomWebSocket{
     webSocket: WebSocket;
 
     playerID: string;
+    waitingRoomContext?: WaitingRoomUI;
 
-    onReceiveMessage?: (event: MessageEvent) => void;
+
+    onReceiveMessage?: (event: MessageEvent, waitingRoomContext: WaitingRoomUI) => void;
 
 
     constructor(playerID: string, url: string = DEFAULT_URL){
@@ -26,8 +29,8 @@ export class CustomWebSocket{
         console.log('receiving a message: ');
         console.log(event.data);
         
-        if(this.onReceiveMessage){
-            this.onReceiveMessage(event);
+        if(this.onReceiveMessage && this.waitingRoomContext){
+            this.onReceiveMessage(event, this.waitingRoomContext);
         }
     }
 
