@@ -146,6 +146,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                     this.player1.admin = result['admin'];
 
                     // start websocket
+                    console.log(this.player1.playerID);
                     this.webSocket = new CustomWebSocket(this.player1.playerID);
 
                 }
@@ -194,7 +195,11 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                 </Route>
 
                 <Route path={`${this.props.match?.path}/waitingRoom`}>
-                    <WaitingRoom title={this.props.title} player={this.player1 ? this.player1 : {} as Player} game={this.game ? this.game : {} as Game}/>
+                    <WaitingRoom title={this.props.title} 
+                        player={this.player1 ? this.player1 : {} as Player} 
+                        game={this.game ? this.game : {} as Game}
+                        webSocket={this.webSocket}
+                    />
                 </Route>
 
 

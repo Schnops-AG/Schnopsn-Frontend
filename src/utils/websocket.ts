@@ -7,6 +7,8 @@ export class CustomWebSocket{
 
     playerID: string;
 
+    onReceiveMessage?: (event: MessageEvent) => void;
+
 
     constructor(playerID: string, url: string = DEFAULT_URL){
         this.playerID = playerID;
@@ -20,9 +22,13 @@ export class CustomWebSocket{
     }
 
 
-    onReceiveMessage = (event: MessageEvent): void =>{
+    onMessage = (event: MessageEvent): void =>{
         console.log('receiving a message: ');
         console.log(event.data);
+        
+        if(this.onReceiveMessage){
+            this.onReceiveMessage(event);
+        }
     }
 
     onOpen = (event: Event): void => {
@@ -55,7 +61,7 @@ export class CustomWebSocket{
         this.webSocket.onopen = this.onOpen;
         this.webSocket.onclose = this.onClose;
         this.webSocket.onerror = this.onError;
-        this.webSocket.addEventListener('message', this.onReceiveMessage);
+        this.webSocket.addEventListener('message', this.onMessage);
     }
     
 

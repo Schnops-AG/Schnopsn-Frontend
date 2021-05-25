@@ -13,7 +13,8 @@ type WaitingRoomProps = {
     title?: string,
     player: Player,
     match?: match<{}>,
-    game: Game
+    game: Game,
+    webSocket?: CustomWebSocket
 }
 
 type WaitingRoomState = {
@@ -25,23 +26,33 @@ type WaitingRoomRouteParams = {
 }
 
 // Create button
-export function WaitingRoom({title, player, match, game}: WaitingRoomProps): JSX.Element {
+export function WaitingRoom(props: WaitingRoomProps): JSX.Element {
 
-    match = useRouteMatch();
+    const match = useRouteMatch();
     console.log('waitingroom');
-    console.log(game);
-    const link :string = game.inviteLink;
+    console.log(props.game);
+    const link :string = props.game.inviteLink;
     const parts = link.split('/');
     const path = parts[parts.length - 1];
 
 
     
-    // const webSocket: CustomWebSocket = new CustomWebSocket();
-    // webSocket.connect();
-    // webSocket.disconnect();
+    
 
+    return(
+        <WaitingRoomUI match={match} {...props}></WaitingRoomUI>
+    )
+}
 
-    const startButton :JSX.Element = 
+export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoomState>{
+    constructor(props: WaitingRoomProps){
+        super(props);
+        this.state = {}
+    }
+
+    render(){
+
+        const startButton :JSX.Element = 
         <div className="startGameButton">
             <CustomButton 
                 title="Start Game"
@@ -51,42 +62,27 @@ export function WaitingRoom({title, player, match, game}: WaitingRoomProps): JSX
             ></CustomButton>
         </div>
 
-        
-
+        return(
+            <div className="background-image">
+                <div className="background-gradient">
+                    <h1>{this.props.title}</h1>
+                    <div className="waitingRoom">
+                        <h2>waiting for others to join ...</h2>
+                        <div className="invite">
+                            <span className="inviteOthers">Invite Others:</span>
+                            <CustomInput 
+                                className="invitationLink" 
+                                placeholder="" 
+                                value={this.props.game.inviteLink}
+                                disabled={true}/>
+                        </div>
+                        <p>admin? {this.props.player.admin? 'true' : 'false'}</p>  
     
-
-    return(
-        <div className="background-image">
-            <div className="background-gradient">
-                <h1>{title}</h1>
-                <div className="waitingRoom">
-                    <h2>waiting for others to join ...</h2>
-                    <div className="invite">
-                        <span className="inviteOthers">Invite Others:</span>
-                        <CustomInput 
-                            className="invitationLink" 
-                            placeholder="" 
-                            value={game.inviteLink}
-                            disabled={true}/>
+                        {this.props.player.admin ? startButton : <div></div>}
+    
                     </div>
-                    <p>admin? {player.admin? 'true' : 'false'}</p>  
-
-                    {player.admin ? startButton : <div></div>}
-
                 </div>
-                {/* <button onClick={(e) => webSocket.disconnect()}>disconnect</button> */}
-                {/* <button onClick={(e) => webSocket.connect()}>connect</button> */}
-                {/* <button onClick={(e) => webSocket.sendMessage('clicked button')}>send</button> */}
-            
-
             </div>
-        </div>
-    )
-}
-
-export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoomState>{
-    constructor(props: WaitingRoomProps){
-        super(props);
-        this.state = {}
+        )
     }
 }
