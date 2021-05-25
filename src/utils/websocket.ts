@@ -5,11 +5,18 @@ export class CustomWebSocket{
     socketUrl = DEFAULT_URL; // ws ... insecure, wss ... secure
     webSocket: WebSocket;
 
+    playerID: string;
 
-    constructor(url: string = DEFAULT_URL){
+
+    constructor(playerID: string, url: string = DEFAULT_URL){
+        this.playerID = playerID;
         this.socketUrl = url;
         this.webSocket = new WebSocket(this.socketUrl);
         this.connect();
+    }
+
+    getReadyState = (): number =>{
+        return this.webSocket.readyState;
     }
 
 
@@ -20,7 +27,7 @@ export class CustomWebSocket{
 
     onOpen = (event: Event): void => {
         console.log('opening..');
-        // this.webSocket.send('hello from client');
+        this.webSocket.send(this.playerID);
     }
 
 
@@ -52,12 +59,11 @@ export class CustomWebSocket{
     }
     
 
-
-
-
-    sendMessage = (msg: string) =>{
-        console.log('sending: ' + msg);
-        this.webSocket.send(msg);
+    async sendMessage (msg: string){
+        if(this.webSocket.readyState === this.webSocket.OPEN){
+            console.log('sending: ' + msg);
+            this.webSocket.send(msg);
+        }
     }
 
 

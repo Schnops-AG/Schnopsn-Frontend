@@ -12,6 +12,7 @@ import { CardTest } from '../CardTest/cardTest';
 import { join } from 'node:path';
 import { Game } from '../../models/game';
 import { Team } from '../../models/team';
+import { CustomWebSocket } from '../../utils/websocket';
 
 type StartGameProps = {
     title: string,
@@ -49,6 +50,8 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
     joinGameRoute = '';
     createGameRoute = '';
     game?: Game = undefined;
+
+    webSocket?: CustomWebSocket;
 
 
     constructor(props: StartGameProps){
@@ -141,6 +144,10 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                     this.player1.caller = result['caller'];
                     this.player1.playerID = result['playerID'];
                     this.player1.admin = result['admin'];
+
+                    // start websocket
+                    this.webSocket = new CustomWebSocket(this.player1.playerID);
+
                 }
                 console.log('player after request: ');
                 console.log(this.player1);
