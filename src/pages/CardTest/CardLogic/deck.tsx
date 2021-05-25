@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { ImgHTMLAttributes } from 'react'
 
-const SUITS = ["♠", "♣", "♥", "♦"];
+const SUITS = ["S","H","C", "D"];
 
 const VALUES = [
     "A",
@@ -12,11 +12,12 @@ const VALUES = [
     // "7",
     // "8",
     // "9",
-    "10",
+    "T",
     "J",
     "Q",
     "K"
 ]
+
 
 export default class Deck{
     cards : Card[];
@@ -46,10 +47,6 @@ class Card{
     constructor(suit : string, value : string){
         this.suit = suit;
         this.value = value;
-    }
-
-    get color(){
-        return this.suit === "♣" || this.suit === "♠" ? 'black' : 'red';
     }
 }
 

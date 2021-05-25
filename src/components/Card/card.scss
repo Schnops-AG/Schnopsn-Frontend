@@ -1,0 +1,58 @@
+*{
+  box-sizing: border-box;
+}
+
+.card{
+    display: flex;
+    flex-direction: column;
+    width:250px;
+    height:390px;
+    background:#CCC5B3;
+    margin: 20px auto;
+    border-radius: 12px;
+    position:relative;
+    overflow:hidden;
+    color:white;
+
+    .mark-up{
+        text-align: start;
+        margin: 20px;
+        font-size: 32px;
+    }
+
+    .mark-down{
+        margin: 20px;
+        font-size: 32px;
+        transform: scaleX(-1);
+    }
+
+    .content{
+        height: 100%;
+        text-align: center;
+
+            h1{
+                padding: 16px;
+                color: black;
+                font-size:60px;
+                line-height:40px;
+                margin:0;
+            }
+            h2{
+                padding: 16px;
+                color: black;
+                margin:0;
+                font-size:36px;
+                line-height:36px;
+            sup{
+                padding: 16px;
+                color: black;
+                font-size:14px;
+            }
+           
+        }
+
+        .dark{
+            color: black;
+        } 
+    }
+}
