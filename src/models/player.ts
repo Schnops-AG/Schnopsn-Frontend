@@ -1,7 +1,11 @@
 export interface Player{
-    playerName: string,
     playerID: string,
+    playerName: string,
     caller: boolean,
+    
+    playsCall?: boolean,
+    playerNumber?: number,
+
     active: boolean,
     admin: boolean
 }

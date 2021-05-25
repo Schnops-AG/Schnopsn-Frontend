@@ -11,6 +11,8 @@ import { CustomInput } from '../../components/CustomInput/customInput';
 import { CardTest } from '../CardTest/cardTest';
 import { join } from 'node:path';
 import { Game } from '../../models/game';
+import { Team } from '../../models/team';
+import { CustomWebSocket } from '../../utils/websocket';
 
 type StartGameProps = {
     title: string,
@@ -49,6 +51,8 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
     createGameRoute = '';
     game?: Game = undefined;
 
+    webSocket?: CustomWebSocket;
+
 
     constructor(props: StartGameProps){
         super(props);
@@ -84,15 +88,13 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
     setGame = (game: Game) =>{
         this.game = game;
-        let index = 0;
-        for(let i = 0; i < this.game.players.length; i++){
-            if(this.player1?.playerID === game.players[i].playerID){
-                index = i;
+
+        // set admin status of player
+        this.game?.teams.forEach((team :Team) => team.players.forEach((player :Player) =>{
+            if(this.player1?.playerID == player.playerID){
+                this.player1.admin = player.admin;
             }
-        }
-        if(this.player1){
-            this.player1.admin = this.game.players[index].admin;
-        }
+        }))
     }
 
 
@@ -142,6 +144,11 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                     this.player1.caller = result['caller'];
                     this.player1.playerID = result['playerID'];
                     this.player1.admin = result['admin'];
+
+                    // start websocket
+                    console.log(this.player1.playerID);
+                    this.webSocket = new CustomWebSocket(this.player1.playerID);
+
                 }
                 console.log('player after request: ');
                 console.log(this.player1);
@@ -188,7 +195,11 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                 </Route>
 
                 <Route path={`${this.props.match?.path}/waitingRoom`}>
-                    <WaitingRoom title={this.props.title} player={this.player1 ? this.player1 : {} as Player} game={this.game ? this.game : {} as Game}/>
+                    <WaitingRoom title={this.props.title} 
+                        player={this.player1 ? this.player1 : {} as Player} 
+                        game={this.game ? this.game : {} as Game}
+                        webSocket={this.webSocket}
+                    />
                 </Route>
 
 
