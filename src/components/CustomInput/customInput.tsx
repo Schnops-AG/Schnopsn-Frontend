@@ -30,14 +30,17 @@ export class CustomInput extends React.Component<InputRoomType, InputRoomState>{
 
     onChange = (event : React.FormEvent<HTMLInputElement>) =>{
         this.setState({value : event.currentTarget.value});
-        this.props.handleChange && this.props.handleChange(event.currentTarget.value);
+        if(this.props.handleChange){
+            this.props.handleChange(event.currentTarget.value);
+        }
     }
 
     render(){
         return(
             <input 
                 className={`input-field ${this.props.className}`} 
-                type="text"  onChange={this.onChange} 
+                type="text"  
+                onChange={this.onChange} 
                 placeholder={this.props.placeholder}
                 value={this.props.value ? this.props.value : this.state.value}
                 disabled={this.props.disabled}

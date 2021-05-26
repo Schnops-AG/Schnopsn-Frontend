@@ -46,8 +46,6 @@ export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoom
         super(props);
         this.state = {activeMembers : this.extractMembersFromGame(), readyToStart : false};
 
-
-
         if(this.props.webSocket){
             this.props.webSocket.onReceiveMessage = this.onUpdateMembers;
             this.props.webSocket.waitingRoomContext = this;
