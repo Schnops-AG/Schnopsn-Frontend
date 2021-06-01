@@ -13,6 +13,7 @@ import { join } from 'node:path';
 import { Game } from '../../models/game';
 import { Team } from '../../models/team';
 import { CustomWebSocket } from '../../utils/websocket';
+import { Playground } from '../Playground/playground';
 
 type StartGameProps = {
     title: string,
@@ -81,7 +82,6 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
     }
 
     
-
     changeRoomState = (room: string) =>{
         this.setState({room : room});
     }
@@ -171,10 +171,8 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
     render(){
 
-
         return(
             <Switch>
-
                 
                 <Route path={`${this.props.match?.path}/joinGame`}>
                     <JoinGame 
@@ -202,7 +200,10 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                     />
                 </Route>
 
-
+                {/* Route to lobby */}
+                <Route path={`${this.props.match?.path}/play`}>
+                    <Playground />
+                </Route>
  
 
                 {/* Route to test */}

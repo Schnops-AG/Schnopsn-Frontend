@@ -31,10 +31,6 @@ export function WaitingRoom(props: WaitingRoomProps): JSX.Element {
 
     const match = useRouteMatch();
     console.log('waitingroom');
-    console.log(props.game);
-    const link :string = props.game.inviteLink;
-    const parts = link.split('/');
-    const path = parts[parts.length - 1];
 
     return(
         <WaitingRoomUI match={match} {...props}></WaitingRoomUI>
@@ -73,17 +69,23 @@ export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoom
         console.log('ready after update?', readyToStart);
     }
 
+    onStartGame(event: React.MouseEvent<HTMLButtonElement>){
+        console.log('starting game...');
+    }
+
 
     render(){
 
         console.log('ready?', this.state.readyToStart);
+        
 
         const startButton :JSX.Element = 
         <div className="startGameButton">
             <CustomButton 
                 title="Start Game"
                 className={`green start ${this.state.readyToStart ? 'enabled' : 'disabled'}`}
-                path="/"
+                path={`./play`}
+                onHandle={this.onStartGame}
                 disabled={!this.state.readyToStart}
             ></CustomButton>
         </div>

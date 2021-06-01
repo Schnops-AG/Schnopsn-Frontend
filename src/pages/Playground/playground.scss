@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Gorditas:wght@700&display=swap');
+@import "./../../style/properties/base";
+
+
+.playground{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%; 
+    justify-content: space-between;
+
+    // todo Wrapper
+    background: url('/assets/img/background_startPage.png'), radial-gradient(50% 50% at 50% 50%, rgba(143, 206, 120, 0.459375) 28.65%, rgba(88, 130, 73, 0.6) 89.06%), rgba(75, 164, 74, 0.6);
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    .opponent{
+        background-color: rgba(233, 162, 69, 0.699);
+        .bummerl{
+            display: flex;
+            flex-direction: column;
+            float: right;
+            margin: 32px 32px 0px 0px;
+    
+            span {
+                font-size: 24px;
+            }
+        }
+    }
+    
+
+    .central{
+        background-color: rgba(184, 233, 69, 0.699);
+        .points{
+            font-size:48px;
+            font-weight:bold;
+
+        }
+    }
+
+    .own{
+        background-color: rgba(79, 250, 250, 0.699);
+    }
+    
+
+}
