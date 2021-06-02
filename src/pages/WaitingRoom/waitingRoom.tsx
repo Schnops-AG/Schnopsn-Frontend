@@ -43,8 +43,7 @@ export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoom
         this.state = {activeMembers : this.extractMembersFromGame(), readyToStart : false};
 
         if(this.props.webSocket){
-            this.props.webSocket.onReceiveMessage = this.onUpdateMembers;
-            this.props.webSocket.waitingRoomContext = this;
+            this.props.webSocket.onReceiveMessage = this.onUpdateMembers.bind(this);
         }
     }
 
@@ -54,7 +53,7 @@ export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoom
         return ([] as string[]).concat(...players);
     }
 
-    onUpdateMembers(event: MessageEvent, waitingRoomContext: WaitingRoomUI): void{
+    onUpdateMembers(event: MessageEvent): void{
         console.log('update?');
         console.log(event.data);
 
@@ -63,8 +62,8 @@ export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoom
 
 
         // set to state --> rerender
-        const readyToStart: boolean = (names.length === waitingRoomContext.props.game.maxNumberOfPlayers);
-        waitingRoomContext.setState({activeMembers : names, readyToStart: readyToStart}); // update members, readyToStart state
+        const readyToStart: boolean = (names.length === this.props.game.maxNumberOfPlayers);
+        this.setState({activeMembers : names, readyToStart: readyToStart}); // update members, readyToStart state
 
         console.log('ready after update?', readyToStart);
     }

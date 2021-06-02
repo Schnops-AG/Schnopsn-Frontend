@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import './playground.scss'
+import Board from '../../components/Board/Board'
 
 type PlayGroundProps = {
     
@@ -19,37 +20,56 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
     render() {
         return (
             <div className="playground">
+                <div className="back">
 
-                {/* Opponent */}
-                <div className="opponent">
                     <div className="bummerl">
-                        <h3>Bummerl:</h3>
+                        <h3>Bummerl</h3>
                         <span>1:3</span>
                     </div>
+
+                    {/* Opponent */}
+                    <div className="opponent">
+                        <div className="card"></div>
+                        <div className="card"></div>
+                        <div className="card"></div>
+                        <div className="card"></div>
+                        <div className="card"></div>
+                    </div>
+
+
+                    <div className="points">
+                        <h3>Spielstand</h3>
+                        <span>1</span>
+                        <span>3</span>
+                    </div>
+
+                    {/* Main Area (Center) */}
+                    <main className="main">
+                        <div className="central">
+                            <Board id="middle" className="board">
+                                <div className="card"></div>
+                                <div className="card"></div>
+                                <div className="card"></div>
+                                <div className="card"></div>
+                                <div className="card"></div>
+                            </Board>
+                        </div>
+
+                        {/* Own Card Area */}
+                        <div className="own">
+                            <Board id="own" className="board">
+                                <div className="card"></div>
+                                <div className="card"></div>
+                                <div className="card"></div>
+                                <div className="card"></div>
+                                <div className="card"></div>
+                            </Board>
+                        </div>
+                    </main>
                     
                 </div>
 
-                {/* Main Area (Center) */}
-                <div className="central">
-                    <h4>Central</h4>
-                    <div className="points">
-                        <div id="opponent" className="points">1</div>
-                        <div id="own" className="points">3</div>
-                    </div>
-                    <div className="mainBoard"></div>
-                    <div className="cardStack">
-                        
-                    </div>
-                </div>
-
-
-                {/* Own Card Area */}
-                <div className="own">
-                    <h4>own</h4>
-                    <div className="playerName">Me</div>
-                    <div className="ownCardBoard"></div>
-                    <div className="tricks"></div>
-                </div>
+                
 
             </div>
         )

@@ -3,44 +3,133 @@
 
 
 .playground{
-    display: flex;
-    flex-direction: column;
+    display: block;
     width: 100%;
     height: 100%; 
-    justify-content: space-between;
+    background: radial-gradient(50% 50% at 50% 50%, rgba(143, 206, 120, 0.459375) 28.65%, rgba(88, 130, 73, 0.6) 89.06%), rgba(75, 164, 74, 0.6);
 
-    // todo Wrapper
-    background: url('/assets/img/background_startPage.png'), radial-gradient(50% 50% at 50% 50%, rgba(143, 206, 120, 0.459375) 28.65%, rgba(88, 130, 73, 0.6) 89.06%), rgba(75, 164, 74, 0.6);
-    background-size: cover;
-    background-repeat: no-repeat;
+    .back{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%; 
+        background: url('/assets/img/background_startPage.png');
+        background-size: cover;
+        background-repeat: no-repeat;
 
-    .opponent{
-        background-color: rgba(233, 162, 69, 0.699);
         .bummerl{
+            padding: 20px;
+            width: 100%;
+            align-items: flex-end;
             display: flex;
             flex-direction: column;
-            float: right;
-            margin: 32px 32px 0px 0px;
-    
+            position: absolute;
+            z-index: 1;
+
             span {
                 font-size: 24px;
             }
         }
-    }
     
+        .opponent{
+            background-color: rgba(233, 162, 69, 0.699);
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
 
-    .central{
-        background-color: rgba(184, 233, 69, 0.699);
-        .points{
-            font-size:48px;
-            font-weight:bold;
+            .card{
+                width: 80px;
+                height: 140px;
+                background-color: white;
+                margin: 20px;
+            }
 
         }
+
+        .points{
+            display: flex;
+            background-color: rgba(236, 110, 236, 0.399);
+            padding: 20px;
+            width: auto;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            position: absolute;
+            top: 0;
+            z-index: 20;
+
+            h3{
+                margin-bottom: 10px;
+            }
+
+            span {
+                width: 100%;
+                font-size: 24px;
+                text-align: center;
+                margin: 0 -16px 0 0;
+            }
+
+        }
+
+        .main{
+            background-color: rgba(117, 117, 108, 0.699);
+            width: 100%;
+
+            display: flex;
+            flex-grow: 1;
+            flex-direction: column;
+            
+
+            
+            .central{
+                height: 50%;
+                background-color: rgba(184, 233, 69, 0.699);
+
+                .board{
+                    min-height: 280px;
+                    background-color: rgba(66, 25, 48, 0.699);
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    align-items: center;
+
+                    .card{
+                        width: 120px;
+                        height: 240px;
+                        background-color: white;
+                        margin: 20px;
+                    }
+                }
+            }
+        
+            .own{
+                background-color: rgba(109, 231, 231, 0.699);
+                height: 50%;
+                
+                .board{
+                    background-color: rgba(66, 25, 48, 0.699);
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    align-items: center;
+
+                    .card{
+                        width: 120px;
+                        height: 240px;
+                        background-color: white;
+                        margin: 20px;
+                    }
+                }
+            }
+
+        }
+        
+    
     }
 
-    .own{
-        background-color: rgba(79, 250, 250, 0.699);
-    }
+    
     
 
 }
