@@ -202,7 +202,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
                 {/* Route to lobby */}
                 <Route path={`${this.props.match?.path}/play`}>
-                    <Playground />
+                    <Playground webSocket={this.webSocket}/>
                 </Route>
  
 

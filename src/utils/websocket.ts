@@ -25,7 +25,6 @@ export class CustomWebSocket{
 
     onMessage = (event: MessageEvent): void =>{
         console.log('receiving a message: ');
-        console.log(event.data);
         
         if(this.onReceiveMessage){
             this.onReceiveMessage(event);

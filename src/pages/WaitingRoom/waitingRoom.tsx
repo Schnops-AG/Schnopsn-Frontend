@@ -1,20 +1,23 @@
 import './waitingRoom.scss';
 import React from 'react'
 import {
-  Link, match, useParams, useRouteMatch
+  Link, match, useHistory, useParams, useRouteMatch
 } from "react-router-dom";
 import { CustomButton } from '../../components/Button/button';
 import { CustomInput } from '../../components/CustomInput/customInput';
 import { Game } from '../../models/game';
 import { Player } from '../../models/player';
 import { CustomWebSocket } from '../../utils/websocket';
+import { Message } from '../../models/message';
+import { History } from 'history';
 
 type WaitingRoomProps = {
     title?: string,
     player: Player,
     match?: match<{}>,
     game: Game,
-    webSocket?: CustomWebSocket
+    webSocket?: CustomWebSocket,
+    history?: History
 }
 
 type WaitingRoomState = {
@@ -30,36 +33,69 @@ type WaitingRoomRouteParams = {
 export function WaitingRoom(props: WaitingRoomProps): JSX.Element {
 
     const match = useRouteMatch();
+    const history = useHistory();
     console.log('waitingroom');
 
     return(
-        <WaitingRoomUI match={match} {...props}></WaitingRoomUI>
+        <WaitingRoomUI match={match} history={history} {...props}></WaitingRoomUI>
     )
 }
 
 export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoomState>{
+    
     constructor(props: WaitingRoomProps){
         super(props);
         this.state = {activeMembers : this.extractMembersFromGame(), readyToStart : false};
 
         if(this.props.webSocket){
-            this.props.webSocket.onReceiveMessage = this.onUpdateMembers.bind(this);
+
+            // set handler for receiving messages from websocket
+            this.props.webSocket.onReceiveMessage = this.onReceiveMessage.bind(this);
         }
     }
 
+    /**
+     * a helper function, used to initially merge all players of the game into the 
+     * list of activeMembers
+     * @returns 
+     */
     extractMembersFromGame(): string[]{
         const players: string[][] = this.props.game.teams.map((team) => team.players.map((player) => player.playerName));
         console.log('players: ', players);
         return ([] as string[]).concat(...players);
     }
 
-    onUpdateMembers(event: MessageEvent): void{
+    /**
+     * handler for messages from the websocket
+     * @param event 
+     */
+    onReceiveMessage(event: MessageEvent): void{
+        let message :Message = JSON.parse(event.data);
+
+        // if another player joins into the room -> receive list of "waiting" members
+        if(message.type === 'join'){
+            let names :string[] = message.data.split(';');
+            this.onUpdateMembers(names);
+        }
+
+        // forward to playground
+        if(message.type === 'forward'){
+            this.props.history?.push(message.data); // forward to /play
+        }
+
+
+    }
+
+    /**
+     * will be called if new members join the room; 
+     * displays all actively "waiting" members 
+     *  (by updating the state 'activeMembers' which rerenders the page)
+     * @param names list of names received from the websocket
+     */
+    onUpdateMembers = (names :string[]) =>{
         console.log('update?');
-        console.log(event.data);
 
-        let names: string[] = event.data.split(';');
         names = names.filter((name) => name); // eliminate empty elements
-
 
         // set to state --> rerender
         const readyToStart: boolean = (names.length === this.props.game.maxNumberOfPlayers);
@@ -68,8 +104,29 @@ export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoom
         console.log('ready after update?', readyToStart);
     }
 
-    onStartGame(event: React.MouseEvent<HTMLButtonElement>){
+    /**
+     * onClick handler for the 'StartGame' button (only for the admin)
+     * makes a request to start the game --> /startRound2erSchnopsn
+     */
+    onStartGame = (event: React.MouseEvent<HTMLButtonElement>) =>{
         console.log('starting game...');
+
+        console.log('props:', this.props);
+        console.log('game', this.props.game);
+
+
+        // request --> (POST) /startRound2erSchnopsn (gameID)
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        };
+        
+        // request
+        fetch(`http://localhost:8080/api/v1/startRound2erSchnopsn?gameID=${this.props.game.gameID}`, requestOptions)
+        .then(res => {
+            console.log('result: ', res);
+        })
+
     }
 
 
