@@ -30,11 +30,6 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         super(props)
         this.state = {myTurn : false, playedCards : []};
         
-        
-        
-
-        console.log('here in playground');
-
         if(this.props.webSocket){
 
             // set handler for receiving messages (websocket)
@@ -48,31 +43,28 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
      */
     onReceiveMessageFromWebSocket(event: MessageEvent){
 
-        console.log('game-playground:', this.game);
+        // #region data-from-sessionScope
+
+        // if game not set --> get game from sessionScope
         if(!this.game){
             let gameString = sessionStorage.getItem('game');
-            console.log('gameString:', gameString);
             if(gameString){
                 this.game = JSON.parse(gameString);
                 console.log(this.game);
             }
         }
-        console.log('game-playground:', this.game);
 
-        console.log('player-playground:', this.player);
+        // if player not set --> get player from sessionScope
         if(!this.player){
             let playerString = sessionStorage.getItem('player');
             if(playerString){
                 this.player = JSON.parse(playerString);
             }
         }
-        console.log('player-playground:', this.player);
+        // #endregion
 
 
-
-
-        console.log('onHandle message from websocket in playground');
-        console.log(event.data);
+        // #region receiving a message ...
 
         let message :Message = JSON.parse(event.data);
 
@@ -87,6 +79,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         // receive trump
         if(message.type === 'trumpCard'){
             this.trumpCard = message.data;
+            console.log('trump: ', this.trumpCard);
         }
 
         // receive info, if it is my turn to play
@@ -94,28 +87,24 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             this.setState({myTurn : message.data});
 
             console.log('myturn:', this.state.myTurn);
-            if(this.state.myTurn){
-                this.onMyTurn();
-            }
         }
 
         // if opponent plays a card
         if(message.type === 'playedCards'){
-            console.log(message.data);
+            console.log('playedCards: ', message.data);
 
             this.setState({playedCards : message.data});
         }
 
-        console.log(message);
+        // #endregion
     }
+
+
 
     /**
-     * will be called if the state of 'myTurn' changes to 'true'
+     * handler that listens for a card to be played (dropped over the area in the middle of the screen)
+     * @param card the card to be played
      */
-    onMyTurn(){
-
-    }
-
     onPlayCard = (card :PlayCard) => {
         console.log('playing card...');
         console.log(card);
@@ -129,28 +118,22 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         
         // request
         fetch(`http://localhost:8080/api/v1/makeMoveByCall?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&color=${card.color}&value=${card.value}`, requestOptions)
-        .then(res => res.json())
+        // .then(res => res.json())
         .then(
             (result) => {
-                console.log(result);
-
+                console.log(result, 'sucessfully played card?!!');
+                
             },
             (error) => {
                 console.log('error: ' + error);
             }
         )
-
-       
-
     }
 
     render() {
-        console.log('rendering playground');
-
 
         // get data from sessionStorage (after refresh)
         let cardString = sessionStorage.getItem('myCards');
-        console.log(cardString);
         if(cardString){
             let cards :PlayCard[] = JSON.parse(cardString);
            this.cards = cards;
@@ -160,17 +143,14 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         // construct list of indices for unique card-id's
         let cardIndices :number[] = [];
         if(this.cards){
-            console.log('cards?');
             for(let i = 0; i < this.cards?.length; i++){
                 cardIndices.push(i);
-                
             }
         }
 
         // construct list of indices for unique card-id's
         let playedCardIndices :number[] = [];
         if(this.state.playedCards){
-            console.log('cards?');
             for(let i = 0; i < this.state.playedCards.length; i++){
                 playedCardIndices.push(i);
             }
@@ -226,7 +206,11 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                         </div>
                                     ))
                                 }
-                                <p>drag your cards here ..</p>
+
+                                {
+                                    (playedCardIndices.length === 0) ? <p>drag your cards here ..</p> : <></>
+                                }
+                                
                             </Board>
                         </div>
 

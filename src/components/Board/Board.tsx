@@ -14,7 +14,7 @@ export default function Board(props : any) {
         console.log('Target Element');
         console.log(e.target);
         console.log(card)
-        e.target.appendChild(card);
+        // e.target.appendChild(card);
 
 
     }
@@ -26,9 +26,9 @@ export default function Board(props : any) {
 
     return (
         <div id={props.id}
-        onDrop={drop}
-        onDragOver={dragOver}
-        className={props.className}>
+            onDrop={drop}
+            onDragOver={dragOver}
+            className={props.className}>
             {props.children }
         </div>
     )

@@ -25,6 +25,9 @@ export default function Card(props: CardProps) {
     }
 
     const dragEnd = (e : any) =>{
+
+        // TODO: check if card over correct board
+
         console.log('drag');
         props.onPlay(props.playCard);
     }

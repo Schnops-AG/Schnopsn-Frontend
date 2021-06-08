@@ -34,7 +34,6 @@ export function WaitingRoom(props: WaitingRoomProps): JSX.Element {
 
     const match = useRouteMatch();
     const history = useHistory();
-    console.log('waitingroom');
 
     return(
         <WaitingRoomUI match={match} history={history} {...props}></WaitingRoomUI>
@@ -61,7 +60,6 @@ export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoom
      */
     extractMembersFromGame(): string[]{
         const players: string[][] = this.props.game.teams.map((team) => team.players.map((player) => player.playerName));
-        console.log('players: ', players);
         return ([] as string[]).concat(...players);
     }
 
@@ -82,8 +80,6 @@ export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoom
         if(message.type === 'forward'){
             this.props.history?.push(message.data); // forward to /play
         }
-
-
     }
 
     /**
@@ -93,15 +89,11 @@ export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoom
      * @param names list of names received from the websocket
      */
     onUpdateMembers = (names :string[]) =>{
-        console.log('update?');
-
         names = names.filter((name) => name); // eliminate empty elements
 
         // set to state --> rerender
         const readyToStart: boolean = (names.length === this.props.game.maxNumberOfPlayers);
         this.setState({activeMembers : names, readyToStart: readyToStart}); // update members, readyToStart state
-
-        console.log('ready after update?', readyToStart);
     }
 
     /**
@@ -109,11 +101,6 @@ export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoom
      * makes a request to start the game --> /startRound2erSchnopsn
      */
     onStartGame = (event: React.MouseEvent<HTMLButtonElement>) =>{
-        console.log('starting game...');
-
-        console.log('props:', this.props);
-        console.log('game', this.props.game);
-
 
         // request --> (POST) /startRound2erSchnopsn (gameID)
         const requestOptions = {
@@ -131,9 +118,6 @@ export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoom
 
 
     render(){
-
-        console.log('ready?', this.state.readyToStart);
-        
 
         const startButton :JSX.Element = 
         <div className="startGameButton">
@@ -160,7 +144,6 @@ export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoom
                                 value={this.props.game.inviteLink}
                                 disabled={true}/>
                         </div>
-                        <p>admin? {this.props.player.admin? 'true' : 'false'}</p>  
     
                         {this.props.player.admin ? startButton : <div></div>}
 

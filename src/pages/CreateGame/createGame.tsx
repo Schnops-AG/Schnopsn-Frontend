@@ -60,7 +60,6 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
 
         let gameType :string = this.props.gameType;
         if(!gameType || !this.state.player.playerID){
-            console.log('request not possible');
             return Promise.resolve();
         }
 
@@ -76,8 +75,6 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
         .then(res => res.json())
         .then(
             (result) => {
-                console.log('result: ' + result);
-                console.log(result);
                 this.game = result;
             },
             (error) => {
@@ -111,8 +108,6 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
 
         // check if game creation was successful (if not: prevent propagation)
         if(this.game){
-            console.log('redirect to waiting room');
-            console.log(this.game);
 
             // set game --> startGame (for routing)
             this.props.setGame(this.game);  

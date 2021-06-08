@@ -63,9 +63,6 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
             return Promise.resolve();
         }
 
-
-
-        console.log('request?: ' + gameID);
         if(!gameID || !this.state.player.playerID){
             console.log('request not possible');
             return Promise.resolve();
@@ -76,7 +73,6 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
         const requestOptions = {
             method: 'POST'
         };
-        console.log('gameID', gameID);
 
         // localhost:8080/api/v1/createGame?gameType=_4ERSCHNOPSN&playerID=379ff129-2f72-4943-bd32-a69a3dd5446b
         let url :string = `http://localhost:8080/api/v1/joinGame?gameID=${gameID}&playerID=${this.state.player.playerID}`;
@@ -92,14 +88,9 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
                     console.log('no Game');
                     return;
                 }
-
-                console.log('here');
-                console.log('result: ' + result);
-                console.log(result);
                 this.game = result;
             },
             (error) => {
-                console.log('error');
                 console.log('error: ' + error);
                 this.game = null;
             }
@@ -117,7 +108,6 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
         
         // check if game has already been created
         if(this.game){
-            console.log('game already created');
             return;
         }
         
@@ -128,7 +118,6 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
         
         // check if game creation was successful (if not: prevent propagation)
         if(this.game){
-            console.log('redirect to waiting room');
 
             // set game --> startGame (for routing)
             this.props.setGame(this.game);  

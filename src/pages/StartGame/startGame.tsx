@@ -66,7 +66,6 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
     changeInputHandler = (value: string) =>{
 
         const allowRouting = () =>{
-            console.log('allow-routing?');
             if(this.state.playerName){
                 this.joinGameRoute = '/joinGame';
                 this.createGameRoute = '/createGame';
@@ -92,8 +91,6 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
         // set game to SessionScope
         sessionStorage.setItem('game', JSON.stringify(game));
 
-        console.log('setgame:', this.game);
-
         // set admin status of player
         this.game?.teams.forEach((team :Team) => team.players.forEach((player :Player) =>{
             if(this.player1?.playerID == player.playerID){
@@ -110,9 +107,6 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
      *  that requests the player object
      */
     async onClickBtn(event : React.MouseEvent<HTMLButtonElement>){
-        
-        console.log('allowed: ' + this.createGameRoute);
-        console.log(event.currentTarget);
         
         let enteredPlayerName :String = this.state.playerName;
         
@@ -154,13 +148,9 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                     sessionStorage.setItem('player', JSON.stringify(this.player1));
 
                     // start websocket
-                    console.log(this.player1.playerID);
                     this.webSocket = new CustomWebSocket(this.player1.playerID);
 
                 }
-                console.log('player after request: ');
-                console.log(this.player1);
-
             },
             (error) => {
                 console.log('error: ' + error);
@@ -178,8 +168,6 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
 
     render(){
-        console.log('game', this.game);
-
         return(
             <Switch>
                 
