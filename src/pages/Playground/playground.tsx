@@ -6,24 +6,30 @@ import { CustomWebSocket } from '../../utils/websocket'
 import { Message } from '../../models/message'
 import { PlayCard } from '../../models/card'
 import Card from '../../components/Card/card'
+import { Game } from '../../models/game'
+import { Player } from '../../models/player'
 
 type PlayGroundProps = {
-    webSocket?: CustomWebSocket
+    webSocket?: CustomWebSocket,
 }
 
 type PlayGroundState = {
     myTurn: boolean,
+    playedCards: PlayCard[]
     
 }
 
 export class Playground extends React.Component<PlayGroundProps, PlayGroundState> {
     cards? :PlayCard[];
     trumpCard? :PlayCard;
+    game? :Game;
+    player? :Player;
 
     constructor(props: PlayGroundProps){
 
         super(props)
-        this.state = {myTurn : false};
+        this.state = {myTurn : false, playedCards : []};
+        
         
         
 
@@ -41,6 +47,29 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
      * @param event 
      */
     onReceiveMessageFromWebSocket(event: MessageEvent){
+
+        console.log('game-playground:', this.game);
+        if(!this.game){
+            let gameString = sessionStorage.getItem('game');
+            console.log('gameString:', gameString);
+            if(gameString){
+                this.game = JSON.parse(gameString);
+                console.log(this.game);
+            }
+        }
+        console.log('game-playground:', this.game);
+
+        console.log('player-playground:', this.player);
+        if(!this.player){
+            let playerString = sessionStorage.getItem('player');
+            if(playerString){
+                this.player = JSON.parse(playerString);
+            }
+        }
+        console.log('player-playground:', this.player);
+
+
+
 
         console.log('onHandle message from websocket in playground');
         console.log(event.data);
@@ -64,10 +93,17 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         if(message.type === 'myTurn'){
             this.setState({myTurn : message.data});
 
-
+            console.log('myturn:', this.state.myTurn);
             if(this.state.myTurn){
                 this.onMyTurn();
             }
+        }
+
+        // if opponent plays a card
+        if(message.type === 'playedCards'){
+            console.log(message.data);
+
+            this.setState({playedCards : message.data});
         }
 
         console.log(message);
@@ -77,6 +113,34 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
      * will be called if the state of 'myTurn' changes to 'true'
      */
     onMyTurn(){
+
+    }
+
+    onPlayCard = (card :PlayCard) => {
+        console.log('playing card...');
+        console.log(card);
+
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            // body: JSON.stringify({ playerName: enteredPlayerName })
+        };
+        
+        // request
+        fetch(`http://localhost:8080/api/v1/makeMoveByCall?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&color=${card.color}&value=${card.value}`, requestOptions)
+        .then(res => res.json())
+        .then(
+            (result) => {
+                console.log(result);
+
+            },
+            (error) => {
+                console.log('error: ' + error);
+            }
+        )
+
+       
 
     }
 
@@ -100,6 +164,15 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             for(let i = 0; i < this.cards?.length; i++){
                 cardIndices.push(i);
                 
+            }
+        }
+
+        // construct list of indices for unique card-id's
+        let playedCardIndices :number[] = [];
+        if(this.state.playedCards){
+            console.log('cards?');
+            for(let i = 0; i < this.state.playedCards.length; i++){
+                playedCardIndices.push(i);
             }
         }
         
@@ -139,6 +212,20 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                 </div>
                             </div>
                             <Board id="middle" className="board">
+                                {
+                                    playedCardIndices.map(i => (
+                                        <div>
+                                            <Card 
+                                                className="card"  
+                                                id={`playedCard_${i}`} 
+                                                onPlay={this.onPlayCard}
+                                                playCard={this.state.playedCards[i]}
+                                                draggable={false}>
+                                                    {this.state.playedCards[i].color}, {this.cards?.[i].value}, {this.cards?.[i].name}
+                                            </Card>
+                                        </div>
+                                    ))
+                                }
                                 <p>drag your cards here ..</p>
                             </Board>
                         </div>
@@ -152,7 +239,9 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                             <Card 
                                                 className="card"  
                                                 id={`ownCard_${i}`} 
-                                                draggable="true">
+                                                onPlay={this.onPlayCard}
+                                                playCard={this.cards?.[i] ? this.cards?.[i] : {} as PlayCard}
+                                                draggable={this.state.myTurn}>
                                                     {this.cards?.[i].color}, {this.cards?.[i].value}, {this.cards?.[i].name}
                                             </Card>
                                         </div>

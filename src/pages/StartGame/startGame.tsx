@@ -8,7 +8,6 @@ import { WaitingRoom } from '../WaitingRoom/waitingRoom';
 import { Player } from '../../models/player';
 import { render } from '@testing-library/react';
 import { CustomInput } from '../../components/CustomInput/customInput';
-import { CardTest } from '../CardTest/cardTest';
 import { join } from 'node:path';
 import { Game } from '../../models/game';
 import { Team } from '../../models/team';
@@ -88,6 +87,12 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
     setGame = (game: Game) =>{
         this.game = game;
+        this.forceUpdate();
+
+        // set game to SessionScope
+        sessionStorage.setItem('game', JSON.stringify(game));
+
+        console.log('setgame:', this.game);
 
         // set admin status of player
         this.game?.teams.forEach((team :Team) => team.players.forEach((player :Player) =>{
@@ -145,6 +150,9 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                     this.player1.playerID = result['playerID'];
                     this.player1.admin = result['admin'];
 
+                    // set player to SessionScope
+                    sessionStorage.setItem('player', JSON.stringify(this.player1));
+
                     // start websocket
                     console.log(this.player1.playerID);
                     this.webSocket = new CustomWebSocket(this.player1.playerID);
@@ -170,6 +178,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
 
     render(){
+        console.log('game', this.game);
 
         return(
             <Switch>
@@ -202,14 +211,11 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
                 {/* Route to lobby */}
                 <Route path={`${this.props.match?.path}/play`}>
-                    <Playground webSocket={this.webSocket}/>
+                    <Playground 
+                        webSocket={this.webSocket} 
+                    />
                 </Route>
  
-
-                {/* Route to test */}
-                <Route path={`${this.props.match?.path}/test`}>
-                    <CardTest />
-                </Route>
     
                 {/* Default Route  */}
                 <Route path={this.props.match?.path}>

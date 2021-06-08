@@ -76,6 +76,7 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
         const requestOptions = {
             method: 'POST'
         };
+        console.log('gameID', gameID);
 
         // localhost:8080/api/v1/createGame?gameType=_4ERSCHNOPSN&playerID=379ff129-2f72-4943-bd32-a69a3dd5446b
         let url :string = `http://localhost:8080/api/v1/joinGame?gameID=${gameID}&playerID=${this.state.player.playerID}`;
