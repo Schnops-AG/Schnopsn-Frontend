@@ -1,8 +1,13 @@
 import React from 'react'
+import { PlayCard } from '../../models/card';
 
 export default function Board(props : any) {
     // Wenn wir wirklich etwas "fallen" lassen
     const drop = (e : any) => {
+
+        let playedCard :PlayCard = props.getCard();
+        console.log('playedCard:', playedCard);
+
         e.preventDefault();
         const card_id = e.dataTransfer.getData('card_id');
 
@@ -15,7 +20,7 @@ export default function Board(props : any) {
         console.log(e.target);
         console.log(card)
         // e.target.appendChild(card);
-
+        
 
     }
 

@@ -25,6 +25,8 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
     game? :Game;
     player? :Player;
 
+    currentPlayedCard? :PlayCard;
+
     constructor(props: PlayGroundProps){
 
         super(props)
@@ -97,6 +99,11 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         }
 
         // #endregion
+    }
+
+
+    getCurrentPlayedCard = () =>{
+        return this.currentPlayedCard;
     }
 
 
@@ -191,19 +198,17 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
                                 </div>
                             </div>
-                            <Board id="middle" className="board">
+                            <Board id="middle" getCard={this.getCurrentPlayedCard} className="board">
                                 {
                                     playedCardIndices.map(i => (
-                                        <div>
-                                            <Card 
-                                                className="card"  
-                                                id={`playedCard_${i}`} 
-                                                onPlay={this.onPlayCard}
-                                                playCard={this.state.playedCards[i]}
-                                                draggable={false}>
-                                                    {this.state.playedCards[i].color}, {this.cards?.[i].value}, {this.cards?.[i].name}
-                                            </Card>
-                                        </div>
+                                        <Card 
+                                            className="card"  
+                                            id={`playedCard_${i}`} 
+                                            onPlay={this.onPlayCard}
+                                            playCard={this.state.playedCards[i]}
+                                            draggable={false}>
+                                                {this.state.playedCards[i].color}, {this.cards?.[i].value}, {this.cards?.[i].name}
+                                        </Card>
                                     ))
                                 }
 
@@ -216,19 +221,17 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
                         {/* Own Card Area */}
                         <div className="own">
-                            <Board id="own" className="board">
+                            <Board id="own" getCard={this.getCurrentPlayedCard} className="board">
                                 {
                                     cardIndices.map(i => (
-                                        <div>
-                                            <Card 
-                                                className="card"  
-                                                id={`ownCard_${i}`} 
-                                                onPlay={this.onPlayCard}
-                                                playCard={this.cards?.[i] ? this.cards?.[i] : {} as PlayCard}
-                                                draggable={this.state.myTurn}>
-                                                    {this.cards?.[i].color}, {this.cards?.[i].value}, {this.cards?.[i].name}
-                                            </Card>
-                                        </div>
+                                        <Card 
+                                            className="card"  
+                                            id={`ownCard_${i}`} 
+                                            onPlay={this.onPlayCard}
+                                            playCard={this.cards?.[i] ? this.cards?.[i] : {} as PlayCard}
+                                            draggable={this.state.myTurn}>
+                                                {this.cards?.[i].color}, {this.cards?.[i].value}, {this.cards?.[i].name}
+                                        </Card>
                                     ))
                                 }
                             </Board>

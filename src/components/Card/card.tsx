@@ -18,21 +18,24 @@ type CardProps = {
 
 export default function Card(props: CardProps) {
 
-    const dragStart = (e : any) => {
+    const dragStart = (e : React.DragEvent<HTMLDivElement>) => {
         const target = e.target;
-        e.dataTransfer.setData('card_id', target.id);
+        // e.dataTransfer.setData('card_id', e.target);''
         
     }
 
-    const dragEnd = (e : any) =>{
+    const dragEnd = (e : React.DragEvent<HTMLDivElement>) => {
 
         // TODO: check if card over correct board
+        console.log('target:', e.currentTarget.parentElement?.parentElement);
 
         console.log('drag');
+
+
         props.onPlay(props.playCard);
     }
 
-    const dragOver = (e : any) => {
+    const dragOver = (e : React.DragEvent<HTMLDivElement>) => {
         e.stopPropagation();
     }
     
