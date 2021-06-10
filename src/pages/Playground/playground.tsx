@@ -137,6 +137,11 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         )
     }
 
+
+    onStartDrag = (card :PlayCard) =>{
+        this.currentPlayedCard = card;
+    }
+
     render() {
 
         // get data from sessionStorage (after refresh)
@@ -198,11 +203,15 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
                                 </div>
                             </div>
-                            <Board id="middle" getCard={this.getCurrentPlayedCard} className="board">
+                            <Board id="middle" 
+                                getCard={this.getCurrentPlayedCard} 
+                                playCard={this.onPlayCard} 
+                                className="board">
                                 {
                                     playedCardIndices.map(i => (
                                         <Card 
                                             className="card"  
+                                            onDragStart={this.onStartDrag}
                                             id={`playedCard_${i}`} 
                                             onPlay={this.onPlayCard}
                                             playCard={this.state.playedCards[i]}
@@ -221,13 +230,17 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
                         {/* Own Card Area */}
                         <div className="own">
-                            <Board id="own" getCard={this.getCurrentPlayedCard} className="board">
+                            <Board id="own" 
+                                getCard={this.getCurrentPlayedCard} 
+                                playCard={this.onPlayCard} 
+                                className="board">
                                 {
                                     cardIndices.map(i => (
                                         <Card 
+                                            onDragStart={this.onStartDrag}
+                                            onPlay={this.onPlayCard}
                                             className="card"  
                                             id={`ownCard_${i}`} 
-                                            onPlay={this.onPlayCard}
                                             playCard={this.cards?.[i] ? this.cards?.[i] : {} as PlayCard}
                                             draggable={this.state.myTurn}>
                                                 {this.cards?.[i].color}, {this.cards?.[i].value}, {this.cards?.[i].name}

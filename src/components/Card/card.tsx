@@ -11,9 +11,9 @@ type CardProps = {
     className: string,
 
     children: React.ReactNode,
-    
 
-    onPlay: (playCard: PlayCard) => void
+    onPlay: (playCard: PlayCard) => void,
+    onDragStart: (playCard: PlayCard) => void
 }
 
 export default function Card(props: CardProps) {
@@ -21,6 +21,9 @@ export default function Card(props: CardProps) {
     const dragStart = (e : React.DragEvent<HTMLDivElement>) => {
         const target = e.target;
         // e.dataTransfer.setData('card_id', e.target);''
+
+        // save card to --> playground (currentplayedcard)
+        props.onDragStart(props.playCard);
         
     }
 
@@ -28,11 +31,8 @@ export default function Card(props: CardProps) {
 
         // TODO: check if card over correct board
         console.log('target:', e.currentTarget.parentElement?.parentElement);
-
         console.log('drag');
 
-
-        props.onPlay(props.playCard);
     }
 
     const dragOver = (e : React.DragEvent<HTMLDivElement>) => {
