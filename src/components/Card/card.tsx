@@ -28,11 +28,7 @@ export default function Card(props: CardProps) {
     }
 
     const dragEnd = (e : React.DragEvent<HTMLDivElement>) => {
-
-        // TODO: check if card over correct board
-        console.log('target:', e.currentTarget.parentElement?.parentElement);
         console.log('drag');
-
     }
 
     const dragOver = (e : React.DragEvent<HTMLDivElement>) => {

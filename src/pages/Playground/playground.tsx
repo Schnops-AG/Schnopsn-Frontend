@@ -15,22 +15,28 @@ type PlayGroundProps = {
 
 type PlayGroundState = {
     myTurn: boolean,
-    playedCards: PlayCard[]
+    canDrawCard: boolean,
+
+    playedCards: PlayCard[],
+    currentCards: PlayCard[],
     
 }
 
 export class Playground extends React.Component<PlayGroundProps, PlayGroundState> {
-    cards? :PlayCard[];
-    trumpCard? :PlayCard;
+    // currentCards? :PlayCard[];
     game? :Game;
     player? :Player;
-
+    playingLastCard :boolean = false;
+    
+    trumpCard? :PlayCard;
     currentPlayedCard? :PlayCard;
+    
+    newCard? :PlayCard;
 
     constructor(props: PlayGroundProps){
 
         super(props)
-        this.state = {myTurn : false, playedCards : []};
+        this.state = {myTurn : false, playedCards : [], currentCards : [], canDrawCard : false};
         
         if(this.props.webSocket){
 
@@ -72,30 +78,64 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         // receive cards
         if(message.type === 'cards'){
-            this.cards = message.data;
+            this.setState({currentCards : message.data});
             
             // set cards to sessionStorage to maintain state even after refresh
             sessionStorage.setItem('myCards', JSON.stringify(message.data)); 
         }
 
         // receive trump
-        if(message.type === 'trumpCard'){
+        else if(message.type === 'trumpCard'){
             this.trumpCard = message.data;
             console.log('trump: ', this.trumpCard);
         }
 
         // receive info, if it is my turn to play
-        if(message.type === 'myTurn'){
+        else if(message.type === 'myTurn'){
             this.setState({myTurn : message.data});
 
             console.log('myturn:', this.state.myTurn);
         }
 
         // if opponent plays a card
-        if(message.type === 'playedCards'){
+        else if(message.type === 'playedCards'){
             console.log('playedCards: ', message.data);
 
             this.setState({playedCards : message.data});
+        }
+
+        else if(message.type === 'sting'){
+            console.log('sting: ', message.data);
+        }
+
+        else if(message.type === 'stingPoints'){
+            console.log('stingPoints: ', message.data);
+        }
+
+        else if(message.type === 'winner'){
+            console.log('winner: ', message.data);
+        }
+
+        else if(message.type === 'bummerl'){
+            console.log('bummerl: ', message.data);
+        }
+
+        else if(message.type === 'newCard'){
+            console.log('newCard: ', message.data);
+            this.newCard = message.data;
+            this.setState({canDrawCard : true});
+        }
+
+        else if(message.type === 'winnerOfRound'){
+            console.log('winnerOfRound: ', message.data);
+        }
+
+        else if(message.type === 'message'){
+            console.log('message: ', message.data);
+        }
+
+        else{
+            console.log(message);
         }
 
         // #endregion
@@ -125,10 +165,16 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         
         // request
         fetch(`http://localhost:8080/api/v1/makeMoveByCall?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&color=${card.color}&value=${card.value}`, requestOptions)
-        // .then(res => res.json())
+        .then(res => res.json())
         .then(
             (result) => {
                 console.log(result, 'sucessfully played card?!!');
+
+                // remove card
+                let cards :PlayCard[] = this.state.currentCards;
+                const index :number = cards.indexOf(card);
+                cards = cards.filter(c => c != card);
+                this.setState({currentCards : cards});
                 
             },
             (error) => {
@@ -142,20 +188,45 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         this.currentPlayedCard = card;
     }
 
+    onDrawCard = (event :React.MouseEvent) =>{
+        if(!this.state.canDrawCard){
+            console.log('cannot draw a card yet. please wait.');
+            return;
+        }
+        
+        console.log('drawing card...');
+        
+
+        // update state of own cards (add new card)
+        this.setState({canDrawCard : false});
+        if(this.newCard){
+            const cards = this.state.currentCards;
+            cards.push(this.newCard);
+            this.newCard = undefined;
+            this.setState({currentCards : cards});
+        }
+    }
+
     render() {
 
         // get data from sessionStorage (after refresh)
-        let cardString = sessionStorage.getItem('myCards');
-        if(cardString){
-            let cards :PlayCard[] = JSON.parse(cardString);
-           this.cards = cards;
+        console.log('currentcards: ', this.state.currentCards);
+        if(this.state.currentCards.length == 0 && !this.playingLastCard){
+            let cardString = sessionStorage.getItem('myCards');
+            if(cardString){
+                console.log('getting cards from sessionStorage..');
+                let cards :PlayCard[] = JSON.parse(cardString);
+                
+                this.playingLastCard = true; // to avoid (maybe) possible recursion
+                this.setState({currentCards: cards});
+            }
         }
 
 
         // construct list of indices for unique card-id's
         let cardIndices :number[] = [];
-        if(this.cards){
-            for(let i = 0; i < this.cards?.length; i++){
+        if(this.state.currentCards){
+            for(let i = 0; i < this.state.currentCards.length; i++){
                 cardIndices.push(i);
             }
         }
@@ -199,8 +270,9 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                         <div className="central">
                             <div className="cardStack">
                                 <div className="sub">
-                                    <span>card stack goes here...</span>
-
+                                    {/* <span>empty card stack</span> */}
+                                    <div className={`card ${this.state.canDrawCard ? "drawingPossible" : "drawingNotPossible"}`} 
+                                        onClick={this.onDrawCard}></div>
                                 </div>
                             </div>
                             <Board id="middle" 
@@ -213,10 +285,11 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                             className="card"  
                                             onDragStart={this.onStartDrag}
                                             id={`playedCard_${i}`} 
+                                            key={i}
                                             onPlay={this.onPlayCard}
                                             playCard={this.state.playedCards[i]}
                                             draggable={false}>
-                                                {this.state.playedCards[i].color}, {this.cards?.[i].value}, {this.cards?.[i].name}
+                                                {this.state.playedCards[i].color}, {this.state.currentCards[i].value}, {this.state.currentCards[i].name}
                                         </Card>
                                     ))
                                 }
@@ -241,9 +314,10 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                             onPlay={this.onPlayCard}
                                             className="card"  
                                             id={`ownCard_${i}`} 
-                                            playCard={this.cards?.[i] ? this.cards?.[i] : {} as PlayCard}
+                                            key={i}
+                                            playCard={this.state.currentCards[i] ? this.state.currentCards[i] : {} as PlayCard}
                                             draggable={this.state.myTurn}>
-                                                {this.cards?.[i].color}, {this.cards?.[i].value}, {this.cards?.[i].name}
+                                                {this.state.currentCards[i].color}, {this.state.currentCards[i].value}, {this.state.currentCards[i].name}
                                         </Card>
                                     ))
                                 }

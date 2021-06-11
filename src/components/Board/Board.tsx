@@ -29,11 +29,6 @@ export default function Board(props : BoardProps) {
             card.style.display = 'block';
         }
 
-        console.log('Target Element');
-        console.log(e.target);
-        console.log(card)
-        // e.target.appendChild(card);
-
         if(props.id === 'middle'){
             
             // get card
@@ -45,8 +40,6 @@ export default function Board(props : BoardProps) {
                 props.playCard(card);
             }
         }
-        
-
     }
 
     // Wenn etwas über dem Board ist
@@ -55,7 +48,8 @@ export default function Board(props : BoardProps) {
     }
 
     return (
-        <div id={props.id}
+        <div 
+            id={props.id}
             onDrop={drop}
             onDragOver={dragOver}
             className={props.className}>
