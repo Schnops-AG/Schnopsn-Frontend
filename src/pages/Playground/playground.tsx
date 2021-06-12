@@ -244,41 +244,45 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             <div className="playground">
                 <div className="back">
 
-                    <div className="bummerl">
-                        <h3>Bummerl</h3>
-                        <span>1:3</span>
+                    <div className="top">
+                        <div className="bummerl">
+                            <h3>Bummerl</h3>
+                            <span>1:3</span>
+                        </div>
+
+                        {/* Opponent */}
+                        <div className="opponent">
+                            <div className="card"></div>
+                            <div className="card"></div>
+                            <div className="card"></div>
+                            <div className="card"></div>
+                            <div className="card"></div>
+                        </div>
+
                     </div>
 
-                    {/* Opponent */}
-                    <div className="opponent">
-                        <div className="card"></div>
-                        <div className="card"></div>
-                        <div className="card"></div>
-                        <div className="card"></div>
-                        <div className="card"></div>
-                    </div>
-
-
-                    <div className="points">
-                        <h3>Spielstand</h3>
-                        <span>1</span>
-                        <span>3</span>
-                    </div>
 
                     {/* Main Area (Center) */}
                     <main className="main">
+
+                        {/* middle area */}
                         <div className="central">
-                            <div className="cardStack">
-                                <div className="sub">
-                                    {/* <span>empty card stack</span> */}
-                                    <div className={`card ${this.state.canDrawCard ? "drawingPossible" : "drawingNotPossible"}`} 
-                                        onClick={this.onDrawCard}></div>
+
+                            <div className="score">
+                                <div className="h3">
+                                    <h3>Spielstand</h3>
+                                </div>  
+                                <div className="points">
+                                    <span id="opponent">1</span>
+                                    <span id="me">3</span>
+
                                 </div>
                             </div>
+                            
                             <Board id="middle" 
                                 getCard={this.getCurrentPlayedCard} 
                                 playCard={this.onPlayCard} 
-                                className="board">
+                                className="board board_onDragOver">
                                 {
                                     playedCardIndices.map(i => (
                                         <Card 
@@ -299,6 +303,17 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                 }
                                 
                             </Board>
+
+                            <div className="cardStack">
+                                <div className="sub">
+                                    {/* <span>empty card stack</span> */}
+                                    <div className={`card ${this.state.canDrawCard ? "drawingPossible" : "drawingNotPossible"}`} 
+                                        onClick={this.onDrawCard}></div>
+                                    <div className="card trump">
+                                        {this.trumpCard?.color} {this.trumpCard?.name}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Own Card Area */}
@@ -312,7 +327,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                         <Card 
                                             onDragStart={this.onStartDrag}
                                             onPlay={this.onPlayCard}
-                                            className="card"  
+                                            className={`card ${this.state.myTurn ? "" : "card_wait"}`}
                                             id={`ownCard_${i}`} 
                                             key={i}
                                             playCard={this.state.currentCards[i] ? this.state.currentCards[i] : {} as PlayCard}
@@ -322,8 +337,14 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                     ))
                                 }
                             </Board>
+
+                            <div className="ownStings">
+                                <div className="card"></div>
+                            </div>
                         </div>
+                    
                     </main>
+
                     
                 </div>
 
