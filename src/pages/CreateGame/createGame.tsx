@@ -90,21 +90,32 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
      * @param event the event from the `button`
      * @returns an empty promise
      */
-    async onClickButton(event : React.MouseEvent<HTMLButtonElement>) :Promise<void>{
+    onClickButton(event : React.MouseEvent<HTMLButtonElement>){
         event.preventDefault();
         event.stopPropagation();
+
+        console.log(this.handleSubmit);
+
+        this.handleSubmit();
+    }
+    
+    onEnter = (event: React.KeyboardEvent) =>{
+        if(event.key === 'Enter'){
+            this.handleSubmit().catch((r)=> console.log('catch'));
+        }
+    }
+
+    async handleSubmit(){
 
         // check if game has already been created
         if(this.game){
             return;
         }
 
-
         // check if room name was entered
         if(this.state.roomName){
             await this.makeRequest(); // waits for the request to finish
         }
-
 
         // check if game creation was successful (if not: prevent propagation)
         if(this.game){
@@ -118,6 +129,7 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
     }
 
 
+
     render(){
 
         return(
@@ -125,7 +137,7 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
                 <div className="background-gradient">
                     <h1>{this.props.title}</h1>
                     <div className="create-join">
-                        <CustomInput className="input-room" placeholder="Enter Room Name" handleChange={this.changeInputHandler}/>
+                        <CustomInput className="input-room" placeholder="Enter Room Name" handleChange={this.changeInputHandler} onEnter={this.onEnter}/>
                         <CustomButton className="green" title="Create Room" onHandle={(e) => this.onClickButton(e)} path={`${this.waitingRoomRoute}`}/>
                     </div>  
                 </div>

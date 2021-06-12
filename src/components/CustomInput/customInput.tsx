@@ -9,7 +9,8 @@ type InputRoomType = {
     value?: string,
     disabled?: boolean,
     className: string,
-    handleChange?: (value: string) => void
+    handleChange?: (value: string) => void,
+    onEnter?: (event: React.KeyboardEvent) => void
 }
 
 type InputRoomState = {
@@ -41,6 +42,7 @@ export class CustomInput extends React.Component<InputRoomType, InputRoomState>{
                 className={`input-field ${this.props.className}`} 
                 type="text"  
                 onChange={this.onChange} 
+                onKeyDown={this.props.onEnter}
                 placeholder={this.props.placeholder}
                 value={this.props.value ? this.props.value : this.state.value}
                 disabled={this.props.disabled}

@@ -104,7 +104,10 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
         event.preventDefault();
         event.stopPropagation();
 
-        
+        this.handleSubmit();
+    }
+    
+    async handleSubmit(){
         
         // check if game has already been created
         if(this.game){
@@ -118,12 +121,18 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
         
         // check if game creation was successful (if not: prevent propagation)
         if(this.game){
-
+    
             // set game --> startGame (for routing)
             this.props.setGame(this.game);  
-
+    
             // redirects to the waiting room
             this.props.history?.push('waitingRoom');
+        }
+    }
+
+    onEnter = (event: React.KeyboardEvent) =>{
+        if(event.key === 'Enter'){
+            this.handleSubmit().catch((r)=> console.log('catch'));
         }
     }
 
@@ -137,6 +146,7 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
                     <CustomInput 
                         className="input-room" 
                         placeholder="Enter Room URL" 
+                        onEnter={this.onEnter}
                         handleChange={this.changeInputHandler}
                     />
                     <CustomButton 
