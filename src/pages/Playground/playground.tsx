@@ -8,6 +8,24 @@ import { PlayCard } from '../../models/card'
 import Card from '../../components/Card/card'
 import { Game } from '../../models/game'
 import { Player } from '../../models/player'
+import { setTimeout } from 'timers'
+
+/**
+ * TOOD:
+ * -----
+ * - look at own stings (right bottom)
+ * - get next card (from card stack)
+ * - "zudrehen"
+ * - "trumpf austauschen"
+ * - (animation: who gets the sting)
+ * - display opponent's stings (not showing of course) - area
+ *   - (animation: opponnent drawing a card)
+ * 
+ * - everything necessary when a single round is over (eg. someone reached 66 points)
+ * - what if the whole 'bummerl' is finished
+ */
+
+
 
 type PlayGroundProps = {
     webSocket?: CustomWebSocket,
@@ -19,6 +37,9 @@ type PlayGroundState = {
 
     playedCards: PlayCard[],
     currentCards: PlayCard[],
+
+    stingFinished: boolean,
+    countdown: number
     
 }
 
@@ -32,11 +53,21 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
     currentPlayedCard? :PlayCard;
     
     newCard? :PlayCard;
+    timerID :any;
+
 
     constructor(props: PlayGroundProps){
+        super(props);
 
-        super(props)
-        this.state = {myTurn : false, playedCards : [], currentCards : [], canDrawCard : false};
+        this.timerID = 0;
+        this.state = {
+            myTurn : false, 
+            playedCards : [], 
+            currentCards : [], 
+            canDrawCard : false, 
+            stingFinished : false, 
+            countdown : 5
+        };
         
         if(this.props.webSocket){
 
@@ -45,11 +76,28 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         }
     }
 
+    countdown = () =>{
+
+        let seconds = this.state.countdown - 1;
+        this.setState({countdown : seconds})
+
+        if(this.state.countdown === 0){
+            this.setState({playedCards : []}); // clear playedCards
+            clearInterval(this.timerID);
+        }
+    }
+
+    afterSting(){
+        this.setState({stingFinished : true});
+        this.timerID = setInterval(this.countdown, 1000);
+
+    }
+
     /**
      * handles all messages received from the web socket
      * @param event 
      */
-    onReceiveMessageFromWebSocket(event: MessageEvent){
+    async onReceiveMessageFromWebSocket(event: MessageEvent){
 
         // #region data-from-sessionScope
 
@@ -106,14 +154,19 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         else if(message.type === 'sting'){
             console.log('sting: ', message.data);
+
+            this.afterSting();
         }
 
         else if(message.type === 'stingPoints'){
             console.log('stingPoints: ', message.data);
         }
 
+        // player lost his sting (the other one is the winner)
         else if(message.type === 'winner'){
             console.log('winner: ', message.data);
+
+            this.afterSting();
         }
 
         else if(message.type === 'bummerl'){
@@ -238,6 +291,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                 playedCardIndices.push(i);
             }
         }
+
         
 
         return (
@@ -278,6 +332,16 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
                                 </div>
                             </div>
+
+                            {
+                                (this.state.stingFinished && this.state.countdown > 0) ? 
+                                    <div className="cardVanishOverlay">
+                                        <div>
+                                            <p>{this.state.countdown}</p>
+                                        </div>
+                                    </div> 
+                                : <></>
+                            }
                             
                             <Board id="middle" 
                                 getCard={this.getCurrentPlayedCard} 
