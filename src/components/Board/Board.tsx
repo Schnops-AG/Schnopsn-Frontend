@@ -38,6 +38,7 @@ export default function Board(props : BoardProps) {
             
             // get card
             const card: PlayCard | undefined = props.getCard();
+            console.log('dropping card:', card);
             
             if(card){
 

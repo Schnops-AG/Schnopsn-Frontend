@@ -282,7 +282,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                             <Board id="middle" 
                                 getCard={this.getCurrentPlayedCard} 
                                 playCard={this.onPlayCard} 
-                                className="board board_onDragOver">
+                                className="board">
                                 {
                                     playedCardIndices.map(i => (
                                         <Card 
