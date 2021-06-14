@@ -81,8 +81,10 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         let seconds = this.state.countdown - 1;
         this.setState({countdown : seconds})
 
-        if(this.state.countdown === 0){
-            this.setState({playedCards : []}); // clear playedCards
+        if(this.state.countdown <= 0){
+
+            // clear playedCards, set countdown back to 5 seconds
+            this.setState({playedCards : [], countdown : 5, stingFinished : false}); 
             clearInterval(this.timerID);
         }
     }
@@ -208,6 +210,10 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
     onPlayCard = (card :PlayCard) => {
         console.log('playing card...');
         console.log(card);
+
+        if(this.state.canDrawCard){
+            console.log('please draw a card first!!!'); // TODO
+        }
 
 
         const requestOptions = {
