@@ -39,7 +39,9 @@ type PlayGroundState = {
     currentCards: PlayCard[],
 
     stingFinished: boolean,
-    countdown: number
+    countdown: number,
+
+    errorMessages: string[]
     
 }
 
@@ -66,7 +68,8 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             currentCards : [], 
             canDrawCard : false, 
             stingFinished : false, 
-            countdown : 5
+            countdown : 5,
+            errorMessages : []
         };
         
         if(this.props.webSocket){
@@ -213,6 +216,8 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         if(this.state.canDrawCard){
             console.log('please draw a card first!!!'); // TODO
+            this.setState({currentCards : this.state.currentCards});
+            return;
         }
 
 
