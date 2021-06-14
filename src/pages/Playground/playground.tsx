@@ -9,20 +9,18 @@ import Card from '../../components/Card/card'
 import { Game } from '../../models/game'
 import { Player } from '../../models/player'
 import { setTimeout } from 'timers'
+import { ErrorMessage } from '../../models/errorMessage'
 
 /**
  * TOOD:
  * -----
- * - look at own stings (right bottom)
- * - get next card (from card stack)
+ * - Stapel verschwinden lassen if empty
+ * - eigene Stiche anschauen (große Ansicht)
  * - "zudrehen"
  * - "trumpf austauschen"
  * - (animation: who gets the sting)
- * - display opponent's stings (not showing of course) - area
- *   - (animation: opponnent drawing a card)
- * 
- * - everything necessary when a single round is over (eg. someone reached 66 points)
- * - what if the whole 'bummerl' is finished
+ * - (animation: opponnent drawing a card)
+ * - Error/Info messages
  */
 
 
@@ -39,9 +37,10 @@ type PlayGroundState = {
     currentCards: PlayCard[],
 
     stingFinished: boolean,
+    totalStingPoints: number,
     countdown: number,
 
-    errorMessages: string[]
+    errorMessages: ErrorMessage[],
     
 }
 
@@ -68,6 +67,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             currentCards : [], 
             canDrawCard : false, 
             stingFinished : false, 
+            totalStingPoints : 0,
             countdown : 5,
             errorMessages : []
         };
@@ -79,6 +79,9 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         }
     }
 
+    /**
+     * will be called every second to update the countdown (by -1 second)
+     */
     countdown = () =>{
 
         let seconds = this.state.countdown - 1;
@@ -92,10 +95,12 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         }
     }
 
+    /**
+     * after each sting: reset state, start countdown
+     */
     afterSting(){
         this.setState({stingFinished : true});
         this.timerID = setInterval(this.countdown, 1000);
-
     }
 
     /**
@@ -140,6 +145,10 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         // receive trump
         else if(message.type === 'trumpCard'){
             this.trumpCard = message.data;
+
+            // reset totalStingsPoints
+            this.setState({totalStingPoints : 0});
+
             console.log('trump: ', this.trumpCard);
         }
 
@@ -165,6 +174,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         else if(message.type === 'stingPoints'){
             console.log('stingPoints: ', message.data);
+            this.setState({totalStingPoints : this.state.totalStingPoints + message.data});
         }
 
         // player lost his sting (the other one is the winner)
@@ -248,6 +258,10 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
     }
 
 
+    /**
+     * set currentPlayed card onDrag
+     * @param card 
+     */
     onStartDrag = (card :PlayCard) =>{
         this.currentPlayedCard = card;
     }
@@ -309,11 +323,15 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             <div className="playground">
                 <div className="back">
 
+                    {/* Top line: opponnent */}
                     <div className="top">
-                        <div className="bummerl">
-                            <h3>Bummerl</h3>
-                            <span>1:3</span>
+
+                        {/* opponnent's stings */}
+                        <div className="stings">
+                            <div className="card"></div>
+                            <div className="card show"></div>
                         </div>
+
 
                         {/* Opponent */}
                         <div className="opponent">
@@ -324,6 +342,11 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                             <div className="card"></div>
                         </div>
 
+                        {/* Number of bummerl */}
+                        <div className="bummerl">
+                            <h3>Bummerl</h3>
+                            <span>-1:-1</span>
+                        </div>
                     </div>
 
 
@@ -333,18 +356,19 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                         {/* middle area */}
                         <div className="central">
 
+                            {/* current state of the game (points (0-7)) */}
                             <div className="score">
                                 <div className="h3">
                                     <h3>Spielstand</h3>
                                 </div>  
                                 <div className="points">
-                                    <span id="opponent">1</span>
-                                    <span id="me">3</span>
-
+                                    <span id="opponent">-1</span>
+                                    <span id="me">-1</span>
                                 </div>
                             </div>
 
                             {
+                                // overlay for countdown
                                 (this.state.stingFinished && this.state.countdown > 0) ? 
                                     <div className="cardVanishOverlay">
                                         <div>
@@ -354,6 +378,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                 : <></>
                             }
                             
+                            {/* main board where cards can be dropped */}
                             <Board id="middle" 
                                 getCard={this.getCurrentPlayedCard} 
                                 playCard={this.onPlayCard} 
@@ -379,11 +404,14 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                 
                             </Board>
 
+                            {/* Main card stack (where you can draw single cards) */}
                             <div className="cardStack">
                                 <div className="sub">
-                                    {/* <span>empty card stack</span> */}
+                                    {/* hidden card */}
                                     <div className={`card ${this.state.canDrawCard ? "drawingPossible" : "drawingNotPossible"}`} 
                                         onClick={this.onDrawCard}></div>
+                                    
+                                    {/* trump card */}
                                     <div className="card trump">
                                         {this.trumpCard?.color} {this.trumpCard?.name}
                                     </div>
@@ -413,18 +441,28 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                 }
                             </Board>
 
+                            {/* The Action Menue */}
+                            <div className="actionMenue">
+                                <h3>Actions</h3>
+                                <div className="actions">
+                                    <p>Zudrehen</p>
+                                    <p>Trump austauschen</p>
+                                    <p>20er/40er</p>
+                                </div>
+                            </div>
+
+                            {/* stack of own stings + points */}
                             <div className="ownStings">
-                                <div className="card"></div>
+                                <div className="stings">
+                                    <div className="card"></div>
+                                    <div className="card show"></div>
+                                </div>
+                                <div className="info">Your Points <br /> (Σ stings)</div>
+                                <div className="points">{this.state.totalStingPoints}</div>
                             </div>
                         </div>
-                    
                     </main>
-
-                    
                 </div>
-
-                
-
             </div>
         )
     }
