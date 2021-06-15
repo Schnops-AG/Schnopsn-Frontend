@@ -15,7 +15,7 @@ import { ErrorMessage } from '../../models/errorMessage'
  * TOOD:
  * -----
  * - Stapel verschwinden lassen if empty
- * - eigene Stiche anschauen (große Ansicht)
+ * - eigene Stiche anschauen (große Ansicht - pop up)
  * - "zudrehen"
  * - "trumpf austauschen"
  * - (animation: who gets the sting)
@@ -32,6 +32,7 @@ type PlayGroundProps = {
 type PlayGroundState = {
     myTurn: boolean,
     canDrawCard: boolean,
+    drawCounter: number,
 
     playedCards: PlayCard[],
     currentCards: PlayCard[],
@@ -41,6 +42,7 @@ type PlayGroundState = {
     countdown: number,
 
     errorMessages: ErrorMessage[],
+
     
 }
 
@@ -66,9 +68,10 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             playedCards : [], 
             currentCards : [], 
             canDrawCard : false, 
+            drawCounter : 5,
             stingFinished : false, 
             totalStingPoints : 0,
-            countdown : 5,
+            countdown : 3,
             errorMessages : []
         };
         
@@ -90,7 +93,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         if(this.state.countdown <= 0){
 
             // clear playedCards, set countdown back to 5 seconds
-            this.setState({playedCards : [], countdown : 5, stingFinished : false}); 
+            this.setState({playedCards : [], countdown : 3, stingFinished : false}); 
             clearInterval(this.timerID);
         }
     }
@@ -147,16 +150,17 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             this.trumpCard = message.data;
 
             // reset totalStingsPoints
-            this.setState({totalStingPoints : 0});
+            this.setState({totalStingPoints : 0, drawCounter : 5});
+            
 
             console.log('trump: ', this.trumpCard);
         }
 
         // receive info, if it is my turn to play
         else if(message.type === 'myTurn'){
+            console.log('myturn:', this.state.myTurn);
             this.setState({myTurn : message.data});
 
-            console.log('myturn:', this.state.myTurn);
         }
 
         // if opponent plays a card
@@ -172,9 +176,9 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             this.afterSting();
         }
 
-        else if(message.type === 'stingPoints'){
-            console.log('stingPoints: ', message.data);
-            this.setState({totalStingPoints : this.state.totalStingPoints + message.data});
+        else if(message.type === 'stingScore'){
+            console.log('stingScore: ', message.data);
+            this.setState({totalStingPoints : message.data});
         }
 
         // player lost his sting (the other one is the winner)
@@ -196,10 +200,19 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         else if(message.type === 'winnerOfRound'){
             console.log('winnerOfRound: ', message.data);
+            console.log('currentCards: ', this.state.currentCards);
         }
 
         else if(message.type === 'message'){
             console.log('message: ', message.data);
+        }
+
+        else if(message.type === 'gamescore'){
+            console.log('gamescore: ', message.data);
+        }
+
+        else if(message.type === 'priorityCards'){
+            console.log('priorityCards: ', message.data);
         }
 
         else{
@@ -226,7 +239,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         if(this.state.canDrawCard){
             console.log('please draw a card first!!!'); // TODO
-            this.setState({currentCards : this.state.currentCards});
+            this.setState({currentCards : this.state.currentCards}); // reset cards if not possible
             return;
         }
 
@@ -248,7 +261,12 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                 let cards :PlayCard[] = this.state.currentCards;
                 const index :number = cards.indexOf(card);
                 cards = cards.filter(c => c != card);
+
+                console.log('-- cards after removing: ', cards);
                 this.setState({currentCards : cards});
+
+                console.log('played card!');
+                console.log('currentCards: ', this.state.currentCards);
                 
             },
             (error) => {
@@ -276,7 +294,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         
 
         // update state of own cards (add new card)
-        this.setState({canDrawCard : false});
+        this.setState({canDrawCard : false, drawCounter : this.state.drawCounter - 1});
         if(this.newCard){
             const cards = this.state.currentCards;
             cards.push(this.newCard);
@@ -288,7 +306,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
     render() {
 
         // get data from sessionStorage (after refresh)
-        console.log('currentcards: ', this.state.currentCards);
+        // console.log('currentcards: ', this.state.currentCards);
         if(this.state.currentCards.length == 0 && !this.playingLastCard){
             let cardString = sessionStorage.getItem('myCards');
             if(cardString){
@@ -317,7 +335,6 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             }
         }
 
-        
 
         return (
             <div className="playground">
@@ -328,18 +345,18 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
                         {/* opponnent's stings */}
                         <div className="stings">
-                            <div className="card"></div>
-                            <div className="card show"></div>
+                            <div className="card crossed"></div>
+                            <div className="card show crossed"></div>
                         </div>
 
 
                         {/* Opponent */}
                         <div className="opponent">
-                            <div className="card"></div>
-                            <div className="card"></div>
-                            <div className="card"></div>
-                            <div className="card"></div>
-                            <div className="card"></div>
+                            <div className="card crossed"></div>
+                            <div className="card crossed"></div>
+                            <div className="card crossed"></div>
+                            <div className="card crossed"></div>
+                            <div className="card crossed"></div>
                         </div>
 
                         {/* Number of bummerl */}
@@ -393,7 +410,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                             onPlay={this.onPlayCard}
                                             playCard={this.state.playedCards[i]}
                                             draggable={false}>
-                                                {this.state.playedCards[i].color}, {this.state.currentCards[i].value}, {this.state.currentCards[i].name}
+                                                {this.state.playedCards[i].color}, {this.state.playedCards[i].value}, {this.state.playedCards[i].name}
                                         </Card>
                                     ))
                                 }
@@ -405,18 +422,23 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                             </Board>
 
                             {/* Main card stack (where you can draw single cards) */}
-                            <div className="cardStack">
-                                <div className="sub">
-                                    {/* hidden card */}
-                                    <div className={`card ${this.state.canDrawCard ? "drawingPossible" : "drawingNotPossible"}`} 
-                                        onClick={this.onDrawCard}></div>
-                                    
-                                    {/* trump card */}
-                                    <div className="card trump">
-                                        {this.trumpCard?.color} {this.trumpCard?.name}
+                            {
+                                (this.state.drawCounter > 0)
+                                ?
+                                    <div className="cardStack">
+                                        <div className="sub">
+                                            {/* hidden card */}
+                                            <div className={`card ${this.state.canDrawCard ? "drawingPossible" : "drawingNotPossible"} crossed`} 
+                                                onClick={this.onDrawCard}></div>
+                                            
+                                            {/* trump card */}
+                                            <div className="card trump">
+                                                {this.trumpCard?.color} {this.trumpCard?.name}
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
+                                :<></>
+                            }
                         </div>
 
                         {/* Own Card Area */}
@@ -452,14 +474,20 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                             </div>
 
                             {/* stack of own stings + points */}
-                            <div className="ownStings">
-                                <div className="stings">
-                                    <div className="card"></div>
-                                    <div className="card show"></div>
-                                </div>
-                                <div className="info">Your Points <br /> (Σ stings)</div>
-                                <div className="points">{this.state.totalStingPoints}</div>
-                            </div>
+                            {
+                                (this.state.totalStingPoints > 0)
+                                ?
+                                    <div className="ownStings">
+                                        <div className="stings">
+                                            <div className="card crossed"></div>
+                                            <div className="card show crossed"></div>
+                                        </div>
+                                        <div className="info">Your Points <br /> (Σ stings)</div>
+                                        <div className="points">{this.state.totalStingPoints}</div>
+                                    </div>
+                                :
+                                    <></>
+                            }
                         </div>
                     </main>
                 </div>
