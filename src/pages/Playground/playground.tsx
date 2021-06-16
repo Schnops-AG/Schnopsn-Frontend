@@ -14,10 +14,8 @@ import { ErrorMessage } from '../../models/errorMessage'
 /**
  * TOOD:
  * -----
- * - Stapel verschwinden lassen if empty
+ * - gamescore anzeigen/updaten
  * - eigene Stiche anschauen (große Ansicht - pop up)
- * - "zudrehen"
- * - "trumpf austauschen"
  * - (animation: who gets the sting)
  * - (animation: opponnent drawing a card)
  * - Error/Info messages
@@ -46,6 +44,8 @@ type PlayGroundState = {
     zugedreht: boolean,
 
     errorMessages: ErrorMessage[],
+
+    gameScore: Map<string, number>
 
     
 }
@@ -77,7 +77,8 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             totalStingPoints : 0,
             countdown : 3,
             errorMessages : [],
-            zugedreht : false
+            zugedreht : false,
+            gameScore : new Map<string, number>()
         };
         
         if(this.props.webSocket){
@@ -214,6 +215,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         else if(message.type === 'gamescore'){
             console.log('gamescore: ', message.data);
+            // TODO
         }
 
         else if(message.type === 'priorityCards'){
@@ -550,7 +552,8 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                 <div className="actions">
                                     <p onClick={this.onZuadrahn}>Zudrehen</p>
                                     <p onClick={this.onExchangeTrump}>Trump austauschen</p>
-                                    <p>20er/40er</p>
+                                    <p>20er</p>
+                                    <p>40er</p>
                                 </div>
                             </div>
 
