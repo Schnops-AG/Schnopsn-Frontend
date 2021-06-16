@@ -21,6 +21,7 @@ import { ErrorMessage } from '../../models/errorMessage'
  * - (animation: who gets the sting)
  * - (animation: opponnent drawing a card)
  * - Error/Info messages
+ * - set current cards on sessionStorage
  */
 
 
@@ -40,6 +41,8 @@ type PlayGroundState = {
     stingFinished: boolean,
     totalStingPoints: number,
     countdown: number,
+
+    zugedreht: boolean,
 
     errorMessages: ErrorMessage[],
 
@@ -72,7 +75,8 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             stingFinished : false, 
             totalStingPoints : 0,
             countdown : 3,
-            errorMessages : []
+            errorMessages : [],
+            zugedreht : false
         };
         
         if(this.props.webSocket){
@@ -151,6 +155,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
             // reset totalStingsPoints
             this.setState({totalStingPoints : 0, drawCounter : 5});
+            this.playingLastCard = false;
             
 
             console.log('trump: ', this.trumpCard);
@@ -215,6 +220,11 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             console.log('priorityCards: ', message.data);
         }
 
+        else if(message.type === 'zugedreht'){
+            console.log('zugedreht: ', message.data);
+            this.setState({zugedreht : true});
+        }
+
         else{
             console.log(message);
         }
@@ -262,6 +272,10 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                 const index :number = cards.indexOf(card);
                 cards = cards.filter(c => c != card);
 
+                if(cards.length == 0){
+                    this.playingLastCard = true;
+                }
+
                 console.log('-- cards after removing: ', cards);
                 this.setState({currentCards : cards});
 
@@ -273,6 +287,37 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                 console.log('error: ' + error);
             }
         )
+    }
+
+    /**
+     * handler that listens for the 'zudrehen' button + makes the request to the server
+     */
+    onZuadrahn = () =>{
+        console.log('zuahdrahn...');
+
+        if(this.state.zugedreht){
+            console.log('it is already zuadraht...');
+            return;
+        }
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            // body: JSON.stringify({ playerName: enteredPlayerName })
+        };
+
+        fetch(`http://localhost:8080/api/v1/zudrehen?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}`, requestOptions)
+        .then(res => res.json())
+        .then(
+            (result) => {
+                console.log(result, 'sucessfully zudraht?!!');
+            },
+            (error) => {
+                console.log('error: ' + error);
+            }
+        )
+
+
     }
 
 
@@ -432,7 +477,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                                 onClick={this.onDrawCard}></div>
                                             
                                             {/* trump card */}
-                                            <div className="card trump">
+                                            <div className={`card trump ${this.state.zugedreht ? 'crossed trump_notVisible' : ''}`}>
                                                 {this.trumpCard?.color} {this.trumpCard?.name}
                                             </div>
                                         </div>
@@ -467,7 +512,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                             <div className="actionMenue">
                                 <h3>Actions</h3>
                                 <div className="actions">
-                                    <p>Zudrehen</p>
+                                    <p onClick={this.onZuadrahn}>Zudrehen</p>
                                     <p>Trump austauschen</p>
                                     <p>20er/40er</p>
                                 </div>
