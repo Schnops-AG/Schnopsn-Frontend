@@ -37,6 +37,7 @@ type PlayGroundState = {
 
     playedCards: PlayCard[],
     currentCards: PlayCard[],
+    trumpCard: PlayCard | null,
 
     stingFinished: boolean,
     totalStingPoints: number,
@@ -55,7 +56,6 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
     player? :Player;
     playingLastCard :boolean = false;
     
-    trumpCard? :PlayCard;
     currentPlayedCard? :PlayCard;
     
     newCard? :PlayCard;
@@ -70,6 +70,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             myTurn : false, 
             playedCards : [], 
             currentCards : [], 
+            trumpCard : null,
             canDrawCard : false, 
             drawCounter : 5,
             stingFinished : false, 
@@ -151,14 +152,13 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         // receive trump
         else if(message.type === 'trumpCard'){
-            this.trumpCard = message.data;
 
             // reset totalStingsPoints
-            this.setState({totalStingPoints : 0, drawCounter : 5});
+            this.setState({totalStingPoints : 0, drawCounter : 5, trumpCard : message.data});
             this.playingLastCard = false;
             
 
-            console.log('trump: ', this.trumpCard);
+            console.log('trump: ', this.state.trumpCard);
         }
 
         // receive info, if it is my turn to play
@@ -224,6 +224,12 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             console.log('zugedreht: ', message.data);
             this.setState({zugedreht : true});
         }
+
+        else if(message.type === 'newTrumpCard'){
+            console.log('newTrumpCard: ', message.data);
+            this.setState({trumpCard : message.data});
+        }
+
 
         else{
             console.log(message);
@@ -318,6 +324,36 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         )
 
 
+    }
+
+
+    onExchangeTrump = () =>{
+        console.log('exchanging trump..');
+
+        if(this.state.trumpCard?.value == 2){
+            console.log('trump card cannot be exchanged!');
+            return;
+        }
+        if(!this.state.canDrawCard){
+            console.log('trump is no longer in this position');
+        }
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            // body: JSON.stringify({ playerName: enteredPlayerName })
+        };
+
+        fetch(`http://localhost:8080/api/v1/switchTrumpCard?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}`, requestOptions)
+        .then(res => res.json())
+        .then(
+            (result) => {
+                console.log(result, 'sucessfully zudraht?!!');
+            },
+            (error) => {
+                console.log('error: ' + error);
+            }
+        )
     }
 
 
@@ -477,8 +513,8 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                                 onClick={this.onDrawCard}></div>
                                             
                                             {/* trump card */}
-                                            <div className={`card trump ${this.state.zugedreht ? 'crossed trump_notVisible' : ''}`}>
-                                                {this.trumpCard?.color} {this.trumpCard?.name}
+                                            <div className={`card trump ${this.state.zugedreht ? 'trump_notVisible crossed ' : ''}`}>
+                                                {this.state.trumpCard?.color} {this.state.trumpCard?.name}
                                             </div>
                                         </div>
                                     </div>
@@ -513,7 +549,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                 <h3>Actions</h3>
                                 <div className="actions">
                                     <p onClick={this.onZuadrahn}>Zudrehen</p>
-                                    <p>Trump austauschen</p>
+                                    <p onClick={this.onExchangeTrump}>Trump austauschen</p>
                                     <p>20er/40er</p>
                                 </div>
                             </div>
