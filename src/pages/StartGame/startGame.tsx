@@ -95,6 +95,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
         this.game?.teams.forEach((team :Team) => team.players.forEach((player :Player) =>{
             if(this.player1?.playerID == player.playerID){
                 this.player1.admin = player.admin;
+                sessionStorage.setItem('player', JSON.stringify(this.player1));
             }
         }))
     }

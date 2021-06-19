@@ -138,6 +138,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             let playerString = sessionStorage.getItem('player');
             if(playerString){
                 this.player = JSON.parse(playerString);
+                console.log('player: ', this.player?.playerName, this.player?.playerID);
             }
         }
         // #endregion
@@ -187,6 +188,10 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             
             this.afterSting();
         }
+        else if(message.type === 'winnerOfRound'){
+            console.log('winnerOfRound: ', message.data);
+            console.log('currentCards: ', this.state.currentCards);
+        }
         
         else if(message.type === 'sting'){
             console.log('sting: ', message.data);
@@ -205,6 +210,11 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         else if(message.type === 'gamescore'){
             console.log('gamescore: ', message.data);
             this.setState({gameScore : new Map(Object.entries(message.data))});
+
+            console.log('isAdmin?:', this.player?.admin);
+            if(this.player?.admin){
+                this.startNewRound();
+            }
         }
 
         else if(message.type === 'newCard'){
@@ -213,10 +223,6 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             this.setState({canDrawCard : true});
         }
 
-        else if(message.type === 'winnerOfRound'){
-            console.log('winnerOfRound: ', message.data);
-            console.log('currentCards: ', this.state.currentCards);
-        }
 
         else if(message.type === 'message'){
             console.log('message: ', message.data);
@@ -238,6 +244,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         }
 
 
+
         else{
             console.log(message);
         }
@@ -248,6 +255,23 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
     getCurrentPlayedCard = () =>{
         return this.currentPlayedCard;
+    }
+
+    /**
+     * used to start a new round (only admin)
+     */
+    startNewRound = () =>{
+        console.log('starting new round...');
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        };
+        
+        // request
+        fetch(`http://localhost:8080/api/v1/startRound2erSchnopsn?gameID=${this.game?.gameID}`, requestOptions)
+        .then(res => {
+            console.log('result: ', res);
+        });
     }
 
 
@@ -428,7 +452,6 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         const prepareScore = (scoreMap :Map<string, number>) =>{
             let scoreArray :number[] = [0,0];
             scoreMap.forEach((value :number, key :string) =>{
-                console.log('- entry:', key, value);
                 if(this.player?.playerID === key){
                     scoreArray[0] = value;
                 }else if(key.length > 1){
