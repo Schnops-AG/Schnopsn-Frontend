@@ -14,12 +14,12 @@ import { ErrorMessage } from '../../models/errorMessage'
 /**
  * TOOD:
  * -----
- * - gamescore anzeigen/updaten
  * - eigene Stiche anschauen (große Ansicht - pop up)
  * - (animation: who gets the sting)
  * - (animation: opponnent drawing a card)
  * - Error/Info messages
  * - set current cards on sessionStorage
+ * - bummerl: where to place the score??
  */
 
 
@@ -46,6 +46,8 @@ type PlayGroundState = {
     errorMessages: ErrorMessage[],
 
     gameScore: Map<string, number>
+    bummerlScore: Map<string, number>
+    
 
     
 }
@@ -54,6 +56,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
     // currentCards? :PlayCard[];
     game? :Game;
     player? :Player;
+    opponentPlayer? :Player;
     playingLastCard :boolean = false;
     
     currentPlayedCard? :PlayCard;
@@ -78,7 +81,8 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             countdown : 3,
             errorMessages : [],
             zugedreht : false,
-            gameScore : new Map<string, number>()
+            gameScore : new Map<string, number>([['0', 1], ['1', 0]]),
+            bummerlScore : new Map<string, number>([['0', 1], ['1', 0]])
         };
         
         if(this.props.webSocket){
@@ -176,6 +180,14 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             this.setState({playedCards : message.data});
         }
 
+        
+        // player lost his sting (the other one is the winner)
+        else if(message.type === 'winner'){
+            console.log('winner: ', message.data);
+            
+            this.afterSting();
+        }
+        
         else if(message.type === 'sting'){
             console.log('sting: ', message.data);
 
@@ -186,16 +198,13 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             console.log('stingScore: ', message.data);
             this.setState({totalStingPoints : message.data});
         }
-
-        // player lost his sting (the other one is the winner)
-        else if(message.type === 'winner'){
-            console.log('winner: ', message.data);
-
-            this.afterSting();
-        }
-
         else if(message.type === 'bummerl'){
             console.log('bummerl: ', message.data);
+            this.setState({bummerlScore : new Map(Object.entries(message.data))});
+        }
+        else if(message.type === 'gamescore'){
+            console.log('gamescore: ', message.data);
+            this.setState({gameScore : new Map(Object.entries(message.data))});
         }
 
         else if(message.type === 'newCard'){
@@ -213,10 +222,6 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             console.log('message: ', message.data);
         }
 
-        else if(message.type === 'gamescore'){
-            console.log('gamescore: ', message.data);
-            // TODO
-        }
 
         else if(message.type === 'priorityCards'){
             console.log('priorityCards: ', message.data);
@@ -418,7 +423,25 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             }
         }
 
-
+        
+        
+        const prepareScore = (scoreMap :Map<string, number>) =>{
+            let scoreArray :number[] = [0,0];
+            scoreMap.forEach((value :number, key :string) =>{
+                console.log('- entry:', key, value);
+                if(this.player?.playerID === key){
+                    scoreArray[0] = value;
+                }else if(key.length > 1){
+                    scoreArray[1] = value;
+                }
+            });
+            return scoreArray;
+        };
+        
+        let gameScore = prepareScore(this.state.gameScore);
+        let bummerlScore = prepareScore(this.state.bummerlScore);
+        
+        
         return (
             <div className="playground">
                 <div className="back">
@@ -456,14 +479,22 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                         {/* middle area */}
                         <div className="central">
 
-                            {/* current state of the game (points (0-7)) */}
+                            {/* current state of the game */}
                             <div className="score">
                                 <div className="h3">
                                     <h3>Spielstand</h3>
                                 </div>  
+
+                                {/* bummerl go here ?? */}
                                 <div className="points">
-                                    <span id="opponent">-1</span>
-                                    <span id="me">-1</span>
+                                    <span id="opponent">{bummerlScore[1]}</span>
+                                    <span id="me">{bummerlScore[0]}</span>
+                                </div>
+
+                                {/* gameScore (0-7) */}
+                                <div className="points">
+                                    <span id="opponent">{gameScore[1]}</span>
+                                    <span id="me">{gameScore[0]}</span>
                                 </div>
                             </div>
 
@@ -526,6 +557,8 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
                         {/* Own Card Area */}
                         <div className="own">
+
+                            {/* own cards */}
                             <Board id="own" 
                                 getCard={this.getCurrentPlayedCard} 
                                 playCard={this.onPlayCard} 
