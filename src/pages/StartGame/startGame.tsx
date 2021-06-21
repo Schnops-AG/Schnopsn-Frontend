@@ -13,6 +13,8 @@ import { Game } from '../../models/game';
 import { Team } from '../../models/team';
 import { CustomWebSocket } from '../../utils/websocket';
 import { Playground } from '../Playground/playground';
+import InfoBoxComponent, { InfoBox } from '../../components/InfoBox/infoBox';
+import infoBox from '../../components/InfoBox/infoBox';
 
 type StartGameProps = {
     title: string,
@@ -24,7 +26,8 @@ type StartGameProps = {
 
 type StartGameState = {
     playerName: string,
-    room: string // name or link
+    room: string, // name or link
+    infoBox: InfoBox
 }
 
 
@@ -53,10 +56,9 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
     webSocket?: CustomWebSocket;
 
-
     constructor(props: StartGameProps){
         super(props);
-        this.state = {playerName : '', room : ''};
+        this.state = {playerName : '', room : '', infoBox : new InfoBox('none', '', '')};
     }
 
     /**
@@ -116,8 +118,12 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
             console.log("playername is null");
             event.preventDefault();
             event.stopPropagation();
-            
+
             this.player1 = undefined;
+
+            this.setState({infoBox : new InfoBox("info", "Missing Playername", "Please enter a playername")});
+
+
             return;
 
         }else{
@@ -169,6 +175,9 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
 
     render(){
+
+
+
         return(
             <Switch>
                 
@@ -220,6 +229,11 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                                 </div>  
                             </div>
                             
+                            {
+                                this.state.infoBox.type === 'none' ? <></> : 
+                                    <InfoBoxComponent onClose={() => this.setState({infoBox : new InfoBox('none', '', '')})} title={this.state.infoBox.title} type={this.state.infoBox.type}>{this.state.infoBox.children}</InfoBoxComponent>
+                            }
+
                         </div>
                     </div>
                 </Route>
