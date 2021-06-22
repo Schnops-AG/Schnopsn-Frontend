@@ -10,6 +10,7 @@ import { Game } from '../../models/game'
 import { Player } from '../../models/player'
 import { setTimeout } from 'timers'
 import { ErrorMessage } from '../../models/errorMessage'
+import StingView from '../../components/StingView/stingView'
 
 /**
  * TOOD:
@@ -629,6 +630,9 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                             }
                         </div>
                     </main>
+                
+                    <StingView />
+                
                 </div>
             </div>
         )
