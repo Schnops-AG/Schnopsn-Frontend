@@ -14,13 +14,12 @@ import { ErrorMessage } from '../../models/errorMessage'
 /**
  * TOOD:
  * -----
- * - Stapel verschwinden lassen if empty
  * - eigene Stiche anschauen (große Ansicht - pop up)
- * - "zudrehen"
- * - "trumpf austauschen"
  * - (animation: who gets the sting)
  * - (animation: opponnent drawing a card)
  * - Error/Info messages
+ * - set current cards on sessionStorage
+ * - bummerl: where to place the score??
  */
 
 
@@ -36,12 +35,19 @@ type PlayGroundState = {
 
     playedCards: PlayCard[],
     currentCards: PlayCard[],
+    trumpCard: PlayCard | null,
 
     stingFinished: boolean,
     totalStingPoints: number,
     countdown: number,
 
+    zugedreht: boolean,
+
     errorMessages: ErrorMessage[],
+
+    gameScore: Map<string, number>
+    bummerlScore: Map<string, number>
+    
 
     
 }
@@ -50,9 +56,9 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
     // currentCards? :PlayCard[];
     game? :Game;
     player? :Player;
+    opponentPlayer? :Player;
     playingLastCard :boolean = false;
     
-    trumpCard? :PlayCard;
     currentPlayedCard? :PlayCard;
     
     newCard? :PlayCard;
@@ -67,12 +73,16 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             myTurn : false, 
             playedCards : [], 
             currentCards : [], 
+            trumpCard : null,
             canDrawCard : false, 
             drawCounter : 5,
             stingFinished : false, 
             totalStingPoints : 0,
             countdown : 3,
-            errorMessages : []
+            errorMessages : [],
+            zugedreht : false,
+            gameScore : new Map<string, number>([['0', 1], ['1', 0]]),
+            bummerlScore : new Map<string, number>([['0', 1], ['1', 0]])
         };
         
         if(this.props.webSocket){
@@ -128,6 +138,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             let playerString = sessionStorage.getItem('player');
             if(playerString){
                 this.player = JSON.parse(playerString);
+                console.log('player: ', this.player?.playerName, this.player?.playerID);
             }
         }
         // #endregion
@@ -147,13 +158,13 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         // receive trump
         else if(message.type === 'trumpCard'){
-            this.trumpCard = message.data;
 
             // reset totalStingsPoints
-            this.setState({totalStingPoints : 0, drawCounter : 5});
+            this.setState({totalStingPoints : 0, drawCounter : 5, trumpCard : message.data});
+            this.playingLastCard = false;
             
 
-            console.log('trump: ', this.trumpCard);
+            console.log('trump: ', this.state.trumpCard);
         }
 
         // receive info, if it is my turn to play
@@ -170,6 +181,18 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             this.setState({playedCards : message.data});
         }
 
+        
+        // player lost his sting (the other one is the winner)
+        else if(message.type === 'winner'){
+            console.log('winner: ', message.data);
+            
+            this.afterSting();
+        }
+        else if(message.type === 'winnerOfRound'){
+            console.log('winnerOfRound: ', message.data);
+            console.log('currentCards: ', this.state.currentCards);
+        }
+        
         else if(message.type === 'sting'){
             console.log('sting: ', message.data);
 
@@ -180,16 +203,18 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             console.log('stingScore: ', message.data);
             this.setState({totalStingPoints : message.data});
         }
-
-        // player lost his sting (the other one is the winner)
-        else if(message.type === 'winner'){
-            console.log('winner: ', message.data);
-
-            this.afterSting();
-        }
-
         else if(message.type === 'bummerl'){
             console.log('bummerl: ', message.data);
+            this.setState({bummerlScore : new Map(Object.entries(message.data))});
+        }
+        else if(message.type === 'gamescore'){
+            console.log('gamescore: ', message.data);
+            this.setState({gameScore : new Map(Object.entries(message.data))});
+
+            console.log('isAdmin?:', this.player?.admin);
+            if(this.player?.admin){
+                this.startNewRound();
+            }
         }
 
         else if(message.type === 'newCard'){
@@ -198,22 +223,27 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             this.setState({canDrawCard : true});
         }
 
-        else if(message.type === 'winnerOfRound'){
-            console.log('winnerOfRound: ', message.data);
-            console.log('currentCards: ', this.state.currentCards);
-        }
 
         else if(message.type === 'message'){
             console.log('message: ', message.data);
         }
 
-        else if(message.type === 'gamescore'){
-            console.log('gamescore: ', message.data);
-        }
 
         else if(message.type === 'priorityCards'){
             console.log('priorityCards: ', message.data);
         }
+
+        else if(message.type === 'zugedreht'){
+            console.log('zugedreht: ', message.data);
+            this.setState({zugedreht : true});
+        }
+
+        else if(message.type === 'newTrumpCard'){
+            console.log('newTrumpCard: ', message.data);
+            this.setState({trumpCard : message.data});
+        }
+
+
 
         else{
             console.log(message);
@@ -225,6 +255,23 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
     getCurrentPlayedCard = () =>{
         return this.currentPlayedCard;
+    }
+
+    /**
+     * used to start a new round (only admin)
+     */
+    startNewRound = () =>{
+        console.log('starting new round...');
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        };
+        
+        // request
+        fetch(`http://localhost:8080/api/v1/startRound2erSchnopsn?gameID=${this.game?.gameID}`, requestOptions)
+        .then(res => {
+            console.log('result: ', res);
+        });
     }
 
 
@@ -262,12 +309,77 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                 const index :number = cards.indexOf(card);
                 cards = cards.filter(c => c != card);
 
+                if(cards.length == 0){
+                    this.playingLastCard = true;
+                }
+
                 console.log('-- cards after removing: ', cards);
                 this.setState({currentCards : cards});
 
                 console.log('played card!');
                 console.log('currentCards: ', this.state.currentCards);
                 
+            },
+            (error) => {
+                console.log('error: ' + error);
+            }
+        )
+    }
+
+    /**
+     * handler that listens for the 'zudrehen' button + makes the request to the server
+     */
+    onZuadrahn = () =>{
+        console.log('zuahdrahn...');
+
+        if(this.state.zugedreht){
+            console.log('it is already zuadraht...');
+            return;
+        }
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            // body: JSON.stringify({ playerName: enteredPlayerName })
+        };
+
+        fetch(`http://localhost:8080/api/v1/zudrehen?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}`, requestOptions)
+        .then(res => res.json())
+        .then(
+            (result) => {
+                console.log(result, 'sucessfully zudraht?!!');
+            },
+            (error) => {
+                console.log('error: ' + error);
+            }
+        )
+
+
+    }
+
+
+    onExchangeTrump = () =>{
+        console.log('exchanging trump..');
+
+        if(this.state.trumpCard?.value == 2){
+            console.log('trump card cannot be exchanged!');
+            return;
+        }
+        if(!this.state.canDrawCard){
+            console.log('trump is no longer in this position');
+        }
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            // body: JSON.stringify({ playerName: enteredPlayerName })
+        };
+
+        fetch(`http://localhost:8080/api/v1/switchTrumpCard?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}`, requestOptions)
+        .then(res => res.json())
+        .then(
+            (result) => {
+                console.log(result, 'sucessfully zudraht?!!');
             },
             (error) => {
                 console.log('error: ' + error);
@@ -335,7 +447,24 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             }
         }
 
-
+        
+        
+        const prepareScore = (scoreMap :Map<string, number>) =>{
+            let scoreArray :number[] = [0,0];
+            scoreMap.forEach((value :number, key :string) =>{
+                if(this.player?.playerID === key){
+                    scoreArray[0] = value;
+                }else if(key.length > 1){
+                    scoreArray[1] = value;
+                }
+            });
+            return scoreArray;
+        };
+        
+        let gameScore = prepareScore(this.state.gameScore);
+        let bummerlScore = prepareScore(this.state.bummerlScore);
+        
+        
         return (
             <div className="playground">
                 <div className="back">
@@ -373,14 +502,22 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                         {/* middle area */}
                         <div className="central">
 
-                            {/* current state of the game (points (0-7)) */}
+                            {/* current state of the game */}
                             <div className="score">
                                 <div className="h3">
                                     <h3>Spielstand</h3>
                                 </div>  
+
+                                {/* bummerl go here ?? */}
                                 <div className="points">
-                                    <span id="opponent">-1</span>
-                                    <span id="me">-1</span>
+                                    <span id="opponent">{bummerlScore[1]}</span>
+                                    <span id="me">{bummerlScore[0]}</span>
+                                </div>
+
+                                {/* gameScore (0-7) */}
+                                <div className="points">
+                                    <span id="opponent">{gameScore[1]}</span>
+                                    <span id="me">{gameScore[0]}</span>
                                 </div>
                             </div>
 
@@ -431,8 +568,8 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                                 onClick={this.onDrawCard}></div>
                                             
                                             {/* trump card */}
-                                            <div className="card trump">
-                                                {this.trumpCard?.color} {this.trumpCard?.name}
+                                            <div className={`card trump ${this.state.zugedreht ? 'trump_notVisible crossed ' : ''}`}>
+                                                {this.state.trumpCard?.color} {this.state.trumpCard?.name}
                                             </div>
                                         </div>
                                     </div>
@@ -442,6 +579,8 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
                         {/* Own Card Area */}
                         <div className="own">
+
+                            {/* own cards */}
                             <Board id="own" 
                                 getCard={this.getCurrentPlayedCard} 
                                 playCard={this.onPlayCard} 
@@ -466,9 +605,10 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                             <div className="actionMenue">
                                 <h3>Actions</h3>
                                 <div className="actions">
-                                    <p>Zudrehen</p>
-                                    <p>Trump austauschen</p>
-                                    <p>20er/40er</p>
+                                    <p onClick={this.onZuadrahn}>Zudrehen</p>
+                                    <p onClick={this.onExchangeTrump}>Trump austauschen</p>
+                                    <p>20er</p>
+                                    <p>40er</p>
                                 </div>
                             </div>
 
