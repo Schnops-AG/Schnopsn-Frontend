@@ -410,7 +410,6 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                             onPlay={this.onPlayCard}
                                             playCard={this.state.playedCards[i]}
                                             draggable={false}>
-                                                {this.state.playedCards[i].color}, {this.state.playedCards[i].value}, {this.state.playedCards[i].name}
                                         </Card>
                                     ))
                                 }
