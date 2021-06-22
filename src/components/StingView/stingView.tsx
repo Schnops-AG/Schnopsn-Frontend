@@ -3,7 +3,13 @@ import { PlayCard } from '../../models/card';
 import Card from '../Card/card';
 import './stingView.scss';
 
-export default function StingView() {
+
+type StingViewProps = {
+    stings: PlayCard[][]
+
+}
+
+export default function StingView(props: StingViewProps) {
 
     const card_indices = [1,2,3,4,5];
 
@@ -11,32 +17,21 @@ export default function StingView() {
     return (
         <div className="stingView">
             {
-                card_indices.map(i => (
+                props.stings.map(sting =>(
                     <div className="sting">
-                        <Card 
-                            id={``} 
-                            draggable={false} 
-                            // TODO: playcard
-                            playCard={{} as PlayCard}
-                            className="card"
-                            onPlay={() => null}
-                            onDragStart={() => null}
-                        >
-
-                        </Card>
-                        <Card 
-                            id='string_0' 
-                            draggable={false} 
-                            // TODO: playcard
-                            playCard={{} as PlayCard}
-                            className="card"
-                            onPlay={() => null}
-                            onDragStart={() => null}
-                        >
-
-                        </Card>
+                        {
+                            sting.map(card =>(
+                                <Card 
+                                    id={`sting_${card.name}_${card.color}`} 
+                                    draggable={false} 
+                                    playCard={card}
+                                    className="card"
+                                    onPlay={() => null}
+                                    onDragStart={() => null}
+                                />
+                            ))
+                        }
                     </div>
-
                 ))
             }
         </div>

@@ -11,7 +11,7 @@ type CardProps = {
     playCard: PlayCard,
     className: string,
 
-    children: React.ReactNode,
+    // children: React.ReactNode,
 
     onPlay: (playCard: PlayCard) => void,
     onDragStart: (playCard: PlayCard) => void
@@ -78,7 +78,7 @@ export default function Card(props: CardProps) {
         if (props.suit === "KREUZ" || props.suit === "PICK") {
           return (
           <div
-          className="card card-black"
+          className={`card card-black ${props.className}`}
             id={props.id}
             draggable={props.draggable}
             onDragStart={dragStart}
@@ -98,7 +98,7 @@ export default function Card(props: CardProps) {
         } else {
           return (
           <div
-            className="card card-red"
+            className={`card card-red ${props.className}`}
             id={props.id}
             draggable={props.draggable}
             onDragStart={dragStart}
@@ -128,6 +128,7 @@ export default function Card(props: CardProps) {
             onDragStart={dragStart}
             onDragOver={dragOver}
             onDragEnd={dragEnd}
+            className={props.className}
         />
     );
 }

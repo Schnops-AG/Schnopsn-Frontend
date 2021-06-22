@@ -2,22 +2,26 @@
 
 .stingView{
     position: fixed;
-    top: 30%;
-    left: 30%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
     width: 50%;
     height: 40%;
 
-    background-color: rgb(195, 206, 102);
+    background-color: #DDB771;
     border-radius: 10px;
     box-shadow: 0px 0px 50px rgb(0, 0, 0);
 
-    z-index: 200;
+    z-index: 50;
 
-    display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
+
+    flex-wrap: wrap;
+
+    // max. 7 stings to be displayed´
 
 
 
@@ -29,6 +33,7 @@
         justify-content: center; // horizontal alignment
 
         padding: 30px;
+        margin: 30px;
 
         .card{
             width: 80px;
@@ -42,6 +47,10 @@
 
     }
 
+    display: none;
 
+}
 
+.ownStings .stings:hover ~ .stingView{
+    display: flex;
 }
