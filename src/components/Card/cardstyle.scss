@@ -11,6 +11,10 @@ $font-stack: Helvetica, sans-serif;
     border: 1px solid black;
     margin: 16px;
     padding: 4px;
+
+    position: relative;
+    justify-content: center;
+    align-items: center;
 }
 
 .card-black {
@@ -35,6 +39,9 @@ $font-stack: Helvetica, sans-serif;
     flex-grow: 1;
     flex-flow: column nowrap;
     align-items: flex-start;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .card-br {
@@ -45,6 +52,9 @@ $font-stack: Helvetica, sans-serif;
     justify-content: flex-start;
     align-items: flex-start;
     transform:rotate(-180deg);
+    position: absolute;
+    right: 0;
+    bottom: 0;
 }
 
 h1{

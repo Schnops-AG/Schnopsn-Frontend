@@ -17,7 +17,9 @@
 
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
     justify-content: center;
+    align-content: center;
 
     flex-wrap: wrap;
 
@@ -32,17 +34,10 @@
         align-items: center;
         justify-content: center; // horizontal alignment
 
-        padding: 30px;
-        margin: 30px;
 
         .card{
             width: 80px;
             height: 140px;
-
-            &:nth-child(2){
-                transform: rotate(70deg);
-                position: absolute;
-            }
         }
 
     }

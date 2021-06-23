@@ -37,7 +37,7 @@ type PlayGroundState = {
 
     playedCards: PlayCard[],
     myCards: PlayCard[],
-    trumpCard: PlayCard | null,
+    trumpCard: PlayCard,
 
     myStings: PlayCard[][],
 
@@ -81,7 +81,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             myCards : [], 
             myStings : [],
             opponnentGotStings : false,
-            trumpCard : null,
+            trumpCard : new PlayCard("", 1, "", "", false),
             canDrawCard : false, 
             drawCounter : 5,
             stingFinished : false, 
@@ -599,10 +599,18 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                             <div className={`card ${this.state.canDrawCard ? "drawingPossible" : "drawingNotPossible"} crossed`} 
                                                 onClick={this.onDrawCard}></div>
                                             
-                                            {/* trump card */}
-                                            <div className={`card trump ${this.state.zugedreht ? 'trump_notVisible crossed ' : ''}`}>
-                                                {this.state.trumpCard?.color} {this.state.trumpCard?.name}
-                                            </div>
+                                            {/* trump card */
+                                                console.log("Aktuelle Trumpfkarte: ", this.state.trumpCard)
+                                            }
+                                                <Card 
+                                                    className={`card trump ${this.state.zugedreht ? 'trump_notVisible crossed ' : ''}`} 
+                                                    onDragStart={this.onStartDrag}
+                                                    id="100069"
+                                                    key="100069"
+                                                    onPlay={() => {}}
+                                                    playCard={this.state.trumpCard}
+                                                    draggable={false}
+                                                />
                                         </div>
                                     :<></>
                                 }

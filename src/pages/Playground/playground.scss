@@ -212,7 +212,6 @@
                     flex-grow: 7;
 
                     height: 100%;
-                    min-height: 280px;
                     padding-left: 3%;
                     padding-right: 3%;
                     // background-color: rgba(66, 25, 48, 0.699);
@@ -303,8 +302,9 @@
                 .board{
                     flex-grow: 5;
 
+                    // height: 280px;
                     height: 100%;
-                    min-height: 280px;
+                    //min-height: 280px;
 
                     // background-color: rgba(66, 25, 48, 0.699);
 
@@ -421,9 +421,11 @@
                     }
 
                     // TODO: does not work yet
-                    .points:hover + .info{
-                        display: block;
-                        position: absolute;
+                    .points:hover + .info {
+                        width: 100%;
+                        height: auto;
+                        display: flex;
+                        flex-direction: row;
                         border-radius: 10px;
                         background: rgb(43, 43, 43);
                         color: #fff;
@@ -431,6 +433,12 @@
                         padding: 15px;
                         z-index: 50;
                         bottom: 0;
+
+                        
+                        
+                        h1{
+                            font-size: 8px;
+                        }
                     }
                 }
             }
