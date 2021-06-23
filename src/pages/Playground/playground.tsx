@@ -203,11 +203,14 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             
             this.afterSting();
         }
+
+        // returns the winner of the round (name)
         else if(message.type === 'winnerOfRound'){
             console.log('winnerOfRound: ', message.data);
             console.log('currentCards: ', this.state.myCards);
         }
         
+        // returns the current sting (consiting of TWO cards; only if you are the winner)
         else if(message.type === 'sting'){
             console.log('sting: ', message.data);
 
@@ -219,10 +222,13 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             this.afterSting();
         }
 
+        // returns the players (own) sting score
         else if(message.type === 'stingScore'){
             console.log('stingScore: ', message.data);
             this.setState({totalStingPoints : message.data});
         }
+
+        // returns the map of bummerl (key: playerID, value: number of bummerl)
         else if(message.type === 'bummerl'){
             console.log('bummerl: ', message.data);
 
@@ -234,6 +240,8 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                 opponnentGotStings : false
             });
         }
+
+        // returns the score of of the current game (0-7) as a map (key: playerID, value: number of bummerl)
         else if(message.type === 'gamescore'){
             console.log('gamescore: ', message.data);
             this.setState({gameScore : new Map(Object.entries(message.data))});
@@ -244,6 +252,8 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             }
         }
 
+        // returns the newly available card to be drawn,
+        // -> now the player is able to click on the card stack to draw a card
         else if(message.type === 'newCard'){
             console.log('newCard: ', message.data);
             this.newCard = message.data;
@@ -251,21 +261,25 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         }
 
 
+        // just a simple message (for debugging..)
         else if(message.type === 'message'){
             console.log('message: ', message.data);
         }
 
 
+        // returns the priority of the player's cards (whether a card can be played or not)
         else if(message.type === 'priorityCards'){
             console.log('priorityCards: ', message.data);
             this.setState({myCards : message.data});
         }
 
+        // informs the player that somebody has `zugedreht`
         else if(message.type === 'zugedreht'){
             console.log('zugedreht: ', message.data);
             this.setState({zugedreht : true});
         }
 
+        // if somebody has exchanged the trumpcard --> get the new trump card
         else if(message.type === 'newTrumpCard'){
             console.log('newTrumpCard: ', message.data);
             this.setState({trumpCard : message.data});
@@ -385,7 +399,37 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
     }
 
+    /**
+     * handler that listens for the `20er` and `40er`button on the action menue
+     * @param type 20 or 40
+     */
+    onCall20or40 = (type: number) =>{
+        console.log('calling ' + type + ' ...');
 
+
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        };
+
+        fetch(`http://localhost:8080/api/v1/call20er40er?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&type=${type}`, requestOptions)
+        .then(res => res.json())
+        .then(
+            (result) => {
+                console.log(result, 'sucessfully called 20/40?!!');
+            },
+            (error) => {
+                console.log('error (call 20/40): ' + error);
+            }
+        )
+    }
+
+
+    /**
+     * handler for exchanging the trump card with a `Bube`
+     * @returns 
+     */
     onExchangeTrump = () =>{
         console.log('exchanging trump..');
 
@@ -424,7 +468,14 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         this.currentPlayedCard = card;
     }
 
+    /**
+     * handler for drawing a card (from own board --> middle board)
+     * @param event 
+     * @returns 
+     */
     onDrawCard = (event :React.MouseEvent) =>{
+
+        // check if the player is allowed to draw a card
         if(!this.state.canDrawCard){
             console.log('cannot draw a card yet. please wait.');
             return;
@@ -635,7 +686,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                             id={`ownCard_${i}`} 
                                             key={i}
                                             playCard={this.state.myCards[i] ? this.state.myCards[i] : {} as PlayCard}
-                                            draggable={this.state.myTurn} />
+                                            draggable={this.state.myTurn && this.state.myCards[i].priority} />
                                     ))
                                 }
                             </Board>
@@ -646,8 +697,8 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                 <div className="actions">
                                     <p onClick={this.onZuadrahn}>Zudrehen</p>
                                     <p onClick={this.onExchangeTrump}>Trump austauschen</p>
-                                    <p>20er</p>
-                                    <p>40er</p>
+                                    <p onClick={() => this.onCall20or40(20)}>20er</p>
+                                    <p onClick={() => this.onCall20or40(40)}>40er</p>
                                 </div>
                             </div>
 
