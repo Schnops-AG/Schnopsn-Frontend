@@ -36,7 +36,7 @@ type PlayGroundState = {
     drawCounter: number,
 
     playedCards: PlayCard[],
-    currentCards: PlayCard[],
+    myCards: PlayCard[],
     trumpCard: PlayCard | null,
 
     myStings: PlayCard[][],
@@ -78,7 +78,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         this.state = {
             myTurn : false, 
             playedCards : [], 
-            currentCards : [], 
+            myCards : [], 
             myStings : [],
             opponnentGotStings : false,
             trumpCard : null,
@@ -158,7 +158,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         // receive cards
         if(message.type === 'cards'){
-            this.setState({currentCards : message.data});
+            this.setState({myCards : message.data});
             
             // set cards to sessionStorage to maintain state even after refresh
             sessionStorage.setItem('myCards', JSON.stringify(message.data)); 
@@ -204,7 +204,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         }
         else if(message.type === 'winnerOfRound'){
             console.log('winnerOfRound: ', message.data);
-            console.log('currentCards: ', this.state.currentCards);
+            console.log('currentCards: ', this.state.myCards);
         }
         
         else if(message.type === 'sting'){
@@ -257,6 +257,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         else if(message.type === 'priorityCards'){
             console.log('priorityCards: ', message.data);
+            this.setState({myCards : message.data});
         }
 
         else if(message.type === 'zugedreht'){
@@ -312,7 +313,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         if(this.state.canDrawCard){
             console.log('please draw a card first!!!'); // TODO
-            this.setState({currentCards : this.state.currentCards}); // reset cards if not possible
+            this.setState({myCards : this.state.myCards}); // reset cards if not possible
             return;
         }
 
@@ -331,7 +332,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                 console.log(result, 'sucessfully played card?!!');
 
                 // remove card
-                let cards :PlayCard[] = this.state.currentCards;
+                let cards :PlayCard[] = this.state.myCards;
                 const index :number = cards.indexOf(card);
                 cards = cards.filter(c => c != card);
 
@@ -340,10 +341,10 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                 }
 
                 console.log('-- cards after removing: ', cards);
-                this.setState({currentCards : cards});
+                this.setState({myCards : cards});
 
                 console.log('played card!');
-                console.log('currentCards: ', this.state.currentCards);
+                console.log('currentCards: ', this.state.myCards);
                 
             },
             (error) => {
@@ -434,10 +435,10 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         // update state of own cards (add new card)
         this.setState({canDrawCard : false, drawCounter : this.state.drawCounter - 1});
         if(this.newCard){
-            const cards = this.state.currentCards;
+            const cards = this.state.myCards;
             cards.push(this.newCard);
             this.newCard = undefined;
-            this.setState({currentCards : cards});
+            this.setState({myCards : cards});
         }
     }
 
@@ -445,22 +446,22 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         // get data from sessionStorage (after refresh)
         // console.log('currentcards: ', this.state.currentCards);
-        if(this.state.currentCards.length == 0 && !this.playingLastCard){
+        if(this.state.myCards.length == 0 && !this.playingLastCard){
             let cardString = sessionStorage.getItem('myCards');
             if(cardString){
                 console.log('getting cards from sessionStorage..');
                 let cards :PlayCard[] = JSON.parse(cardString);
                 
                 this.playingLastCard = true; // to avoid (maybe) possible recursion
-                this.setState({currentCards: cards});
+                this.setState({myCards: cards});
             }
         }
 
 
         // construct list of indices for unique card-id's
         let cardIndices :number[] = [];
-        if(this.state.currentCards){
-            for(let i = 0; i < this.state.currentCards.length; i++){
+        if(this.state.myCards){
+            for(let i = 0; i < this.state.myCards.length; i++){
                 cardIndices.push(i);
             }
         }
@@ -621,10 +622,10 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                                         <Card 
                                             onDragStart={this.onStartDrag}
                                             onPlay={this.onPlayCard}
-                                            className={`${this.state.myTurn ? "" : "card_wait"}`}
+                                            className={`${this.state.myTurn && this.state.myCards[i].priority ? "" : "card_wait"}`}
                                             id={`ownCard_${i}`} 
                                             key={i}
-                                            playCard={this.state.currentCards[i] ? this.state.currentCards[i] : {} as PlayCard}
+                                            playCard={this.state.myCards[i] ? this.state.myCards[i] : {} as PlayCard}
                                             draggable={this.state.myTurn} />
                                     ))
                                 }
