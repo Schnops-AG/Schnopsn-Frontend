@@ -173,7 +173,8 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                 drawCounter : 5, 
                 trumpCard : message.data,
                 opponnentGotStings : false,
-                zugedreht : false});
+                zugedreht : false,
+                myStings : []});
             this.playingLastCard = false;
             
 
