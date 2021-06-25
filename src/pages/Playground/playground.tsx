@@ -11,6 +11,7 @@ import { Player } from '../../models/player'
 import { setTimeout } from 'timers'
 import { ErrorMessage } from '../../models/errorMessage'
 import StingView from '../../components/StingView/stingView'
+import InfoBoxComponent, { InfoBox } from '../../components/InfoBox/infoBox'
 
 /**
  * TOOD:
@@ -52,7 +53,9 @@ type PlayGroundState = {
     errorMessages: ErrorMessage[],
 
     gameScore: Map<string, number>,
-    bummerlScore: Map<string, number>
+    bummerlScore: Map<string, number>,
+
+    infoBox: InfoBox
     
 
     
@@ -90,7 +93,8 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             errorMessages : [],
             zugedreht : false,
             gameScore : new Map<string, number>([['0', 1], ['1', 0]]),
-            bummerlScore : new Map<string, number>([['0', 1], ['1', 0]])
+            bummerlScore : new Map<string, number>([['0', 1], ['1', 0]]),
+            infoBox : new InfoBox('none', '', '')
         };
         
         if(this.props.webSocket){
@@ -329,7 +333,9 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         if(this.state.canDrawCard){
             console.log('please draw a card first!!!'); // TODO
-            this.setState({myCards : this.state.myCards}); // reset cards if not possible
+            this.setState({
+                myCards : this.state.myCards, 
+                infoBox : new InfoBox("info", "Draw a card", "You need to draw a card before playing!")});
             return;
         }
 
@@ -574,11 +580,11 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                             <div className="card crossed"></div>
                         </div>
 
-                        {/* Number of bummerl */}
+                        {/* Number of bummerl
                         <div className="bummerl">
                             <h3>Bummerl</h3>
                             <span>-1:-1</span>
-                        </div>
+                        </div> */}
                     </div>
 
 
@@ -725,7 +731,11 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                         </div>
                     </main>
                 
-                    
+                    {
+                        this.state.infoBox.type === 'none' ? <></> : 
+                            <InfoBoxComponent onClose={() => this.setState({infoBox : new InfoBox('none', '', '')})} title={this.state.infoBox.title} type={this.state.infoBox.type}>{this.state.infoBox.children}</InfoBoxComponent>
+                    }
+
                 
                 </div>
             </div>

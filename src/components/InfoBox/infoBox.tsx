@@ -56,7 +56,7 @@ export default class InfoBoxComponent extends Component<InfoBoxProps, InfoBoxSta
                     <span id="title">{this.props.title}</span>
                     <span onClick={this.onClose} id="close">x</span>
                 </div>
-                <div className="content">{this.props.children} + {this.state.type}</div>
+                <div className="content">{this.props.children}</div>
             </div>
     )
     }
