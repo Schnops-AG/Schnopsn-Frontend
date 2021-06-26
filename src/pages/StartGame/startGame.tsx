@@ -15,6 +15,7 @@ import { CustomWebSocket } from '../../utils/websocket';
 import { Playground } from '../Playground/playground';
 import InfoBoxComponent, { InfoBox } from '../../components/InfoBox/infoBox';
 import infoBox from '../../components/InfoBox/infoBox';
+import {Playground_4erSchnopsn} from '../Playground/playground_4erSchnopsn';
 
 type StartGameProps = {
     title: string,
@@ -209,9 +210,11 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
                 {/* Route to lobby */}
                 <Route path={`${this.props.match?.path}/play`}>
-                    <Playground 
-                        webSocket={this.webSocket} 
-                    />
+                    {
+                        (this.props.match?.path.includes('2erSchnopsn')) 
+                        ? <Playground webSocket={this.webSocket} />
+                        : <Playground_4erSchnopsn webSocket={this.webSocket}/>
+                    }
                 </Route>
  
     

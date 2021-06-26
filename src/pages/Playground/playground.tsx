@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import './playground.scss'
+import './playground_2erSchnopsn.scss'
 import Board from '../../components/Board/Board'
 import { CustomWebSocket } from '../../utils/websocket'
 import { Message } from '../../models/message'
@@ -553,7 +554,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         
         return (
             <div className="playground">
-                <div className="back">
+                <div className="back2er">
 
                     {/* Top line: opponnent */}
                     <div className="top">
@@ -579,12 +580,6 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                             <div className="card crossed"></div>
                             <div className="card crossed"></div>
                         </div>
-
-                        {/* Number of bummerl
-                        <div className="bummerl">
-                            <h3>Bummerl</h3>
-                            <span>-1:-1</span>
-                        </div> */}
                     </div>
 
 

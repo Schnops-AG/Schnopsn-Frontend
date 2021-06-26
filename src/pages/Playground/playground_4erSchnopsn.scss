@@ -1,0 +1,209 @@
+@import url('https://fonts.googleapis.com/css2?family=Gorditas:wght@700&display=swap');
+@import "./../../style/properties/base";
+@import "./playground.scss";
+    
+
+.playground .back4er{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%; 
+
+
+    .top{
+        flex-grow: 1;
+        
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+
+        .points{
+            flex-grow: 1;
+        }
+
+        .mate{
+            flex-grow: 5;
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            .card{
+                width: 64px;
+                height: 112px;
+                background-color: white;
+                margin: 10px 20px;
+            }
+        }
+
+    }
+
+
+    .central{
+        height: 50%;
+        margin-bottom: 20px;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+
+
+        .opponnent{
+            width: 15%;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            .card{
+                width: 112px;
+                height: 64px;
+                background-color: white;
+                margin: 10px;
+            }
+        }
+
+        .middle{
+            flex-grow: 1;
+        }
+    }
+
+
+    // bottom
+    .own{
+        display: flex;
+        justify-content: space-around;
+        // background-color: rgba(109, 231, 231, 0.699);
+        height: 30%;
+        
+        .board{
+            flex-grow: 5;
+
+            // height: 280px;
+            height: 100%;
+            //min-height: 280px;
+
+            // background-color: rgba(66, 25, 48, 0.699);
+
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+
+            .card{
+                width: 140px;
+                height: 240px;
+                background-color: white;
+                margin: 16px;
+                z-index: 40;
+            }
+            .card_wait{
+                // background-color: rgb(221, 221, 221);
+                opacity: 0.5;
+                &:hover{
+                    cursor: not-allowed;
+                }
+            }
+        }
+
+        .actionMenue{
+            height: 90%;
+            overflow-y: scroll;
+            margin: 10px 0;
+
+            &::-webkit-scrollbar {
+                width: 10px;
+            }
+              
+              /* Track */
+            &::-webkit-scrollbar-track {
+                // box-shadow: inset 0 0 5px rgb(255, 255, 255);
+                background-color: rgba(255, 255, 255, 0.548); 
+                border-radius: 0 10px 10px 0;
+            }
+               
+              /* Handle on hover */
+            &::-webkit-scrollbar-thumb:hover {
+                background: $forestGreen; 
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background-color: $forestGreenLight; 
+                border-radius: 0 10px 10px 0;
+            }
+        }
+
+        .ownStings{
+            z-index: 50;
+            flex-grow: 5;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            .stings{
+
+                display: flex;
+                flex-direction: row-reverse;
+                align-items: center;
+                justify-content: center;
+
+                margin-bottom: 30px;
+
+                width: 100%;
+
+                .card{
+                    width: 80px;
+                    height: 140px;
+                    background-color: white;
+                    z-index: 10;
+                }
+
+                .show{
+                    transform: rotate(-90deg);
+                    z-index: 9;
+                    margin-right: -20px;
+                }
+
+            }
+
+            .points{
+                font-size: 14pt;
+                width: 100%;
+                z-index: 49;
+                
+            }
+            .info{
+                display: none;
+            }
+
+            // TODO: does not work yet
+            .points:hover + .info {
+                width: 100%;
+                height: auto;
+                display: flex;
+                flex-direction: row;
+                border-radius: 10px;
+                background: rgb(43, 43, 43);
+                color: #fff;
+                box-shadow: 2px 2px 10px rgb(43, 43, 43);
+                padding: 15px;
+                z-index: 50;
+                bottom: 0;
+
+                
+                
+                h1{
+                    font-size: 8px;
+                }
+            }
+        }
+    }
+    
+}

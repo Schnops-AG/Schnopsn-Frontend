@@ -51,8 +51,11 @@ export default function Board(props : BoardProps) {
     // Wenn etwas über dem Board ist
     const dragOver = (e : React.DragEvent) => {
         e.preventDefault();
-        if(!e.currentTarget.classList.contains('board_onDragOver')){
-            e.currentTarget.classList.add('board_onDragOver');
+        if(props.id === 'middle'){
+            if(!e.currentTarget.classList.contains('board_onDragOver')){
+                e.currentTarget.classList.add('board_onDragOver');
+            }
+
         }
     }
 
