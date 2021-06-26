@@ -1,8 +1,26 @@
 import React from 'react'
+import { PlayCard } from '../../models/card';
 
-export default function Board(props : any) {
+{/* <div id={props.id}
+            onDrop={drop}
+            onDragOver={dragOver}
+            className={props.className}>
+            {props.children } */}
+type BoardProps = {
+    id: string,
+    className: string,
+
+    children: React.ReactNode,
+
+    playCard: (card: PlayCard) => void,
+    getCard: () => PlayCard | undefined
+}
+
+export default function Board(props : BoardProps) {
+
     // Wenn wir wirklich etwas "fallen" lassen
-    const drop = (e : any) => {
+    const drop = (e : React.DragEvent) => {
+
         e.preventDefault();
         const card_id = e.dataTransfer.getData('card_id');
 
@@ -11,24 +29,39 @@ export default function Board(props : any) {
             card.style.display = 'block';
         }
 
-        console.log('Target Element');
-        console.log(e.target);
-        console.log(card)
-        e.target.appendChild(card);
+        if(e.currentTarget.classList.contains('board_onDragOver')){
+            e.currentTarget.classList.remove('board_onDragOver');
+        }
 
+        // only if dropped over the central area
+        if(props.id === 'middle'){
+            
+            // get card
+            const card: PlayCard | undefined = props.getCard();
+            console.log('dropping card:', card);
+            
+            if(card){
 
+                // play
+                props.playCard(card);
+            }
+        }
     }
 
     // Wenn etwas über dem Board ist
-    const dragOver = (e : any) => {
+    const dragOver = (e : React.DragEvent) => {
         e.preventDefault();
+        if(!e.currentTarget.classList.contains('board_onDragOver')){
+            e.currentTarget.classList.add('board_onDragOver');
+        }
     }
 
     return (
-        <div id={props.id}
-        onDrop={drop}
-        onDragOver={dragOver}
-        className={props.className}>
+        <div 
+            id={props.id}
+            onDrop={drop}
+            onDragOver={dragOver}
+            className={props.className}>
             {props.children }
         </div>
     )

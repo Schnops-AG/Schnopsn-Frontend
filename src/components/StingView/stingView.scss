@@ -1,0 +1,51 @@
+@import "../../style/properties/base";
+
+.stingView{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 50%;
+    height: 40%;
+
+    background-color: #DDB771;
+    border-radius: 10px;
+    box-shadow: 0px 0px 50px rgb(0, 0, 0);
+
+    z-index: 50;
+
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    justify-content: center;
+    align-content: center;
+
+    flex-wrap: wrap;
+
+    // max. 7 stings to be displayed´
+
+
+
+
+    .sting{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center; // horizontal alignment
+
+
+        .card{
+            width: 80px;
+            height: 140px;
+        }
+
+    }
+
+    display: none;
+
+}
+
+.ownStings .stings:hover ~ .stingView{
+    display: flex;
+}

@@ -63,9 +63,6 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
             return Promise.resolve();
         }
 
-
-
-        console.log('request?: ' + gameID);
         if(!gameID || !this.state.player.playerID){
             console.log('request not possible');
             return Promise.resolve();
@@ -91,14 +88,9 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
                     console.log('no Game');
                     return;
                 }
-
-                console.log('here');
-                console.log('result: ' + result);
-                console.log(result);
                 this.game = result;
             },
             (error) => {
-                console.log('error');
                 console.log('error: ' + error);
                 this.game = null;
             }
@@ -112,11 +104,13 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
         event.preventDefault();
         event.stopPropagation();
 
-        
+        this.handleSubmit();
+    }
+    
+    async handleSubmit(){
         
         // check if game has already been created
         if(this.game){
-            console.log('game already created');
             return;
         }
         
@@ -127,13 +121,18 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
         
         // check if game creation was successful (if not: prevent propagation)
         if(this.game){
-            console.log('redirect to waiting room');
-
+    
             // set game --> startGame (for routing)
             this.props.setGame(this.game);  
-
+    
             // redirects to the waiting room
             this.props.history?.push('waitingRoom');
+        }
+    }
+
+    onEnter = (event: React.KeyboardEvent) =>{
+        if(event.key === 'Enter'){
+            this.handleSubmit().catch((r)=> console.log('catch'));
         }
     }
 
@@ -147,6 +146,7 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
                     <CustomInput 
                         className="input-room" 
                         placeholder="Enter Room URL" 
+                        onEnter={this.onEnter}
                         handleChange={this.changeInputHandler}
                     />
                     <CustomButton 

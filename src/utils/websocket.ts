@@ -7,10 +7,8 @@ export class CustomWebSocket{
     webSocket: WebSocket;
 
     playerID: string;
-    waitingRoomContext?: WaitingRoomUI;
 
-
-    onReceiveMessage?: (event: MessageEvent, waitingRoomContext: WaitingRoomUI) => void;
+    onReceiveMessage?: (event: MessageEvent) => void;
 
 
     constructor(playerID: string, url: string = DEFAULT_URL){
@@ -27,10 +25,9 @@ export class CustomWebSocket{
 
     onMessage = (event: MessageEvent): void =>{
         console.log('receiving a message: ');
-        console.log(event.data);
         
-        if(this.onReceiveMessage && this.waitingRoomContext){
-            this.onReceiveMessage(event, this.waitingRoomContext);
+        if(this.onReceiveMessage){
+            this.onReceiveMessage(event);
         }
     }
 

@@ -1,46 +1,455 @@
 @import url('https://fonts.googleapis.com/css2?family=Gorditas:wght@700&display=swap');
 @import "./../../style/properties/base";
 
-
-.playground{
-    display: flex;
-    flex-direction: column;
+.crossed{
     width: 100%;
-    height: 100%; 
-    justify-content: space-between;
+    height: 100%;
+    border-radius: 8px;
+    background-color: white !important;
+    background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 15px,
+    #ff6961 8px,
+    #ff6961 18px
+        ),
+    repeating-linear-gradient(
+        135deg,
+        transparent,
+        transparent 15px,
+        #ff392e 8px,
+        #ff392e 18px
+    );
+}
 
-    // todo Wrapper
-    background: url('/assets/img/background_startPage.png'), radial-gradient(50% 50% at 50% 50%, rgba(143, 206, 120, 0.459375) 28.65%, rgba(88, 130, 73, 0.6) 89.06%), rgba(75, 164, 74, 0.6);
+
+.playground:before{
+    content: "";
+    background-image: url('/assets/img/background_startPage.png');
     background-size: cover;
     background-repeat: no-repeat;
+    opacity: 0.3;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    z-index: 0;
+}
 
-    .opponent{
-        background-color: rgba(233, 162, 69, 0.699);
-        .bummerl{
+.playground{
+    display: block;
+    width: 100%;
+    height: 100%; 
+    background: radial-gradient(50% 50% at 50% 50%, rgba(143, 206, 120, 0.459375) 28.65%, rgba(88, 130, 73, 0.6) 89.06%), rgba(75, 164, 74, 0.6);
+    z-index: 2;
+
+    
+
+    .back{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%; 
+
+        .top{
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: row;
+
+            .stings{
+                flex-grow: 2;
+
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                .card{
+                    width: 80px;
+                    height: 140px;
+                    background-color: white;
+                    margin: 20px;
+                    z-index: 10;
+                    transform: rotate(10deg);
+                }
+
+                .show{
+                    transform: rotate(-60deg);
+                    position: absolute;
+
+                }
+
+            }
+
+            .opponent{
+                flex-grow: 10;
+                // background-color: rgba(233, 162, 69, 0.699);
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+    
+                .card{
+                    width: 80px;
+                    height: 140px;
+                    background-color: white;
+                    margin: 20px;
+                }
+    
+            }
+
+            .bummerl{
+                flex-grow: 2;
+                padding: 20px;
+                align-items: flex-end;
+                display: flex;
+                flex-direction: column;
+                // position: absolute;
+                z-index: 1;
+    
+                span {
+                    font-size: 24px;
+                }
+            }
+        
+            
+
+        }
+        
+
+        .main{
+            
+            // background-color: rgba(117, 117, 108, 0.699);
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
-            float: right;
-            margin: 32px 32px 0px 0px;
+            
+            
+            .central{
+                display: flex;
+                flex-direction: row;
+                height: 50%;
+                margin-bottom: 20px;
+                // background-color: rgba(184, 233, 69, 0.11);
+
+                .cardVanishOverlay{
+                    position: fixed;
+
+                    width: 100%;
+                    height: 400px;
+
+                    z-index: 99;
+                    top: 25%;
+
+                    
+
+                    div{
+                        width: 50%;
+                        height: 100%;
+                        margin: 0 auto;
+
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        p{
+                            font-size: 42pt;
+                        }
+                    }
+
+                }
+                
+                .score{
+                    flex-grow: 1;
+                    margin-right: 20px;
     
-            span {
-                font-size: 24px;
+                    display: flex;
+                    padding: 20px;
+                    width: auto;
+                    height: 100%;
+                    align-items: center;
+                    justify-content: center;
+                    flex-direction: row;
+    
+                    z-index: 20;
+        
+                    .h3{
+                        margin: 0;
+                        
+                        transform: rotate(-90deg);
+
+                        h3{
+                            margin-bottom: 10px;
+                            text-align: center;
+                            margin: 0;                            
+                        }
+                    }
+
+                    .points{
+                        flex-grow: 1;
+                        height: 100%;
+
+                        display: flex;
+                        justify-content: center;
+                        flex-direction: column;
+
+                        span {
+                            width: 100%;
+                            font-size: 24px;
+                            text-align: center;
+                            margin: 0 -16px 0 0;
+                            display: block;
+                        }
+                    }
+        
+        
+                }
+                
+                
+
+                .board{
+                    flex-grow: 7;
+
+                    height: 100%;
+                    padding-left: 3%;
+                    padding-right: 3%;
+                    // background-color: rgba(66, 25, 48, 0.699);
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    align-items: center;
+
+                    z-index: 20;
+
+                    .card{
+                        width: 140px;
+                        height: 240px;
+                        background-color: white;
+                        margin: 20px;
+                        z-index: 19;
+                    }
+                }
+
+                .board_onDragOver{
+                    cursor: copy;
+                    border: 5px dashed rgb(104, 104, 104);
+                    opacity: 0.5;
+                    background-color: rgba(255, 255, 255, 0.096);
+                }
+
+
+
+                .cardStack{
+                    flex-grow: 1;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    // background-color: rgba(197, 147, 53, 0.062);
+                    height: 100%;
+                    width: 15%;
+                    min-width: 200px;
+                    margin: 0 10px 0 auto;
+                    
+                    .sub{
+                        display: flex;
+                        flex-direction: row-reverse;
+                        justify-content: center;
+                        align-items: center;
+                        z-index: 1;
+
+                        width: 100%;
+
+                        .card{
+                            width: 80px;
+                            height: 140px;
+                            background-color: white;
+                            margin-right: 20px;
+                            z-index: 10;
+                        }
+
+                        .trump{
+                            transform: rotate(-90deg);
+                            // position: absolute;
+                            z-index: 2;
+                            margin-right: -20px;
+                        }
+
+                        // zugedreht
+                        .trump_notVisible{
+                            z-index: 11;
+                            color: transparent;
+                        }
+
+                        .drawingPossible:hover{
+                            cursor: pointer; 
+                            }
+
+                        .drawingNotPossible:hover{
+                                cursor: not-allowed;
+                        }
+                    }
+                }
             }
+        
+            .own{
+                display: flex;
+                justify-content: space-around;
+                // background-color: rgba(109, 231, 231, 0.699);
+                height: 50%;
+                
+                .board{
+                    flex-grow: 5;
+
+                    // height: 280px;
+                    height: 100%;
+                    //min-height: 280px;
+
+                    // background-color: rgba(66, 25, 48, 0.699);
+
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    align-items: center;
+
+                    .card{
+                        width: 140px;
+                        height: 240px;
+                        background-color: white;
+                        margin: 16px;
+                        z-index: 40;
+                    }
+                    .card_wait{
+                        // background-color: rgb(221, 221, 221);
+                        opacity: 0.5;
+                        &:hover{
+                            cursor: not-allowed;
+                        }
+                    }
+                }
+
+                .actionMenue{
+                    flex-grow: 1;
+
+                    // display: flex;
+                    // flex-direction: column;
+                    // justify-content: center;
+                    // align-items: center;
+
+                    margin: auto;
+                    padding: 20px;
+
+                    z-index: 40;
+
+
+                    background-color: rgba(255, 255, 255, 0.151);
+                    // color: white;
+                    border-radius: 10px;
+                    // box-shadow: 2px 2px 10px #000;
+
+                    h3{
+                        width: 100%;
+                        margin-bottom: 20px;
+                        font-size: 20pt;
+                    }
+
+                    .actions{
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: flex-start;
+
+                        p{
+                            font-size: 14pt;
+                            width: 100%;
+                            margin: 3px auto;
+                            padding: 2px;
+                            border-radius: 5px;
+
+                            &:hover{
+                                background-color: rgba(255, 255, 255, 0.247);
+                                cursor: pointer;
+                            }
+                        }
+                    }
+                }
+
+                .ownStings{
+                    z-index: 50;
+                    flex-grow: 5;
+
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+
+                    .stings{
+
+                        display: flex;
+                        flex-direction: row-reverse;
+                        align-items: center;
+                        justify-content: center;
+
+                        margin-bottom: 30px;
+
+                        width: 100%;
+
+                        .card{
+                            width: 80px;
+                            height: 140px;
+                            background-color: white;
+                            z-index: 10;
+                        }
+
+                        .show{
+                            transform: rotate(-90deg);
+                            z-index: 9;
+                            margin-right: -20px;
+                        }
+
+                    }
+
+                    .points{
+                        font-size: 14pt;
+                        width: 100%;
+                        z-index: 49;
+                        
+                    }
+                    .info{
+                        display: none;
+                    }
+
+                    // TODO: does not work yet
+                    .points:hover + .info {
+                        width: 100%;
+                        height: auto;
+                        display: flex;
+                        flex-direction: row;
+                        border-radius: 10px;
+                        background: rgb(43, 43, 43);
+                        color: #fff;
+                        box-shadow: 2px 2px 10px rgb(43, 43, 43);
+                        padding: 15px;
+                        z-index: 50;
+                        bottom: 0;
+
+                        
+                        
+                        h1{
+                            font-size: 8px;
+                        }
+                    }
+                }
+            }
+
         }
+        
+
+        
     }
+
     
-
-    .central{
-        background-color: rgba(184, 233, 69, 0.699);
-        .points{
-            font-size:48px;
-            font-weight:bold;
-
-        }
-    }
-
-    .own{
-        background-color: rgba(79, 250, 250, 0.699);
-    }
     
 
 }
