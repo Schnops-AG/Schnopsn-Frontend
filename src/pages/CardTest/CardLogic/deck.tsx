@@ -1,4 +1,4 @@
-import React from 'react'
+
 
 const SUITS = ["♠", "♣", "♥", "♦"];
 
@@ -11,7 +11,7 @@ const VALUES = [
     // "6",
     // "7",
     // "8",
-    // "9",
+    // "9", 
     "10",
     "J",
     "Q",
@@ -62,8 +62,3 @@ function createDeck() : Card[]{
         })
     })
 }
-
-
-
-
-

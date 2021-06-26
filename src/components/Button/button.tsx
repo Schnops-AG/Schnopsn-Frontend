@@ -3,9 +3,7 @@ import './button.scss'
 import {
   Link
 } from "react-router-dom";
-import { Player } from '../../models/player';
 
-type CreateFunction = (player: Player) => void;
 
 type BtnValue = {
   id?: string,

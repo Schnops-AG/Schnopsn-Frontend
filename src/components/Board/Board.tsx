@@ -1,11 +1,7 @@
 import React from 'react'
 import { PlayCard } from '../../models/card';
 
-{/* <div id={props.id}
-            onDrop={drop}
-            onDragOver={dragOver}
-            className={props.className}>
-            {props.children } */}
+
 type BoardProps = {
     id: string,
     className: string,
@@ -69,6 +65,3 @@ export default function Board(props : BoardProps) {
         </div>
     )
 }
-
-
-{/* <Board>Der text hier drinnen ist das Child</Board> */}

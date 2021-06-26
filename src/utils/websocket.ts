@@ -1,5 +1,3 @@
-import { WaitingRoomUI } from "../pages/WaitingRoom/waitingRoom";
-
 const DEFAULT_URL = 'ws://localhost:8080/schnopsn'
 
 export class CustomWebSocket{

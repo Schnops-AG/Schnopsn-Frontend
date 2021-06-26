@@ -1,7 +1,6 @@
-import { resolve } from 'node:path';
 import React from 'react'
 import {
-  Link, match, useHistory, useRouteMatch
+  match, useHistory, useRouteMatch
 } from "react-router-dom";
 import { CustomButton } from '../../components/Button/button';
 import { CustomInput } from '../../components/CustomInput/customInput';

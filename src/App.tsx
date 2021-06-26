@@ -1,11 +1,7 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.scss';
 import { LandingPage } from './pages/LandingPage/landingPage';
 import { StartGame } from './pages/StartGame/startGame';
 import { Route, Switch, BrowserRouter } from 'react-router-dom';
-import { CreateGame } from './pages/CreateGame/createGame';
-import { WaitingRoom } from './pages/WaitingRoom/waitingRoom';
 
 function App() {
     return (

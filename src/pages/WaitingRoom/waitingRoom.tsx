@@ -1,7 +1,7 @@
 import './waitingRoom.scss';
 import React from 'react'
 import {
-  Link, match, useHistory, useParams, useRouteMatch
+  match, useHistory, useRouteMatch
 } from "react-router-dom";
 import { CustomButton } from '../../components/Button/button';
 import { CustomInput } from '../../components/CustomInput/customInput';
@@ -25,9 +25,6 @@ type WaitingRoomState = {
     readyToStart: boolean
 }
 
-type WaitingRoomRouteParams = {
-    roomID: string
-}
 
 // Create button
 export function WaitingRoom(props: WaitingRoomProps): JSX.Element {
@@ -107,12 +104,24 @@ export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoom
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
         };
+
+
+        console.log('gametype: ', this.props.game.gameType);
+        if(this.props.game.gameType === '_2ERSCHNOPSN'){
+            // request
+            fetch(`http://localhost:8080/api/v1/startRound2erSchnopsn?gameID=${this.props.game.gameID}`, requestOptions)
+            .then(res => {
+                console.log('result: ', res);
+            })
+        }else{
+            // request
+            fetch(`http://localhost:8080/api/v1/getCards4erSchnopsn?gameID=${this.props.game.gameID}`, requestOptions)
+            .then(res => {
+                console.log('result: ', res);
+            })
+        }
         
-        // request
-        fetch(`http://localhost:8080/api/v1/startRound2erSchnopsn?gameID=${this.props.game.gameID}`, requestOptions)
-        .then(res => {
-            console.log('result: ', res);
-        })
+        
 
     }
 

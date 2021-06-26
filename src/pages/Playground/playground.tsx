@@ -1,5 +1,4 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
 import './playground.scss'
 import './playground_2erSchnopsn.scss'
 import Board from '../../components/Board/Board'
@@ -9,7 +8,6 @@ import { PlayCard } from '../../models/card'
 import Card from '../../components/Card/card'
 import { Game } from '../../models/game'
 import { Player } from '../../models/player'
-import { setTimeout } from 'timers'
 import { ErrorMessage } from '../../models/errorMessage'
 import StingView from '../../components/StingView/stingView'
 import InfoBoxComponent, { InfoBox } from '../../components/InfoBox/infoBox'
@@ -356,10 +354,9 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
                 // remove card
                 let cards :PlayCard[] = this.state.myCards;
-                const index :number = cards.indexOf(card);
-                cards = cards.filter(c => c != card);
+                cards = cards.filter(c => c !== card);
 
-                if(cards.length == 0){
+                if(cards.length === 0){
                     this.playingLastCard = true;
                 }
 
@@ -441,7 +438,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
     onExchangeTrump = () =>{
         console.log('exchanging trump..');
 
-        if(this.state.trumpCard?.value == 2){
+        if(this.state.trumpCard?.value === 2){
             console.log('trump card cannot be exchanged!');
             return;
         }
@@ -506,7 +503,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         // get data from sessionStorage (after refresh)
         // console.log('currentcards: ', this.state.currentCards);
-        if(this.state.myCards.length == 0 && !this.playingLastCard){
+        if(this.state.myCards.length === 0 && !this.playingLastCard){
             let cardString = sessionStorage.getItem('myCards');
             if(cardString){
                 console.log('getting cards from sessionStorage..');

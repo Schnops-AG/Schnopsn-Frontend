@@ -12,6 +12,7 @@
 
     .top{
         flex-grow: 1;
+        z-index: 2;
         
         display: flex;
         flex-direction: row;
@@ -23,7 +24,7 @@
         }
 
         .mate{
-            flex-grow: 5;
+            width: 50%;
 
             display: flex;
             flex-direction: row;
@@ -38,10 +39,39 @@
             }
         }
 
+        .trumpColor{
+            flex-grow: 1;
+            text-align: center;
+
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+
+            .call{
+                background-color: rgba(255, 255, 255, 0.418);
+                width: auto;
+                display: inline;
+                padding: 20px;
+                border-radius: 10px;
+                margin-right: 10px;
+                font-size: 16pt;
+            }
+            .trump{
+                background-color: #fff;
+                width: auto;
+                display: inline;
+                padding: 10px;
+                border-radius: 10px;
+            }
+
+        }
+
     }
 
 
     .central{
+        z-index: 2;
         height: 50%;
         margin-bottom: 20px;
 
@@ -70,12 +100,14 @@
 
         .middle{
             flex-grow: 1;
+            height: 100%;
         }
     }
 
 
     // bottom
     .own{
+        z-index: 2;
         display: flex;
         justify-content: space-around;
         // background-color: rgba(109, 231, 231, 0.699);
@@ -112,8 +144,8 @@
         }
 
         .actionMenue{
-            height: 90%;
-            overflow-y: scroll;
+            height: 70%;
+            // overflow-y: scroll;
             margin: 10px 0;
 
             &::-webkit-scrollbar {
