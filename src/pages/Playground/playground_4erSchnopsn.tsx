@@ -23,8 +23,8 @@ type PlayGround4erProps = {
 
 type PlayGround4erState = {
     myTurn: boolean,
+    callTurn : boolean,
     isCaller: boolean, // calling trump (color)
-    canMakeCall: boolean, // calling a variant (Schnapser, Gang, ..)
 
     playedCards: PlayCard[],
     myCards: PlayCard[],
@@ -37,7 +37,9 @@ type PlayGround4erState = {
 
     stingFinished: boolean,
     ourTotalStingPoints: number,
+
     countdown: number,
+    countdownTrumpDisplay : number,
 
     errorMessages: ErrorMessage[],
 
@@ -57,6 +59,7 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
     currentPlayedCard? :PlayCard;
     
     timerID :any;
+    timerTrumpID :any;
 
     availableCalls :string[] = [];
 
@@ -67,15 +70,15 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
         this.timerID = 0;
         this.state = {
             myTurn : false, 
+            callTurn : false,
             isCaller : false,
-            canMakeCall : false,
 
             playedCards : [], 
             myCards : [], 
             ourStings : [],
 
             opponnentGotStings : false,
-            trump : new PlayCard('', -1, '', '', false),
+            trump : new PlayCard('temp', -1, '', '', false),
             currentCall : '',
             stingFinished : false, 
 
@@ -84,6 +87,7 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
             bummerlScore : new Map<string, number>([['0', 1], ['1', 0]]),
 
             countdown : 3,
+            countdownTrumpDisplay : 5,
             errorMessages : [],
             infoBox : new InfoBox('none', '', '')
         };
@@ -168,12 +172,17 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
                 ourTotalStingPoints : 0, 
                 trump : message.data,
                 opponnentGotStings : false,
-                ourStings : [],
-                canMakeCall : true});
+                ourStings : []});
             this.playingLastCard = false;
+
+            this.timerTrumpID = setInterval(this.countdownTrump, 1000);
             
 
             console.log('trump: ', this.state.trump);
+        }
+        else if(message.type === 'callTurn'){
+            console.log('callTurn: ', message.data);
+            this.setState({callTurn : message.data});
         }
         else if(message.type === 'highestCall'){
             console.log('highestCall: ', message.data);
@@ -298,6 +307,20 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
             clearInterval(this.timerID);
         }
     } 
+
+    countdownTrump = () =>{
+        let seconds = this.state.countdownTrumpDisplay - 1;
+        this.setState({countdownTrumpDisplay : seconds})
+
+        if(this.state.countdownTrumpDisplay <= 0){
+
+            // clear playedCards, set countdown back to 5 seconds
+            this.setState({
+                trump : new PlayCard('temp', this.state.trump.value, this.state.trump.url, this.state.trump.color, this.state.trump.priority), 
+                countdownTrumpDisplay : 5}); 
+            clearInterval(this.timerTrumpID);
+        }
+    }
     
     /**
      * used to start a new round (only admin)
@@ -399,7 +422,7 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
             headers: { 'Content-Type': 'application/json' },
         };
 
-        this.setState({canMakeCall : false});
+        this.setState({callTurn : false});
 
         fetch(`http://localhost:8080/api/v1/makeCall?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&call=${call}`, requestOptions)
         .then(res => res.json())
@@ -492,6 +515,19 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
                             }
                             {
                                 this.state.trump.color === '' ? <></> : <h1 className="trump">{getSuit(this.state.trump.color)}</h1>
+                            }
+                            {
+                                this.state.trump.name !== 'temp' ? 
+                                    <Card 
+                                        className="card trumpCard"  
+                                        onDragStart={() => null}
+                                        id={`callTrump_temp`} 
+                                        key={-1}
+                                        onPlay={() => null}
+                                        playCard={this.state.trump}
+                                        draggable={false} 
+                                        onClick={() => null}/>
+                                : <></>
                             }                            
                         </div>
                     </div>
@@ -554,7 +590,7 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
 
                             {
                                 // overlay making call
-                                this.state.canMakeCall ?
+                                this.state.callTurn ?
                                     <div className="callOverlay">
                                         <div className="cardArea">
                                             {
