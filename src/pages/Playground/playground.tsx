@@ -11,6 +11,7 @@ import { Player } from '../../models/player'
 import { ErrorMessage } from '../../models/errorMessage'
 import StingView from '../../components/StingView/stingView'
 import InfoBoxComponent, { InfoBox } from '../../components/InfoBox/infoBox'
+import { BASE_URL } from '../../utils/webthings'
 
 /**
  * TOOD:
@@ -314,7 +315,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         };
         
         // request
-        fetch(`http://localhost:8080/api/v1/startRound2erSchnopsn?gameID=${this.game?.gameID}`, requestOptions)
+        fetch(`${BASE_URL}/startRound2erSchnopsn?gameID=${this.game?.gameID}`, requestOptions)
         .then(res => {
             console.log('result: ', res);
         });
@@ -346,7 +347,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         };
         
         // request
-        fetch(`http://localhost:8080/api/v1/makeMoveByCall?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&color=${card.color}&value=${card.value}`, requestOptions)
+        fetch(`${BASE_URL}/makeMoveByCall?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&color=${card.color}&value=${card.value}`, requestOptions)
         .then(res => res.json())
         .then(
             (result) => {
@@ -390,7 +391,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             // body: JSON.stringify({ playerName: enteredPlayerName })
         };
 
-        fetch(`http://localhost:8080/api/v1/zudrehen?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}`, requestOptions)
+        fetch(`${BASE_URL}/zudrehen?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}`, requestOptions)
         .then(res => res.json())
         .then(
             (result) => {
@@ -418,7 +419,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             headers: { 'Content-Type': 'application/json' },
         };
 
-        fetch(`http://localhost:8080/api/v1/call20er40er?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&type=${type}`, requestOptions)
+        fetch(`${BASE_URL}/call20er40er?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&type=${type}`, requestOptions)
         .then(res => res.json())
         .then(
             (result) => {
@@ -452,7 +453,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             // body: JSON.stringify({ playerName: enteredPlayerName })
         };
 
-        fetch(`http://localhost:8080/api/v1/switchTrumpCard?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}`, requestOptions)
+        fetch(`${BASE_URL}/switchTrumpCard?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}`, requestOptions)
         .then(res => res.json())
         .then(
             (result) => {

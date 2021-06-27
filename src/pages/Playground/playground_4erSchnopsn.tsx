@@ -12,6 +12,7 @@ import { CustomWebSocket } from '../../utils/websocket'
 import './playground_4erSchnopsn.scss'
 import '../../components/Card/cardstyle.scss'
 import {SUITS, getSuit, SUIT_NAMES} from '../../components/Card/card'
+import { BASE_URL } from '../../utils/webthings'
 
 // TODO:
 // --------------------------
@@ -98,17 +99,14 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
             this.props.webSocket.onReceiveMessage = this.onReceiveMessageFromWebSocket.bind(this);
         }
 
-        this.getAvailableCalls(); 
-
     }
 
     getAvailableCalls(){
         const requestOptions = {
-            method: 'GET',
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
         };
-
-        fetch(`http://localhost:8080/api/v1/getAvailableCalls`, requestOptions)
+        fetch(`${BASE_URL}/getAvailableCalls?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}`, requestOptions)
         .then(res => res.json())
         .then(
             (result) => {
@@ -116,7 +114,7 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
                 console.log('available calls: ', this.availableCalls);
             },
             (error) => {
-                console.log('error (calling trump): ' + error);
+                console.log('error (calling calls): ' + error);
             }
         )
     }
@@ -166,6 +164,7 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
 
         // receive trump
         else if(message.type === 'trump'){
+            this.getAvailableCalls();
 
             // reset totalStingsPoints
             this.setState({
@@ -356,7 +355,7 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
         };
         
         // request
-        fetch(`http://localhost:8080/api/v1/makeMoveByCall?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&color=${card.color}&value=${card.value}`, requestOptions)
+        fetch(`${BASE_URL}/makeMoveByCall?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&color=${card.color}&value=${card.value}`, requestOptions)
         .then(res => res.json())
         .then(
             (result) => {
@@ -402,8 +401,8 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
         };
-
-        fetch(`http://localhost:8080/api/v1/callTrump?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&color=${color}`, requestOptions)
+        
+        fetch(`${BASE_URL}/callTrump?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&color=${color}`, requestOptions)
         .then(res => res.json())
         .then(
             (result) => {
@@ -424,7 +423,7 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
 
         this.setState({callTurn : false});
 
-        fetch(`http://localhost:8080/api/v1/makeCall?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&call=${call}`, requestOptions)
+        fetch(`${BASE_URL}/makeCall?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&call=${call}`, requestOptions)
         .then(res => res.json())
         .then(
             (result) => {
