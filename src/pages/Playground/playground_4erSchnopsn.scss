@@ -36,6 +36,18 @@
                 height: 112px;
                 background-color: white;
                 margin: 10px 20px;
+
+                @media screen and ( max-width: 1068px ){
+                    &{
+                        margin: 5px 10px;
+                    }
+                }
+                @media screen and ( max-width: 806px ){
+                    &{
+                        width: 42px;
+                        height: 72px;
+                    }
+                }
             }
         }
 
@@ -95,6 +107,18 @@
                 height: 64px;
                 background-color: white;
                 margin: 10px;
+
+                @media screen and ( max-width: 1068px ){
+                    &{
+                        margin: 5px;
+                    }
+                }
+                @media screen and ( max-width: 806px ){
+                    &{
+                        height: 42px;
+                        width: 72px;
+                    }
+                }
             }
         }
 
@@ -112,6 +136,8 @@
         justify-content: space-around;
         // background-color: rgba(109, 231, 231, 0.699);
         height: 30%;
+
+        
         
         .board{
             flex-grow: 5;
@@ -133,6 +159,19 @@
                 background-color: white;
                 margin: 16px;
                 z-index: 40;
+
+                @media screen and ( max-width: 1068px ){
+                    &{
+                        width: 98px;
+                        height: 168px;
+                    }
+                }
+                @media screen and ( max-width: 806px ){
+                    &{
+                        width: 70px;
+                        height: 120px;
+                    }
+                }
             }
             .card_wait{
                 // background-color: rgb(221, 221, 221);
@@ -146,8 +185,21 @@
         .actionMenue{
             height: 70%;
             // overflow-y: scroll;
-            margin: 10px 0;
+            margin: auto;
 
+            @media screen and (max-width: 900px){
+                &{
+                    height: 45%;
+                    h3{
+                        font-size: 13pt;
+                        margin-bottom: 5px;
+                    }
+                    p{
+                        font-size: 11pt;
+                        margin-bottom: 1px;
+                    }
+                }
+            }
             &::-webkit-scrollbar {
                 width: 10px;
             }

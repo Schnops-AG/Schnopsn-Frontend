@@ -28,7 +28,7 @@ type PlayGround4erState = {
 
     playedCards: PlayCard[],
     myCards: PlayCard[],
-    trump: string,
+    trump: PlayCard,
     currentCall: string,
 
     ourStings: PlayCard[][],
@@ -75,7 +75,7 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
             ourStings : [],
 
             opponnentGotStings : false,
-            trump : "",
+            trump : new PlayCard('', -1, '', '', false),
             currentCall : '',
             stingFinished : false, 
 
@@ -380,7 +380,7 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
             headers: { 'Content-Type': 'application/json' },
         };
 
-        fetch(`http://localhost:8080/api/v1/callTrump?gameID=${this.game?.gameID}&color=${color}`, requestOptions)
+        fetch(`http://localhost:8080/api/v1/callTrump?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&color=${color}`, requestOptions)
         .then(res => res.json())
         .then(
             (result) => {
@@ -486,12 +486,12 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
                             <div className="card crossed"></div>
                             <div className="card crossed"></div>
                         </div>
-                        <div className={`trumpColor card-suit ${this.state.trump === 'KARO' || this.state.trump === 'HERZ' ? "card-red" : "card-black"}`}>
+                        <div className={`trumpColor card-suit ${this.state.trump.color === 'KARO' || this.state.trump.color === 'HERZ' ? "card-red" : "card-black"}`}>
                             {
                                 this.state.currentCall === '' ? <></> : <h2 className="call">{this.state.currentCall}</h2>
                             }
                             {
-                                this.state.trump === '' ? <></> : <h1 className="trump">{getSuit(this.state.trump)}</h1>
+                                this.state.trump.color === '' ? <></> : <h1 className="trump">{getSuit(this.state.trump.color)}</h1>
                             }                            
                         </div>
                     </div>
@@ -542,7 +542,7 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
                                                 ))
                                             }
 
-                                            <div className="card">
+                                            <div className="card" onClick={() => this.onCallTrump("RANDOM")}>
                                                 <h1>???</h1>
                                             </div>
 
