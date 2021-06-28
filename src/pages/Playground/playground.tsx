@@ -47,6 +47,7 @@ type PlayGroundState = {
     stingFinished: boolean,
     totalStingPoints: number,
     countdown: number,
+    countdown2040: number,
 
     zugedreht: boolean,
 
@@ -55,7 +56,10 @@ type PlayGroundState = {
     gameScore: Map<string, number>,
     bummerlScore: Map<string, number>,
 
-    infoBox: InfoBox
+    infoBox: InfoBox,
+
+    call20: any,
+    call40: any
     
 
     
@@ -72,12 +76,14 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
     
     newCard? :PlayCard;
     timerID :any;
+    timerCall2040 :any;
 
 
     constructor(props: PlayGroundProps){
         super(props);
 
         this.timerID = 0;
+
         this.state = {
             myTurn : false, 
             playedCards : [], 
@@ -90,11 +96,14 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             stingFinished : false, 
             totalStingPoints : 0,
             countdown : 3,
+            countdown2040 : 5,
             errorMessages : [],
             zugedreht : false,
             gameScore : new Map<string, number>([['0', 1], ['1', 0]]),
             bummerlScore : new Map<string, number>([['0', 1], ['1', 0]]),
-            infoBox : new InfoBox('none', '', '')
+            infoBox : new InfoBox('none', '', ''),
+            call20 : null,
+            call40 : null
         };
         
         if(this.props.webSocket){
@@ -117,6 +126,22 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             // clear playedCards, set countdown back to 5 seconds
             this.setState({playedCards : [], countdown : 3, stingFinished : false}); 
             clearInterval(this.timerID);
+        }
+    }
+
+    /**
+     * will be called every second to update the countdown (by -1 second)
+     */
+    _countdown2040 = () =>{
+
+        let seconds = this.state.countdown2040 - 1;
+        this.setState({countdown2040: seconds});
+
+        if(this.state.countdown2040 <= 0){
+
+            // clear playedCards, set countdown back to 5 seconds
+            this.setState({call20 : null, call40 : null, countdown2040 : 5}); 
+            clearInterval(this.timerCall2040);
         }
     }
 
@@ -162,6 +187,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         // receive cards
         if(message.type === 'cards'){
+            console.log('cards:', message.data);
             this.setState({myCards : message.data});
             
             // set cards to sessionStorage to maintain state even after refresh
@@ -288,6 +314,20 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         else if(message.type === 'newTrumpCard'){
             console.log('newTrumpCard: ', message.data);
             this.setState({trumpCard : message.data});
+        }
+
+        // if someone else calls a 20/40er
+        else if(message.type === '20er'){
+            console.log('20er: ', message.data);
+            console.log(JSON.parse(message.data));
+            this.timerCall2040 = setInterval(this._countdown2040, 1000);
+            this.setState({call20 : JSON.parse(message.data)});
+
+        }
+        else if(message.type === '40er'){
+            console.log('40er: ', message.data);
+            this.timerCall2040 = setInterval(this._countdown2040, 1000);
+            this.setState({call40 : JSON.parse(message.data)});
         }
 
 
@@ -577,6 +617,20 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                             <div className="card crossed"></div>
                             <div className="card crossed"></div>
                             <div className="card crossed"></div>
+
+
+                            {
+                                // info 20/40er
+                                (this.state.call20 || this.state.call40) ?
+                                    <div className="call">
+                                        <div className="type">{this.state.call20 ? '20er' : '40er'}</div>
+                                        <div className="color">
+                                            {this.state.call20 ? this.state.call20['color'] : ''}
+                                            {this.state.call40 ? this.state.call40['color'] : ''}
+                                        </div>
+                                    </div>
+                                : <></>
+                            }
                         </div>
                     </div>
 

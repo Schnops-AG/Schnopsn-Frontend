@@ -52,6 +52,27 @@
                 margin: 20px;
             }
 
+            .call{
+                position: absolute;
+                right: 10%;
+                background-color: rgb(228, 152, 152);
+                height: 100px;
+                width: 100px;
+
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+
+                .type{
+
+                }
+
+                .color{
+
+                }
+            }
+
         }
 
         .bummerl{
