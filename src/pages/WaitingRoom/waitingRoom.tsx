@@ -10,6 +10,7 @@ import { Player } from '../../models/player';
 import { CustomWebSocket } from '../../utils/websocket';
 import { Message } from '../../models/message';
 import { History } from 'history';
+import { BASE_URL } from '../../utils/webthings';
 
 type WaitingRoomProps = {
     title?: string,
@@ -109,13 +110,13 @@ export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoom
         console.log('gametype: ', this.props.game.gameType);
         if(this.props.game.gameType === '_2ERSCHNOPSN'){
             // request
-            fetch(`http://localhost:8080/api/v1/startRound2erSchnopsn?gameID=${this.props.game.gameID}`, requestOptions)
+            fetch(`${BASE_URL}/startRound2erSchnopsn?gameID=${this.props.game.gameID}`, requestOptions)
             .then(res => {
                 console.log('result: ', res);
             })
         }else{
             // request
-            fetch(`http://localhost:8080/api/v1/getCards4erSchnopsn?gameID=${this.props.game.gameID}`, requestOptions)
+            fetch(`${BASE_URL}/getCards4erSchnopsn?gameID=${this.props.game.gameID}`, requestOptions)
             .then(res => {
                 console.log('result: ', res);
             })

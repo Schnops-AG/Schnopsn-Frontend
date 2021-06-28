@@ -7,6 +7,7 @@ import { CustomInput } from '../../components/CustomInput/customInput';
 import { Game } from '../../models/game';
 import { Player } from '../../models/player';
 import { History } from 'history';
+import { BASE_URL } from '../../utils/webthings';
 
 type CreateGameProps = {
   title: string,
@@ -68,7 +69,7 @@ export class CreateGameUI extends React.Component<CreateGameProps, CreateGameSta
         };
 
         // localhost:8080/api/v1/createGame?gameType=_4ERSCHNOPSN&playerID=379ff129-2f72-4943-bd32-a69a3dd5446b
-        let url :string = `http://localhost:8080/api/v1/createGame?gameType=${gameType}&playerID=${this.state.player.playerID}`;
+        let url :string = `${BASE_URL}/createGame?gameType=${gameType}&playerID=${this.state.player.playerID}`;
 
         const response = fetch(url, requestOptions)
         .then(res => res.json())

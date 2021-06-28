@@ -7,6 +7,7 @@ import { CustomInput } from '../../components/CustomInput/customInput';
 import { Game } from '../../models/game';
 import { Player } from '../../models/player';
 import { History } from 'history';
+import { BASE_URL } from '../../utils/webthings';
 
 
 type JoinGameProps = {
@@ -49,7 +50,6 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
     }
 
     makeRequest() :Promise<void>{
-        // "http://localhost:8080/e4e1dbcb-8293-4471-af51-8aa28e15b4f6"
         
         let enteredUrl = this.state.roomUrl;
         let urlParts = enteredUrl.split('/');
@@ -75,7 +75,7 @@ export default class JoinGameUI extends React.Component<JoinGameProps, JoinGameS
         };
 
         // localhost:8080/api/v1/createGame?gameType=_4ERSCHNOPSN&playerID=379ff129-2f72-4943-bd32-a69a3dd5446b
-        let url :string = `http://localhost:8080/api/v1/joinGame?gameID=${gameID}&playerID=${this.state.player.playerID}`;
+        let url :string = `${BASE_URL}/joinGame?gameID=${gameID}&playerID=${this.state.player.playerID}`;
         
         const response = fetch(url, requestOptions) // BUG: erkennt fehler nicht als fehler
         .then(res => res.json())

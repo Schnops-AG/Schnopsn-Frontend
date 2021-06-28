@@ -1,4 +1,6 @@
-const DEFAULT_URL = 'ws://localhost:8080/schnopsn'
+import { WEBSOCKET_URL } from "./webthings";
+
+const DEFAULT_URL = WEBSOCKET_URL;
 
 export class CustomWebSocket{
     socketUrl = DEFAULT_URL; // ws ... insecure, wss ... secure

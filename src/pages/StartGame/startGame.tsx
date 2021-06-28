@@ -13,6 +13,7 @@ import { CustomWebSocket } from '../../utils/websocket';
 import { Playground } from '../Playground/playground';
 import InfoBoxComponent, { InfoBox } from '../../components/InfoBox/infoBox';
 import {Playground_4erSchnopsn} from '../Playground/playground_4erSchnopsn';
+import { BASE_URL } from '../../utils/webthings';
 
 type StartGameProps = {
     title: string,
@@ -138,7 +139,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
         };
         
         // request
-        fetch(`http://localhost:8080/api/v1/createPlayer?playerName=${enteredPlayerName}`, requestOptions)
+        fetch(`${BASE_URL}/createPlayer?playerName=${enteredPlayerName}`, requestOptions)
         .then(res => res.json())
         .then(
             (result) => {
