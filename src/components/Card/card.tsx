@@ -1,8 +1,5 @@
-import { render } from '@testing-library/react';
-import { defaultCipherList } from 'node:constants';
 import React from 'react'
 import { PlayCard } from '../../models/card';
-import Deck from '../../pages/CardTest/CardLogic/deck';
 import './cardstyle.scss';
 
 type CardProps = {
@@ -14,42 +11,40 @@ type CardProps = {
     // children: React.ReactNode,
 
     onPlay: (playCard: PlayCard) => void,
-    onDragStart: (playCard: PlayCard) => void
+    onDragStart: (playCard: PlayCard) => void,
+    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-const SUITS = ["♠", "♣", "♥", "♦"];
+export const SUITS = ["♠", "♣", "♥", "♦"];
+export const SUIT_NAMES = ["PICK", "KREUZ", "HERZ", "KARO"];
 
-const getSuit = (e : string) => {
+export const getSuit = (e : string) => {
     switch(e){
         case 'PICK':
             return SUITS[0];
-            break;
         case 'KREUZ':
             return SUITS[1];
-            break;
         case 'HERZ':
             return SUITS[2];
-            break;
         case 'KARO':
             return SUITS[3];
-            break;
+        default:
+            return '';
     }
 }
 
-const getRealValue = (e : number) => {
+export const getRealValue = (e : number) => {
     switch(e){
         case 11:
             return 'A';
-            break;
         case 2:
             return 'B';
-            break;
         case 3:
             return 'D';
-            break;
         case 4:
             return 'K';
-            break;
+        case -1:
+            return '';
         default:
             return e;
     }
@@ -58,12 +53,7 @@ const getRealValue = (e : number) => {
 export default function Card(props: CardProps) {
 
     const dragStart = (e : React.DragEvent<HTMLDivElement>) => {
-        const target = e.target;
-        // e.dataTransfer.setData('card_id', e.target);''
-
-        // save card to --> playground (currentplayedcard)
         props.onDragStart(props.playCard);
-        
     }
 
     const dragEnd = (e : React.DragEvent<HTMLDivElement>) => {
@@ -84,6 +74,7 @@ export default function Card(props: CardProps) {
             onDragStart={dragStart}
             onDragOver={dragOver}
             onDragEnd={dragEnd}
+            onClick={props.onClick}
           >
                 <div className="card-tl">
                     <div className="card-value">{getRealValue(props.value)}</div>
@@ -104,6 +95,7 @@ export default function Card(props: CardProps) {
             onDragStart={dragStart}
             onDragOver={dragOver}
             onDragEnd={dragEnd}
+            onClick={props.onClick}
         >
                 <div className="card-tl">
                   <div className="card-value">{getRealValue(props.value)}</div>
@@ -129,6 +121,7 @@ export default function Card(props: CardProps) {
             onDragOver={dragOver}
             onDragEnd={dragEnd}
             className={props.className}
+            onClick={props.onClick}
         />
     );
 }

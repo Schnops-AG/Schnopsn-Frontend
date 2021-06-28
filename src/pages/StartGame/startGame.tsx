@@ -1,20 +1,19 @@
 import React from 'react'
 import './startGame.scss'
 import { CustomButton } from '../../components/Button/button';
-import { Route, Switch, BrowserRouter, Link, useRouteMatch, useParams, match } from 'react-router-dom';
+import { Route, Switch, useRouteMatch, match } from 'react-router-dom';
 import { JoinGame } from '../JoinGame/joinGame';
 import { CreateGame } from '../CreateGame/createGame';
 import { WaitingRoom } from '../WaitingRoom/waitingRoom';
 import { Player } from '../../models/player';
-import { render } from '@testing-library/react';
 import { CustomInput } from '../../components/CustomInput/customInput';
-import { join } from 'node:path';
 import { Game } from '../../models/game';
 import { Team } from '../../models/team';
 import { CustomWebSocket } from '../../utils/websocket';
 import { Playground } from '../Playground/playground';
 import InfoBoxComponent, { InfoBox } from '../../components/InfoBox/infoBox';
-import infoBox from '../../components/InfoBox/infoBox';
+import {Playground_4erSchnopsn} from '../Playground/playground_4erSchnopsn';
+import { BASE_URL } from '../../utils/webthings';
 
 type StartGameProps = {
     title: string,
@@ -95,7 +94,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
         // set admin status of player
         this.game?.teams.forEach((team :Team) => team.players.forEach((player :Player) =>{
-            if(this.player1?.playerID == player.playerID){
+            if(this.player1?.playerID === player.playerID){
                 this.player1.admin = player.admin;
                 sessionStorage.setItem('player', JSON.stringify(this.player1));
             }
@@ -140,11 +139,11 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
         };
         
         // request
-        fetch(`http://localhost:8080/api/v1/createPlayer?playerName=${enteredPlayerName}`, requestOptions)
+        fetch(`${BASE_URL}/createPlayer?playerName=${enteredPlayerName}`, requestOptions)
         .then(res => res.json())
         .then(
             (result) => {
-                if(this.player1 != undefined){
+                if(this.player1 !== undefined){
                     this.player1.playerName = result['playerName'];
                     this.player1.active = result['active'];
                     this.player1.caller = result['caller'];
@@ -209,9 +208,11 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
 
                 {/* Route to lobby */}
                 <Route path={`${this.props.match?.path}/play`}>
-                    <Playground 
-                        webSocket={this.webSocket} 
-                    />
+                    {
+                        (this.props.match?.path.includes('2erSchnopsn')) 
+                        ? <Playground webSocket={this.webSocket} />
+                        : <Playground_4erSchnopsn webSocket={this.webSocket}/>
+                    }
                 </Route>
  
     

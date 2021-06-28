@@ -1,11 +1,7 @@
 import React from 'react'
 import { PlayCard } from '../../models/card';
 
-{/* <div id={props.id}
-            onDrop={drop}
-            onDragOver={dragOver}
-            className={props.className}>
-            {props.children } */}
+
 type BoardProps = {
     id: string,
     className: string,
@@ -51,8 +47,11 @@ export default function Board(props : BoardProps) {
     // Wenn etwas über dem Board ist
     const dragOver = (e : React.DragEvent) => {
         e.preventDefault();
-        if(!e.currentTarget.classList.contains('board_onDragOver')){
-            e.currentTarget.classList.add('board_onDragOver');
+        if(props.id === 'middle'){
+            if(!e.currentTarget.classList.contains('board_onDragOver')){
+                e.currentTarget.classList.add('board_onDragOver');
+            }
+
         }
     }
 
@@ -66,6 +65,3 @@ export default function Board(props : BoardProps) {
         </div>
     )
 }
-
-
-{/* <Board>Der text hier drinnen ist das Child</Board> */}

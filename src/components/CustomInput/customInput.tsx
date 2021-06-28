@@ -1,8 +1,5 @@
 import React from 'react'
 import './customInput.scss'
-import {
-  Link
-} from "react-router-dom";
 
 type InputRoomType = {
     placeholder: string,

@@ -1,6 +1,6 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
 import './playground.scss'
+import './playground_2erSchnopsn.scss'
 import Board from '../../components/Board/Board'
 import { CustomWebSocket } from '../../utils/websocket'
 import { Message } from '../../models/message'
@@ -8,10 +8,10 @@ import { PlayCard } from '../../models/card'
 import Card from '../../components/Card/card'
 import { Game } from '../../models/game'
 import { Player } from '../../models/player'
-import { setTimeout } from 'timers'
 import { ErrorMessage } from '../../models/errorMessage'
 import StingView from '../../components/StingView/stingView'
 import InfoBoxComponent, { InfoBox } from '../../components/InfoBox/infoBox'
+import { BASE_URL } from '../../utils/webthings'
 
 /**
  * TOOD:
@@ -47,6 +47,7 @@ type PlayGroundState = {
     stingFinished: boolean,
     totalStingPoints: number,
     countdown: number,
+    countdown2040: number,
 
     zugedreht: boolean,
 
@@ -55,7 +56,10 @@ type PlayGroundState = {
     gameScore: Map<string, number>,
     bummerlScore: Map<string, number>,
 
-    infoBox: InfoBox
+    infoBox: InfoBox,
+
+    call20: any,
+    call40: any
     
 
     
@@ -72,12 +76,14 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
     
     newCard? :PlayCard;
     timerID :any;
+    timerCall2040 :any;
 
 
     constructor(props: PlayGroundProps){
         super(props);
 
         this.timerID = 0;
+
         this.state = {
             myTurn : false, 
             playedCards : [], 
@@ -90,11 +96,14 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             stingFinished : false, 
             totalStingPoints : 0,
             countdown : 3,
+            countdown2040 : 5,
             errorMessages : [],
             zugedreht : false,
             gameScore : new Map<string, number>([['0', 1], ['1', 0]]),
             bummerlScore : new Map<string, number>([['0', 1], ['1', 0]]),
-            infoBox : new InfoBox('none', '', '')
+            infoBox : new InfoBox('none', '', ''),
+            call20 : null,
+            call40 : null
         };
         
         if(this.props.webSocket){
@@ -117,6 +126,22 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             // clear playedCards, set countdown back to 5 seconds
             this.setState({playedCards : [], countdown : 3, stingFinished : false}); 
             clearInterval(this.timerID);
+        }
+    }
+
+    /**
+     * will be called every second to update the countdown (by -1 second)
+     */
+    _countdown2040 = () =>{
+
+        let seconds = this.state.countdown2040 - 1;
+        this.setState({countdown2040: seconds});
+
+        if(this.state.countdown2040 <= 0){
+
+            // clear playedCards, set countdown back to 5 seconds
+            this.setState({call20 : null, call40 : null, countdown2040 : 5}); 
+            clearInterval(this.timerCall2040);
         }
     }
 
@@ -162,6 +187,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         // receive cards
         if(message.type === 'cards'){
+            console.log('cards:', message.data);
             this.setState({myCards : message.data});
             
             // set cards to sessionStorage to maintain state even after refresh
@@ -290,6 +316,20 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             this.setState({trumpCard : message.data});
         }
 
+        // if someone else calls a 20/40er
+        else if(message.type === '20er'){
+            console.log('20er: ', message.data);
+            console.log(JSON.parse(message.data));
+            this.timerCall2040 = setInterval(this._countdown2040, 1000);
+            this.setState({call20 : JSON.parse(message.data)});
+
+        }
+        else if(message.type === '40er'){
+            console.log('40er: ', message.data);
+            this.timerCall2040 = setInterval(this._countdown2040, 1000);
+            this.setState({call40 : JSON.parse(message.data)});
+        }
+
 
 
         else{
@@ -315,7 +355,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         };
         
         // request
-        fetch(`http://localhost:8080/api/v1/startRound2erSchnopsn?gameID=${this.game?.gameID}`, requestOptions)
+        fetch(`${BASE_URL}/startRound2erSchnopsn?gameID=${this.game?.gameID}`, requestOptions)
         .then(res => {
             console.log('result: ', res);
         });
@@ -347,7 +387,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         };
         
         // request
-        fetch(`http://localhost:8080/api/v1/makeMoveByCall?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&color=${card.color}&value=${card.value}`, requestOptions)
+        fetch(`${BASE_URL}/makeMoveByCall?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&color=${card.color}&value=${card.value}`, requestOptions)
         .then(res => res.json())
         .then(
             (result) => {
@@ -355,10 +395,9 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
                 // remove card
                 let cards :PlayCard[] = this.state.myCards;
-                const index :number = cards.indexOf(card);
-                cards = cards.filter(c => c != card);
+                cards = cards.filter(c => c !== card);
 
-                if(cards.length == 0){
+                if(cards.length === 0){
                     this.playingLastCard = true;
                 }
 
@@ -392,7 +431,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             // body: JSON.stringify({ playerName: enteredPlayerName })
         };
 
-        fetch(`http://localhost:8080/api/v1/zudrehen?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}`, requestOptions)
+        fetch(`${BASE_URL}/zudrehen?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}`, requestOptions)
         .then(res => res.json())
         .then(
             (result) => {
@@ -420,7 +459,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             headers: { 'Content-Type': 'application/json' },
         };
 
-        fetch(`http://localhost:8080/api/v1/call20er40er?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&type=${type}`, requestOptions)
+        fetch(`${BASE_URL}/call20er40er?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}&type=${type}`, requestOptions)
         .then(res => res.json())
         .then(
             (result) => {
@@ -440,7 +479,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
     onExchangeTrump = () =>{
         console.log('exchanging trump..');
 
-        if(this.state.trumpCard?.value == 2){
+        if(this.state.trumpCard?.value === 2){
             console.log('trump card cannot be exchanged!');
             return;
         }
@@ -454,7 +493,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
             // body: JSON.stringify({ playerName: enteredPlayerName })
         };
 
-        fetch(`http://localhost:8080/api/v1/switchTrumpCard?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}`, requestOptions)
+        fetch(`${BASE_URL}/switchTrumpCard?gameID=${this.game?.gameID}&playerID=${this.player?.playerID}`, requestOptions)
         .then(res => res.json())
         .then(
             (result) => {
@@ -505,7 +544,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
 
         // get data from sessionStorage (after refresh)
         // console.log('currentcards: ', this.state.currentCards);
-        if(this.state.myCards.length == 0 && !this.playingLastCard){
+        if(this.state.myCards.length === 0 && !this.playingLastCard){
             let cardString = sessionStorage.getItem('myCards');
             if(cardString){
                 console.log('getting cards from sessionStorage..');
@@ -553,7 +592,7 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
         
         return (
             <div className="playground">
-                <div className="back">
+                <div className="back2er">
 
                     {/* Top line: opponnent */}
                     <div className="top">
@@ -578,13 +617,21 @@ export class Playground extends React.Component<PlayGroundProps, PlayGroundState
                             <div className="card crossed"></div>
                             <div className="card crossed"></div>
                             <div className="card crossed"></div>
-                        </div>
 
-                        {/* Number of bummerl
-                        <div className="bummerl">
-                            <h3>Bummerl</h3>
-                            <span>-1:-1</span>
-                        </div> */}
+
+                            {
+                                // info 20/40er
+                                (this.state.call20 || this.state.call40) ?
+                                    <div className="call">
+                                        <div className="type">{this.state.call20 ? '20er' : '40er'}</div>
+                                        <div className="color">
+                                            {this.state.call20 ? this.state.call20['color'] : ''}
+                                            {this.state.call40 ? this.state.call40['color'] : ''}
+                                        </div>
+                                    </div>
+                                : <></>
+                            }
+                        </div>
                     </div>
 
 
