@@ -499,7 +499,32 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
                     {/* the top area with the player's mate and the points */}
                     <div className="top">
                         <div className="points">
-                            <h3>Points</h3>
+                            <div className="points">
+                                <h3>Points</h3>
+                                <div className="playerpoints">
+                                    <span className="playernames">Elias, Alex</span>
+                                    <span>:</span>
+                                    <span className="points">99</span>
+                                </div>
+                                <div className="playerpoints">
+                                    <span className="playernames">Matthias, Thomas</span>
+                                    <span>:</span>
+                                    <span className="points">0</span>
+                                </div>
+                            </div>
+                            <div className="points">
+                                <h3>Bummerl</h3>
+                                <div className="playerpoints">
+                                    <span className="playernames">Elias, Alex</span>
+                                    <span>:</span>
+                                    <span className="points">99</span>
+                                </div>
+                                <div className="playerpoints">
+                                    <span className="playernames">Matthias, Thomas</span>
+                                    <span>:</span>
+                                    <span className="points">0</span>
+                                </div>
+                            </div>
                         </div>
                         <div className="mate">
                             <div className="card crossed"></div>

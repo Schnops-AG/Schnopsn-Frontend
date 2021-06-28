@@ -1,7 +1,8 @@
 import React from 'react'
 import './startGame.scss'
 import { CustomButton } from '../../components/Button/button';
-import { Route, Switch, useRouteMatch, match } from 'react-router-dom';
+import { Route, Switch, useRouteMatch, match, useHistory } from 'react-router-dom';
+import { History } from 'history';
 import { JoinGame } from '../JoinGame/joinGame';
 import { CreateGame } from '../CreateGame/createGame';
 import { WaitingRoom } from '../WaitingRoom/waitingRoom';
@@ -20,6 +21,7 @@ type StartGameProps = {
 
     // match? ... optional
     match?: match<{}>,
+    history?: History,
     gameType: string
 }
 
@@ -34,6 +36,7 @@ type StartGameState = {
 export function StartGame(props: StartGameProps): JSX.Element{
     /*Gibt mir den aktuellen Path zurück */
     const match = useRouteMatch();
+    const history = useHistory();
 
 
     // ...props  = all remaining props
@@ -109,6 +112,8 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
      *  that requests the player object
      */
     async onClickBtn(event : React.MouseEvent<HTMLButtonElement>){
+        // event.preventDefault();
+        // event.stopPropagation();
         
         let enteredPlayerName :String = this.state.playerName;
         
