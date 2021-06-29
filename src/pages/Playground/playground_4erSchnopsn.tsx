@@ -14,9 +14,6 @@ import '../../components/Card/cardstyle.scss'
 import {SUITS, getSuit, SUIT_NAMES} from '../../components/Card/card'
 import { BASE_URL } from '../../utils/webthings'
 
-// TODO:
-// --------------------------
-// - remove other player's cards (one by one - after they have played)
 
 type PlayGround4erProps = {
     webSocket?: CustomWebSocket,
@@ -48,7 +45,9 @@ type PlayGround4erState = {
     gameScore: Map<string, number>,
     bummerlScore: Map<string, number>,
 
-    infoBox: InfoBox
+    infoBox: InfoBox,
+
+    timerID :any
 }
 
 
@@ -60,7 +59,7 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
     
     currentPlayedCard? :PlayCard;
     
-    timerID :any;
+    
     timerTrumpID :any;
 
     availableCalls :string[] = [];
@@ -69,7 +68,6 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
     constructor(props: PlayGround4erProps){
         super(props);
 
-        this.timerID = 0;
         this.state = {
             myTurn : false, 
             callTurn : false,
@@ -91,7 +89,9 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
             countdown : 3,
             countdownTrumpDisplay : 5,
             errorMessages : [],
-            infoBox : new InfoBox('none', '', '')
+            infoBox : new InfoBox('none', '', ''),
+
+            timerID : null
         };
         
         if(this.props.webSocket){
@@ -100,6 +100,7 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
             this.props.webSocket.onReceiveMessage = this.onReceiveMessageFromWebSocket.bind(this);
         }
 
+        // if game not here -> get from sessionStorage
         if(!this.game){
             let gameString = sessionStorage.getItem('game');
             if(gameString){
@@ -110,6 +111,9 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
 
     }
 
+    /**
+     * used to get all available calls (normal, bettler, schnopser, ..) per player
+     */
     getAvailableCalls(){
         const requestOptions = {
             method: 'POST',
@@ -256,14 +260,39 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
             this.setState({
                 bummerlScore : new Map(Object.entries(message.data)), 
                 gameScore : new Map<string, number>([['0', 1], ['1', 0]]),
-                opponnentGotStings : false
+                opponnentGotStings : false,
+
+                // reset everything
+                playedCards : [],
+                myCards : [],
+                ourStings : [],
+                trump : new PlayCard('temp', -1, '', '', false),
+                myTurn : false,
+                callTurn : false,
+                isCaller : false,
+
+                ourTotalStingPoints : 0
             });
         }
 
         // returns the score of of the current game (0-7) as a map (key: playerID, value: number of bummerl)
-        else if(message.type === 'gamescore'){
+        else if(message.type === 'gameScore'){
             console.log('gamescore: ', message.data);
-            this.setState({gameScore : new Map(Object.entries(message.data))});
+            this.setState({
+                gameScore : new Map(Object.entries(message.data)),
+
+                // reset everything
+                playedCards : [],
+                myCards : [],
+                ourStings : [],
+                trump : new PlayCard('temp', -1, '', '', false),
+                myTurn : false,
+                callTurn : false,
+                isCaller : false,
+
+                opponnentGotStings : false,
+                ourTotalStingPoints : 0
+            });
 
             console.log('isAdmin?:', this.player?.admin);
             if(this.player?.admin){
@@ -296,26 +325,41 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
      * after each sting: reset state, start countdown
      */
     afterSting(){
-        this.setState({stingFinished : true});
-        this.timerID = setInterval(this.countdown, 1000);
+        // const timerID = setInterval(this.countdown, 1000);
+        const timerID = setTimeout(this.countdown, 1000);
+        console.log('--aftersting: ', timerID);
+        this.setState({timerID : timerID, stingFinished : true});
     }
 
     /**
      * will be called every second to update the countdown (by -1 second)
      */
     countdown = () =>{
-
-        let seconds = this.state.countdown - 1;
-        this.setState({countdown : seconds})
+        console.log('couting down ..', this.state.countdown);
 
         if(this.state.countdown <= 0){
+            console.log('coutdown finished: ', this.state.timerID);
 
             // clear playedCards, set countdown back to 5 seconds
+            // clearInterval(this.state.timerID);
+            clearTimeout(this.state.timerID);
             this.setState({playedCards : [], countdown : 3, stingFinished : false}); 
-            clearInterval(this.timerID);
+            return;
         }
+        
+        clearTimeout(this.state.timerID);
+        const timerID = setTimeout(this.countdown, 1000);
+
+        let seconds = this.state.countdown - 1;
+        this.setState({countdown : seconds, timerID : timerID});
+
+
+
     } 
 
+    /**
+     * will be called every second to update the countdown (by -1 second)
+     */
     countdownTrump = () =>{
         let seconds = this.state.countdownTrumpDisplay - 1;
         this.setState({countdownTrumpDisplay : seconds})
@@ -335,6 +379,25 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
      */
     startNewRound = () =>{
         console.log('starting new round... TODO');
+
+        
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            // body: JSON.stringify({ playerName: enteredPlayerName })
+        };
+        
+        // request
+        fetch(`${BASE_URL}/getCards4erSchnopsn?gameID=${this.game?.gameID}`, requestOptions)
+        .then(res => res.json())
+        .then(
+            (result) => {
+                console.log(result, 'sucessfully played card?!!');
+            },
+            (error) => {
+                console.log('error: ' + error);
+            }
+        )
 
     } 
     
@@ -402,6 +465,10 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
 
     }
 
+    /**
+     * used to call a trump color
+     * @param color HERZ, KARO, KREUZ, PICK, ???
+     */
     onCallTrump = (color: string) =>{
         console.log('calling trump: ', color);
         this.setState({isCaller : false});
@@ -423,6 +490,10 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
         )
     }
 
+    /**
+     * 
+     * @param call BETTLER, SCHNOPSER , ... (-> see `getAvailableCalls`)
+     */
     onMakeCall = (call: string) =>{
         console.log('making a call..', call);
         const requestOptions = {
@@ -487,7 +558,7 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
         const prepareScore = (scoreMap :Map<string, number>) =>{
             let scoreArray :number[] = [0,0];
             scoreMap.forEach((value :number, key :string) =>{
-                if(this.player?.playerID === key){
+                if('myScore' === key){
                     scoreArray[0] = value;
                 }else if(key.length > 1){
                     scoreArray[1] = value;
@@ -502,13 +573,11 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
 
         // #endregion
 
-        console.log('game: ', this.game);
-        console.log('gamescore: ', this.state.gameScore);
-
         return (
             <div className="playground">
                 <div className="back4er">
-                    {/* the top area with the player's mate and the points */}
+
+                    {/* the top area with the player's mate and the points + trump color */}
                     <div className="top">
                         <div className="points">
                             {
@@ -545,6 +614,7 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
                             }
 
                         </div>
+                        
                         <div className="mate">
                             <div className="card crossed"></div>
                             <div className="card crossed"></div>
@@ -552,6 +622,7 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
                             <div className="card crossed"></div>
                             <div className="card crossed"></div>
                         </div>
+
                         <div className={`trumpColor card-suit ${this.state.trump.color === 'KARO' || this.state.trump.color === 'HERZ' ? "card-red" : "card-black"}`}>
                             {
                                 this.state.currentCall === '' ? <></> : <h2 className="call">{this.state.currentCall}</h2>
