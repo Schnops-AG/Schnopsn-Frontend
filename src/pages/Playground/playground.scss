@@ -1,0 +1,314 @@
+@import url('https://fonts.googleapis.com/css2?family=Gorditas:wght@700&display=swap');
+@import "./../../style/properties/base";
+
+.crossed{
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background-color: white !important;
+    background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 15px,
+    #ff6961 8px,
+    #ff6961 18px
+        ),
+    repeating-linear-gradient(
+        135deg,
+        transparent,
+        transparent 15px,
+        #ff392e 8px,
+        #ff392e 18px
+    );
+}
+
+
+.playground:before{
+    content: "";
+    background-image: url('/assets/img/background_startPage.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 0.3;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    z-index: 0;
+}
+
+.playground{
+    display: block;
+    width: 100%;
+    height: 100%; 
+    background: radial-gradient(50% 50% at 50% 50%, rgba(143, 206, 120, 0.459375) 28.65%, rgba(88, 130, 73, 0.6) 89.06%), rgba(75, 164, 74, 0.6);
+    z-index: 2;
+}
+
+.cardVanishOverlay{
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+    top:0;
+    left: 0;
+
+    z-index: 99;
+
+    background-color: rgba(255, 255, 255, 0.349);
+
+    
+
+    div{
+        width: 50%;
+        height: 100%;
+        margin: 0 auto;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        p{
+            font-size: 60pt;
+        }
+    }
+
+}
+
+.callOverlay{
+    position: fixed;
+    z-index: 99;
+    
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    .cardArea{
+        background-color: rgb(255, 255, 255);
+        border-radius: 20px;
+        box-shadow: 2px 2px 15px rgb(43, 43, 43);
+        position: relative;
+        width: 70%;
+        height: 45%;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+        flex-wrap: wrap;
+
+        .card:hover{
+            cursor: pointer;
+            box-shadow: 2px 2px 15px #000;
+        }
+
+        
+        @media screen and ( min-width: 1100px ) {
+            .call{
+                width: 80px;
+                height: 140px;
+                font-size: 10pt;
+                word-break: break-all;
+            }                 
+        }
+        @media screen and ( max-width: 1100px ) {
+            .call{
+                width: 64px;
+                height: 112px;
+                font-size: 10pt;
+                word-break: break-all;
+            }
+ 
+        }
+        @media screen and ( max-width: 959px ) {
+            &{
+                height: 60%;
+            }
+ 
+        }
+        
+    }
+}
+
+
+
+.board{
+    flex-grow: 7;
+
+    height: 100%;
+    padding-left: 3%;
+    padding-right: 3%;
+    // background-color: rgba(66, 25, 48, 0.699);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 20;
+
+    .card{
+        width: 140px;
+        height: 240px;
+        background-color: white;
+        margin: 20px;
+        z-index: 19;
+    }
+}
+
+.board_onDragOver{
+    cursor: copy;
+    border: 5px dashed rgb(104, 104, 104);
+    opacity: 0.5;
+    background-color: rgba(255, 255, 255, 0.096);
+}
+
+.own{
+    display: flex;
+    justify-content: space-around;
+    // background-color: rgba(109, 231, 231, 0.699);
+    height: 50%;
+    
+    .board{
+        flex-grow: 5;
+
+        // height: 280px;
+        height: 100%;
+        //min-height: 280px;
+
+        // background-color: rgba(66, 25, 48, 0.699);
+
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+        .card{
+            width: 140px;
+            height: 240px;
+            background-color: white;
+            margin: 16px;
+            z-index: 40;
+        }
+        .card_wait{
+            // background-color: rgb(221, 221, 221);
+            opacity: 0.5;
+            &:hover{
+                cursor: not-allowed;
+            }
+        }
+    }
+
+    .actionMenue{
+        flex-grow: 1;
+
+        margin: auto;
+        padding: 20px;
+
+        z-index: 40;
+
+
+        background-color: rgba(255, 255, 255, 0.151);
+        // color: white;
+        border-radius: 10px;
+        // box-shadow: 2px 2px 10px #000;
+
+        h3{
+            width: 100%;
+            margin-bottom: 20px;
+            font-size: 20pt;
+        }
+
+        .actions{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+
+            p{
+                font-size: 14pt;
+                width: 100%;
+                margin: 3px auto;
+                padding: 2px;
+                border-radius: 5px;
+
+                &:hover{
+                    background-color: rgba(255, 255, 255, 0.247);
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+
+    .ownStings{
+        z-index: 50;
+        flex-grow: 5;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .stings{
+
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 30px;
+
+            width: 100%;
+
+            .card{
+                width: 80px;
+                height: 140px;
+                background-color: white;
+                z-index: 10;
+            }
+
+            .show{
+                transform: rotate(-90deg);
+                z-index: 9;
+                margin-right: -20px;
+            }
+
+        }
+
+        .points{
+            font-size: 14pt;
+            width: 100%;
+            z-index: 49;
+            
+        }
+        .info{
+            display: none;
+        }
+
+        // TODO: does not work yet
+        .points:hover + .info {
+            width: 100%;
+            height: auto;
+            display: flex;
+            flex-direction: row;
+            border-radius: 10px;
+            background: rgb(43, 43, 43);
+            color: #fff;
+            box-shadow: 2px 2px 10px rgb(43, 43, 43);
+            padding: 15px;
+            z-index: 50;
+            bottom: 0;
+
+            
+            
+            h1{
+                font-size: 8px;
+            }
+        }
+    }
+}

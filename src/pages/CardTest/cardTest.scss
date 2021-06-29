@@ -1,0 +1,83 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: #f3f3f3;
+}
+
+.flexbox{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin: 0 auto;
+
+    .board{
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: auto;
+        background-color: #313131;
+        margin: 15px;
+        padding: 15px;
+
+        .card{
+            height: 240px;
+            width: 150px;
+            font-size: 24px;
+            background-color: white;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid black;
+            padding: 2px;
+            margin: 10px;
+        }
+
+        .red{
+            color: red;
+        }
+
+        .black{
+            color: black
+        }
+        
+    }
+
+    .middle-line{
+        display: flex;
+        flex-direction: row;
+        height: auto;
+        width: 100%;
+        overflow: hidden;
+
+        .left{
+            width: auto;
+            float: left;
+        }
+
+        .right{
+            width: 100%;
+            float: right;
+        }
+    
+        .stappel{
+            height: 260px;
+            width: auto;
+            float: left;
+            overflow: hidden;
+    
+            .card{
+                background-image: url(card_back.png);
+                background-size: cover;
+                background-repeat: no-repeat;
+                color: transparent;
+            }
+        }
+    }
+
+    
+}

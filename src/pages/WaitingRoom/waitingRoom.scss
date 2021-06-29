@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Gorditas:wght@700&display=swap');
+@import "./../../style/properties/base";
+
+*{
+    font-family: 'Gorditas', cursive;
+}
+
+.waitingRoom{
+    width: 100%;
+    margin-top: 50px;
+
+    h2{
+        margin-top: 100px;
+        margin-bottom: 150px;
+    }
+
+    .invite{
+        width: 80%;
+        margin: 0 auto;
+        margin-bottom: 50px;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    
+        .inviteOthers{
+            font-size: 24pt;
+            flex: 1;
+        }
+
+        .invitationLink{
+            height: 80px;
+            flex: 3;
+            overflow: auto;
+            color: $davysGrey;
+
+            &:hover{
+                cursor: text;
+            }
+
+            &::selection{
+                background-color: $davysGrey;
+                color: $beige;
+            }
+        }
+    }
+
+    .startGameButton{
+        a{
+            width: 200px;
+            height: 60px;
+        }
+        .start{
+    
+            height: 60px;
+            width: 200px;
+            font-size: 15pt;
+            padding: 0;
+            background-color: $forestGreen;
+
+        }
+
+        .enabled{
+            background-color: $forestGreen;
+            &:hover{
+                background-color: $forestGreenLight;
+                color: $beige;
+                cursor: pointer;
+            }
+        }
+
+        .disabled{
+            background-color: $forestGreenLight;
+            &:hover{
+                background-color: $forestGreenLight;
+                color: $beige;
+                cursor: not-allowed;
+            }
+        }
+
+
+    }
+
+    .members{
+        margin-top: 50px;
+    }
+
+}
+
+

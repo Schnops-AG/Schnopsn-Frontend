@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Gorditas:wght@700&display=swap');
+@import "./../../style/properties/base";
+
+// *{
+//     font-family: 'Gorditas', cursive;
+// }
+
+.green, .brown{
+    width: 300px;
+    height: 100px;
+    font-size: 32px;
+    padding: 20px;
+    outline: none;
+    border: none;
+    color: $beige;
+    transition: 0.3s;
+    border-radius: 15px;
+    border-style: none;
+    
+    &:hover{
+        background-color: $beige;
+        color: $forestGreen;
+        opacity: 1;
+        cursor: pointer;
+    }
+    
+    &:focus{
+        outline: none;
+    }
+}
+
+.green{
+    background-color: $mossGreen;
+}
+
+.brown{
+    background-color: $darkBrown;
+}
+
+
+
+
