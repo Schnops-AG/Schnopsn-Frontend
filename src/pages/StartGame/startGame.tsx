@@ -216,7 +216,7 @@ export class StartGameUI extends React.Component<StartGameProps, StartGameState>
                     {
                         (this.props.match?.path.includes('2erSchnopsn')) 
                         ? <Playground webSocket={this.webSocket} />
-                        : <Playground_4erSchnopsn webSocket={this.webSocket}/>
+                        : <Playground_4erSchnopsn webSocket={this.webSocket} game={this.game}/>
                     }
                 </Route>
  

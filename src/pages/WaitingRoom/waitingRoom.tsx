@@ -18,12 +18,12 @@ type WaitingRoomProps = {
     match?: match<{}>,
     game: Game,
     webSocket?: CustomWebSocket,
-    history?: History
+    history?: History,
 }
 
 type WaitingRoomState = {
     activeMembers: string[],
-    readyToStart: boolean
+    readyToStart: boolean,
 }
 
 
@@ -77,6 +77,14 @@ export class WaitingRoomUI extends React.Component<WaitingRoomProps, WaitingRoom
         // forward to playground
         if(message.type === 'forward'){
             this.props.history?.push(message.data); // forward to /play
+        }
+
+        if(message.type === 'game'){
+            console.log('game:', message.data);
+            const game :Game = message.data;
+
+            // game -> sessionStorage
+            sessionStorage.setItem('game', JSON.stringify(game));
         }
     }
 

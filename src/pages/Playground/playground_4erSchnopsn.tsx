@@ -20,6 +20,7 @@ import { BASE_URL } from '../../utils/webthings'
 
 type PlayGround4erProps = {
     webSocket?: CustomWebSocket,
+    game?: Game
 }
 
 type PlayGround4erState = {
@@ -97,6 +98,14 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
 
             // set handler for receiving messages (websocket)
             this.props.webSocket.onReceiveMessage = this.onReceiveMessageFromWebSocket.bind(this);
+        }
+
+        if(!this.game){
+            let gameString = sessionStorage.getItem('game');
+            if(gameString){
+                this.game = JSON.parse(gameString);
+                console.log(this.game);
+            }
         }
 
     }
@@ -493,38 +502,48 @@ export class Playground_4erSchnopsn extends Component<PlayGround4erProps, PlayGr
 
         // #endregion
 
+        console.log('game: ', this.game);
+        console.log('gamescore: ', this.state.gameScore);
+
         return (
             <div className="playground">
                 <div className="back4er">
                     {/* the top area with the player's mate and the points */}
                     <div className="top">
                         <div className="points">
-                            <div className="points">
-                                <h3>Points</h3>
-                                <div className="playerpoints">
-                                    <span className="playernames">Elias, Alex</span>
-                                    <span>:</span>
-                                    <span className="points">99</span>
-                                </div>
-                                <div className="playerpoints">
-                                    <span className="playernames">Matthias, Thomas</span>
-                                    <span>:</span>
-                                    <span className="points">0</span>
-                                </div>
-                            </div>
-                            <div className="points">
-                                <h3>Bummerl</h3>
-                                <div className="playerpoints">
-                                    <span className="playernames">Elias, Alex</span>
-                                    <span>:</span>
-                                    <span className="points">99</span>
-                                </div>
-                                <div className="playerpoints">
-                                    <span className="playernames">Matthias, Thomas</span>
-                                    <span>:</span>
-                                    <span className="points">0</span>
-                                </div>
-                            </div>
+                            {
+                                this.game !== null ? 
+                                    <>
+                                        <div className="points">
+                                            <h3>Points</h3>
+                                            <div className="playerpoints">
+                                                <span className="playernames">{this.game?.teams[0].players[0].playerName}, {this.game?.teams[0].players[1].playerName}</span>
+                                                <span>:</span>
+                                                <span className="points">{gameScore[0]}</span>
+                                            </div>
+                                            <div className="playerpoints">
+                                                <span className="playernames">{this.game?.teams[1].players[0].playerName}, {this.game?.teams[1].players[1].playerName}</span>
+                                                <span>:</span>
+                                                <span className="points">{gameScore[1]}</span>
+                                            </div>
+                                        </div>
+                                        <div className="points">
+                                            <h3>Bummerl</h3>
+                                            <div className="playerpoints">
+                                                <span className="playernames">{this.game?.teams[0].players[0].playerName}, {this.game?.teams[0].players[1].playerName}</span>
+                                                <span>:</span>
+                                                <span className="points">{bummerlScore[0]}</span>
+                                            </div>
+                                            <div className="playerpoints">
+                                                <span className="playernames">{this.game?.teams[1].players[0].playerName}, {this.game?.teams[1].players[1].playerName}</span>
+                                                <span>:</span>
+                                                <span className="points">{bummerlScore[1]}</span>
+                                            </div>
+                                        </div>
+                                    </>
+                                : <></>
+                            }
+
                         </div>
                         <div className="mate">
                             <div className="card crossed"></div>
